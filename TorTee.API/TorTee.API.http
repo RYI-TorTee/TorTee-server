@@ -1,0 +1,6 @@
+@TorTee.API_HostAddress = http://localhost:5030
+
+GET {{TorTee.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
