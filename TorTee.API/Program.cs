@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TorTee.BLL;
+using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
 using TorTee.DAL.DataContext;
 
@@ -9,11 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddIdentity<User, Role>()
+                      .AddRoleManager<RoleManager<Role>>()
+            .AddEntityFrameworkStores<TorTeeDbContext>()
+            .AddDefaultTokenProviders();
 
 builder.Services.RegisterDALDependencies(builder.Configuration);
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-                    .AddEntityFrameworkStores<TorTeeDbContext>();
 
 builder.Services.RegisterBLLDependencies(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
