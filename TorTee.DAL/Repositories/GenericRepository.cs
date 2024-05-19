@@ -1,61 +1,125 @@
 ﻿using System.Linq.Expressions;
-using TorTee.DAL.DataContext;
 using TorTee.DAL.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using TorTee.Common.Helpers;
+using TorTee.Common.Models;
 
 
 namespace TorTee.DAL.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, new()
+    public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
     {
-        private readonly TorTeeDbContext _torTeeDbContext;
-        public GenericRepository(TorTeeDbContext TorTeeDbContext)
+        public GenericRepository(DbContext dbContext)
         {
-            _torTeeDbContext = TorTeeDbContext;
+            DbContext = dbContext;
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public DbSet<T> Entities => DbContext.Set<T>();
+
+        public DbContext DbContext { get; }
+
+        public void Add(T entity)
         {
-            await _torTeeDbContext.AddAsync(entity);
-            await _torTeeDbContext.SaveChangesAsync();
-            return entity;
+            DbContext.Add(entity);
         }
 
-        public async Task<List<TEntity>> AddRangeAsync(List<TEntity> entity)
+
+        public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
         {
-            await _torTeeDbContext.AddRangeAsync(entity);
-            await _torTeeDbContext.SaveChangesAsync();
-            return entity;
+            await DbContext.AddAsync(entity, cancellationToken);
         }
 
-        public async Task<int> DeleteAsync(TEntity entity)
+
+        public void AddRange(IEnumerable<T> entities)
         {
-            _ = _torTeeDbContext.Remove(entity);
-            return await _torTeeDbContext.SaveChangesAsync();
+            DbContext.AddRange(entities);
         }
 
-        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
+
+        public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
-            return await _torTeeDbContext.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(filter, cancellationToken);
+            await DbContext.AddRangeAsync(entities, cancellationToken);
         }
 
-        public async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
+
+        public T Get(Expression<Func<T, bool>> expression)
         {
-            return await (filter == null ? _torTeeDbContext.Set<TEntity>().ToListAsync(cancellationToken) : _torTeeDbContext.Set<TEntity>().Where(filter).ToListAsync(cancellationToken));
+            return Entities.FirstOrDefault(expression);
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+
+
+        public PaginatedResult GetPaginatedResult(
+            int pageSize,
+            int pageIndex,
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            params Expression<Func<T, object>>[] includeProperties)
         {
-            _ = _torTeeDbContext.Update(entity);
-            await _torTeeDbContext.SaveChangesAsync();
-            return entity;
+            IQueryable<T> query = Entities;
+            return PaginationHelper.BuildPaginatedResultFullOptions(query, pageSize, pageIndex, filter, orderBy, includeProperties);
         }
 
-        public async Task<List<TEntity>> UpdateRangeAsync(List<TEntity> entity)
+        public IEnumerable<T> GetAll()
         {
-            _torTeeDbContext.UpdateRange(entity);
-            await _torTeeDbContext.SaveChangesAsync();
-            return entity;
+            return Entities.AsEnumerable();
+        }
+
+
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> expression)
+        {
+            return Entities.Where(expression).AsEnumerable();
+        }
+
+
+        public async Task<IList<T>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await Entities.ToListAsync(cancellationToken);
+        }
+
+
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression,
+            CancellationToken cancellationToken = default)
+        {
+            return await Entities.Where(expression).ToListAsync(cancellationToken);
+        }
+
+
+        public async Task<T> GetAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            return await Entities.FirstOrDefaultAsync(expression, cancellationToken);
+        }
+
+        public async Task DeleteAsync(Guid id, bool saveChanges = true)
+        {
+            var entity = await Entities.FindAsync(id);
+            await DeleteAsync(entity);
+
+            if (saveChanges) await DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(T entity, bool saveChanges = true)
+        {
+            Entities.Remove(entity);
+            if (saveChanges) await DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRangeAsync(IEnumerable<T> entities, bool saveChanges = true)
+        {
+            var enumerable = entities as T[] ?? entities.ToArray();
+            if (enumerable.Any()) Entities.RemoveRange(enumerable);
+
+            if (saveChanges) await DbContext.SaveChangesAsync();
+        }
+
+        public T Find(params object[] keyValues)
+        {
+            return Entities.Find(keyValues);
+        }
+
+        public virtual async Task<T?> FindAsync(params object[] keyValues)
+        {
+            return await Entities.FindAsync(keyValues);
         }
     }
 }
