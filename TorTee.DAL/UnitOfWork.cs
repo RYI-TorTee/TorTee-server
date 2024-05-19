@@ -1,10 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TorTee.DAL.Repositories;
+using TorTee.DAL.Repositories.IRepositories;
 
 namespace TorTee.DAL
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         public DbContext _dbContext { get; }
+
+        public IMessageRepository MessageRepository => new MessageRepository(_dbContext);
 
         public UnitOfWork(DbContext dbContext)
         {
