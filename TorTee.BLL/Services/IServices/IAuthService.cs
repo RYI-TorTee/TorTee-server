@@ -1,11 +1,13 @@
-﻿using TorTee.Common.Dtos;
+﻿using TorTee.BLL.Models;
+using TorTee.Common.Dtos;
 using TorTee.Core.Dtos;
 
 namespace TorTee.BLL.Services.IServices
 {
     public interface IAuthService
     {
-        Task<UserToLoginDTO> LoginAsync(UserToLoginDTO userToLoginDTO);
-        Task<UserDTO> RegisterAsync(UserToLoginDTO userToRegisterDTO);
+        Task<ServiceActionResult> LoginAsync(UserToLoginDTO userToLoginDTO);
+        Task<ServiceActionResult> RegisterAsync(UserToRegisterDTO userToRegisterDTO);
+        Task<ServiceActionResult> ConfirmEmail(string userId, string token);
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TorTee.Common.Exceptions
+namespace TorTee.Core.Exceptions.IExceptions
 {
     public interface IBusinessException
     {
