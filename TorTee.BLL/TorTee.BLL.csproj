@@ -16,4 +16,8 @@
     <ProjectReference Include="..\TorTee.DAL\TorTee.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\CustomExceptions\" />
+  </ItemGroup>
+
 </Project>
