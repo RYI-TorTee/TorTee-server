@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Responses\" />
     <Folder Include="Utilities\CustomExceptions\" />
   </ItemGroup>
 
