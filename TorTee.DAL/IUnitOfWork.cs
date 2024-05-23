@@ -6,7 +6,7 @@ namespace TorTee.DAL
     {
         public IMessageRepository MessageRepository { get; }
 
-        public IMentorUserRepository MentorUserRepository { get; }
+        public IUserRepository MentorUserRepository { get; }
         void Commit();
         Task CommitAsync();
         void Rollback();

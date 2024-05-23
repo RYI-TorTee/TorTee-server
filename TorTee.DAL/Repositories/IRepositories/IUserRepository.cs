@@ -7,7 +7,7 @@ using TorTee.Core.Domains.Entities;
 
 namespace TorTee.DAL.Repositories.IRepositories
 {
-    public interface IMentorUserRepository : IGenericRepository<User>
+    public interface IUserRepository : IGenericRepository<User>
     {
     }
 }
