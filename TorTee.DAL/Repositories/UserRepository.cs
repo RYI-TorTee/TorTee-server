@@ -9,9 +9,9 @@ using TorTee.DAL.Repositories.IRepositories;
 
 namespace TorTee.DAL.Repositories
 {
-    public class MentorUserRepository : GenericRepository<User>, IMentorUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public MentorUserRepository(DbContext dbContext) : base(dbContext)
+        public UserRepository(DbContext dbContext) : base(dbContext)
         {
         }
     }

@@ -10,7 +10,7 @@ namespace TorTee.DAL
 
         public IMessageRepository MessageRepository => new MessageRepository(_dbContext);
 
-        public IMentorUserRepository MentorUserRepository => new MentorUserRepository(_dbContext);
+        public IUserRepository MentorUserRepository => new UserRepository(_dbContext);
 
         public UnitOfWork(DbContext dbContext)
         {
