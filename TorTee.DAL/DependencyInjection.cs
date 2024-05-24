@@ -9,11 +9,12 @@ namespace TorTee.DAL
     {
         public static void RegisterDALDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
+            services.AddScoped<DbContext, TorTeeDbContext>();
             services.AddDbContext<TorTeeDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
            // services.AddScoped<IUserRepository, UserRepository>();
         }
     }
