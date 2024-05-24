@@ -11,6 +11,8 @@ namespace TorTee.DAL.Repositories.IRepositories
         T Get(Expression<Func<T, bool>> expression);
         IEnumerable<T> GetAll();
         IEnumerable<T> GetAll(Expression<Func<T, bool>> expression);
+        Task<IQueryable<T>> FindAsyncAsQueryable(Expression<Func<T, bool>> expression);
+        Task<IQueryable<T>> GetAllAsyncAsQueryable();
         void Add(T entity);
         void AddRange(IEnumerable<T> entities);
 

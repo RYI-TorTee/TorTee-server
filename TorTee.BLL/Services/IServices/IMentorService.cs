@@ -1,6 +1,11 @@
-﻿namespace TorTee.BLL.Services.IServices
+﻿using TorTee.BLL.Models;
+using TorTee.BLL.Models.Requests;
+
+namespace TorTee.BLL.Services.IServices
 {
-    public class IMentorService
+    public interface IMentorService
     {
+        Task<ServiceActionResult> BrowseMentorList(QueryParametersRequest queryParameters);
+        Task<ServiceActionResult> RecommendationMentorList(PagingRequest request);
     }
 }
