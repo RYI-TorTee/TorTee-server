@@ -14,6 +14,8 @@ namespace TorTee.Core.Domains.Entities
         public string Bio { get; set; } = null!;
         public string Reason { get; set; } = null!;
         public string Achievement { get; set; } = null!;
+        public string? Company { get; set; }
+        public string? JobTitle { get; set; }
 
         public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
 

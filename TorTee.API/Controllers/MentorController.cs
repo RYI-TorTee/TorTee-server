@@ -22,5 +22,13 @@ namespace TorTee.API.Controllers
             async () => await _mentorService.BrowseMentorList(queryParametersRequest).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
+
+        [HttpGet("recommendation")]
+        public async Task<IActionResult> GetRecommendedMetor([FromQuery] PagingRequest request)
+        {
+            return await ExecuteServiceLogic(
+           async () => await _mentorService.RecommendationMentorList(request).ConfigureAwait(false)
+          ).ConfigureAwait(false);
+        }
     }
 }

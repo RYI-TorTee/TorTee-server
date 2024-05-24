@@ -16,7 +16,7 @@ namespace TorTee.DAL.Repositories
             var mentorQuery = (await GetAllAsyncAsQueryable())
                 .Include(user => user.UserRoles)
                 .ThenInclude(ur => ur.Role)
-                .Where(user => user.UserRoles.Any(ur => ur.Role.Name.Equals(UserRoleConstants.MENTOR, StringComparison.OrdinalIgnoreCase)));
+                .Where(user => user.UserRoles.Any(ur => ur.Role.Name ==UserRoleConstants.MENTOR));
             return mentorQuery;
         }
     }
