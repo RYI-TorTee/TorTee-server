@@ -31,7 +31,7 @@ namespace TorTee.API.Controllers
             ).ConfigureAwait(false);
         }
 
-        [HttpGet]
+        [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             return await ExecuteServiceLogic(

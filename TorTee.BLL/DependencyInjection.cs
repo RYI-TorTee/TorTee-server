@@ -20,6 +20,10 @@ namespace TorTee.BLL
             services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IMentorApplicationService, MentorApplicationService>();
+            services.AddScoped<IMentorService, MentorService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<UserToLoginDTOValidator>();
