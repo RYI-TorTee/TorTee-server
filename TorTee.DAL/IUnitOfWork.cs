@@ -5,6 +5,16 @@ namespace TorTee.DAL
     public interface IUnitOfWork
     {
         public IMessageRepository MessageRepository { get; }
+
+        public IUserRepository MentorUserRepository { get; }
+        public IBookingCallRepository BookingCallRepository { get; }
+
+        public IUserSkillRepository UserSkillRepository { get; }
+
+        public IMentorPlanRepository MentorPlanRepository { get; }
+
+        public ISessionRepository SessionRepository { get; }
+
         public IMentorApplicationRepository MentorApplicationRepository { get; }
         public IUserRepository UserRepository { get; }
         void Commit();

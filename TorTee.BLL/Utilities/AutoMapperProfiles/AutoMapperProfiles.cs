@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using TorTee.BLL.RequestModel;
+
 using TorTee.BLL.Models.Requests;
 using TorTee.BLL.Models.Responses.Mentors;
 using TorTee.BLL.Models.Responses.Skills;
@@ -13,6 +15,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
         {
             public AutoMapperProfile()
             {
+
+                CreateMap<User, MentorProfileUpdateRequestModel>().ReverseMap();  
                 CreateMap<UserToRegisterDTO, User>()
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email)) 
