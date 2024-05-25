@@ -12,6 +12,13 @@ namespace TorTee.DAL
 
         public IUserRepository MentorUserRepository => new UserRepository(_dbContext);
 
+        public IBookingCallRepository BookingCallRepository => new BookingCallRepository(_dbContext);
+
+        public IUserSkillRepository UserSkillRepository => new UserSkillRepository(_dbContext);
+
+        public IMentorPlanRepository MentorPlanRepository => new MentorPlanRepository(_dbContext);
+        
+        public ISessionRepository SessionRepository => new SessionRepository(_dbContext);
         public UnitOfWork(DbContext dbContext)
         {
             _dbContext = dbContext;
