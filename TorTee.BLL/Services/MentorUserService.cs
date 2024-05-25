@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using TorTee.BLL.RequestModel;
@@ -60,6 +61,16 @@ namespace TorTee.BLL.Services
         public async Task<IList<User>> GetAll()
         {
             return await _unitOfWork.MentorUserRepository.GetAllAsync();
+        }
+
+
+        public  User GetDetailOne(Guid id)
+        {
+
+            Expression<Func<User, bool>> filter = user => user.Id == id;
+            Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null;
+            var x = _unitOfWork.MentorUserRepository.GetDetail(filter, orderBy, "UserSkills", null, null).FirstOrDefault();
+            return x;
         }
 
         public async Task<User> GetOne(Guid MentorId)

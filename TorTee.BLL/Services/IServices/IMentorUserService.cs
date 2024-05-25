@@ -16,5 +16,7 @@ namespace TorTee.BLL.Services.IServices
         Task Update(MentorProfileUpdateRequestModel artist);
         Task Add(User artist);
         Task Delete(Guid artist);
+
+        User GetDetailOne(Guid id );
     }
 }

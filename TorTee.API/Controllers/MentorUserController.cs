@@ -2,6 +2,7 @@
 using TorTee.BLL.RequestModel;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
+using TorTee.Core.Helpers;
 
 namespace TorTee.API.Controllers
 {
@@ -10,10 +11,16 @@ namespace TorTee.API.Controllers
     public class MentorUserController : ControllerBase
     {
         private readonly IMentorUserService _mentorUserService;
+        private readonly IUserSkillService _userSkillService;
+        private readonly IBookingPlanService _bookingPlanService;
+        private readonly IMentorPlanService _mentorPlanService;
 
-        public MentorUserController(IMentorUserService MentorUserService)
+        public MentorUserController(IMentorUserService MentorUserService, IUserSkillService userSkillService, IBookingPlanService bookingPlanService, IMentorPlanService mentorPlanService)
         {
             _mentorUserService = MentorUserService;
+            _userSkillService = userSkillService;
+            _bookingPlanService = bookingPlanService;
+            _mentorPlanService = mentorPlanService;
         }
 
         // GET: api/MentorUser
@@ -25,10 +32,42 @@ namespace TorTee.API.Controllers
         }
 
         // GET: api/MentorUser/{id}
-        [HttpGet("{id}")]
+        [HttpGet("GetMentorById/{{id}}")]
         public async Task<ActionResult<User>> GetMentorById(Guid id)
         {
-            var mentor = await _mentorUserService.GetOne(id);
+            var mentor =  _mentorUserService.GetDetailOne(id);
+            if (mentor == null)
+            {
+                return NotFound();
+            }
+            return Ok(mentor);
+        }
+
+        [HttpGet("GetAllSkillMentorById/{{id}}")]
+        public async Task<ActionResult<UserSkill>> GetAllUserSkillById(Guid id, [FromQuery] FormSearch search)
+        {
+            var mentor = _userSkillService.GetDetailOne(id, search.currentPage, search.pageSize);
+            if (mentor == null)
+            {
+                return NotFound();
+            }
+            return Ok(mentor);
+        }
+
+        [HttpGet("GetAllBookingCallMentorById/{{id}}")]
+        public async Task<ActionResult<Session>> GetAlBookingCallById(Guid id, [FromQuery] FormSearch search)
+        {
+            var mentor = _bookingPlanService.GetDetailOne(id, search.currentPage, search.pageSize);
+            if (mentor == null)
+            {
+                return NotFound();
+            }
+            return Ok(mentor);
+        }
+        [HttpGet("GetAllMentorPlanMentorById/{{id}}")]
+        public async Task<ActionResult<MenteePlan>> GetAllMentorPlanById(Guid id, [FromQuery] FormSearch search)
+        {
+            var mentor = _mentorPlanService.GetDetailOne(id, search.currentPage, search.pageSize);
             if (mentor == null)
             {
                 return NotFound();

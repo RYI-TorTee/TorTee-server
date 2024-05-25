@@ -18,6 +18,9 @@ namespace TorTee.BLL
             /* services.AddScoped<IUserService, UserService>();
              services.AddScoped<IAuthService, AuthService>();*/
             services.AddScoped<IMentorUserService,MentorUserService>();
+            services.AddScoped<IUserSkillService , UserSkillService>();
+            services.AddScoped<IMentorPlanService, MentorPlanService>();
+            services.AddScoped<IBookingPlanService, BookingPlanService>();
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<UserToLoginDTOValidator>();
 
