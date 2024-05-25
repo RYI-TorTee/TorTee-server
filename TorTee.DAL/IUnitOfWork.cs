@@ -15,6 +15,8 @@ namespace TorTee.DAL
 
         public ISessionRepository SessionRepository { get; }
 
+        public IMentorApplicationRepository MentorApplicationRepository { get; }
+        public IUserRepository UserRepository { get; }
         void Commit();
         Task CommitAsync();
         void Rollback();

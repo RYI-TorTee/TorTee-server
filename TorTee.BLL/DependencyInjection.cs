@@ -13,14 +13,23 @@ namespace TorTee.BLL
     public static class DependencyInjection
     {
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
-        {
+        {;
             services.AddAutoMapper(typeof(AutoMapperProfiles));
-            /* services.AddScoped<IUserService, UserService>();
-             services.AddScoped<IAuthService, AuthService>();*/
+  
             services.AddScoped<IMentorUserService,MentorUserService>();
             services.AddScoped<IUserSkillService , UserSkillService>();
             services.AddScoped<IMentorPlanService, MentorPlanService>();
             services.AddScoped<IBookingPlanService, BookingPlanService>();
+         
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICookieService, CookieService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IMentorApplicationService, MentorApplicationService>();
+            services.AddScoped<IMentorService, MentorService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<INotificationService, NotificationService>();
+
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<UserToLoginDTOValidator>();
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TorTee.Common.Helpers;
 using TorTee.Common.Models;
 using System.Collections.Generic;
+using System;
 
 
 namespace TorTee.DAL.Repositories
@@ -15,7 +16,7 @@ namespace TorTee.DAL.Repositories
             DbContext = dbContext;
         }
 
-        public DbSet<T> Entities => DbContext.Set<T>();
+        public virtual DbSet<T> Entities => DbContext.Set<T>();
 
         public DbContext DbContext { get; }
 
@@ -163,7 +164,14 @@ namespace TorTee.DAL.Repositories
 
         public T Get(Expression<Func<T, bool>> expression, object value)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();}
+        public async Task<IQueryable<T>> FindAsyncAsQueryable(Expression<Func<T, bool>> predicate)
+        {
+            return await Task.FromResult(Entities.Where(predicate).AsQueryable());
+        }
+        public async Task<IQueryable<T>> GetAllAsyncAsQueryable()
+        {
+            return await Task.FromResult(Entities.AsQueryable());
         }
     }
 }

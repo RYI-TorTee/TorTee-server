@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Exceptions;
@@ -23,17 +18,30 @@ namespace TorTee.API.Extensions
             services.AddIdentityCore<User>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
+                opt.User.RequireUniqueEmail = true;
+                opt.SignIn.RequireConfirmedEmail = true;     
             })
               .AddRoles<Role>()
               .AddRoleManager<RoleManager<Role>>()
               .AddSignInManager<SignInManager<User>>()
               .AddRoleValidator<RoleValidator<Role>>()
-              .AddEntityFrameworkStores<TorTeeDbContext>();
+              .AddEntityFrameworkStores<TorTeeDbContext>()
+              .AddDefaultTokenProviders(); 
 
             var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ?? throw new MissingJwtSettingsException();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Strict;
+                    options.Cookie.Name = "token";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.SlidingExpiration = true;
+                })
+                .AddJwtBearer(options =>
+                {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     //ValidIssuer = jwtSettings.Issuer,
@@ -50,14 +58,15 @@ namespace TorTee.API.Extensions
                 {
                     OnMessageReceived = context =>
                     {
-                        var accessToken = context.Request.Query["access_token"];
+                        context.Token = context.Request.Cookies["token"];
+                        //var accessToken = context.Request.Query["access_token"];
 
-                        var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) &&
-                            path.StartsWithSegments("/hubs"))
-                        {
-                            context.Token = accessToken;
-                        }
+                        //var path = context.HttpContext.Request.Path;
+                        //if (!string.IsNullOrEmpty(accessToken) &&
+                        //    path.StartsWithSegments("/hubs"))
+                        //{
+                        //    context.Token = accessToken;
+                        //}
 
                         return Task.CompletedTask;
                     }
@@ -86,6 +95,21 @@ namespace TorTee.API.Extensions
                     options.ClientId = googleSettings.ClientId;
                     options.ClientSecret = googleSettings.ClientSecret;
                 });
+            return services;
+        }
+
+        public static IServiceCollection AddCookieConfiguration(this IServiceCollection services)
+        {
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.Cookie.Expiration = TimeSpan.FromDays(150);
+                options.LoginPath = "/auth/login"; // If the LoginPath is not set here, ASP.NET Core will default to /Account/Login
+                options.LogoutPath = "/auth/logout"; // If the LogoutPath is not set here, ASP.NET Core will default to /Account/Logout
+                options.AccessDeniedPath = "/auth/accessdenied"; // If the AccessDeniedPath is not set here, ASP.NET Core will default to /Account/AccessDenied
+                options.SlidingExpiration = true;
+            });
             return services;
         }
 
