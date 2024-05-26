@@ -4,7 +4,7 @@ namespace TorTee.Core.Domains.Entities
 {
     public class User : IdentityUser<Guid>
     {
-        public string? FullName { get; set; }
+        public string FullName { get; set; } = null!;
         public string? ProfilePic { get; set; }
         public string? BankAccount { get; set; }
         public string? Bio { get; set; }

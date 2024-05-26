@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using TorTee.BLL.Models;
-using TorTee.BLL.Models.Requests;
+using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
