@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
-using TorTee.BLL.Models.Requests;
-using TorTee.BLL.Services;
+using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Services.IServices;
 
 namespace TorTee.API.Controllers

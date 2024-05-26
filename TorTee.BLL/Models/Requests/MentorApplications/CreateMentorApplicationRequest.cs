@@ -1,4 +1,6 @@
-﻿namespace TorTee.BLL.Models.Requests
+﻿using Microsoft.AspNetCore.Http;
+
+namespace TorTee.BLL.Models.Requests.MentorApplications
 {
     public class CreateMentorApplicationRequest
     {
@@ -7,7 +9,7 @@
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string Category { get; set; } = null!;
-        public string CV { get; set; } = null!;
+        public IFormFile CV { get; set; } = null!;
         public string? Company { get; set; }
         public string? JobTille { get; set; }
         public string Bio { get; set; } = null!;

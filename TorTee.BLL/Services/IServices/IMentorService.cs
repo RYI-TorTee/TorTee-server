@@ -1,5 +1,5 @@
 ﻿using TorTee.BLL.Models;
-using TorTee.BLL.Models.Requests;
+using TorTee.BLL.Models.Requests.Commons;
 
 namespace TorTee.BLL.Services.IServices
 {

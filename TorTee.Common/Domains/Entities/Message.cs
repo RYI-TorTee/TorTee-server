@@ -1,5 +1,4 @@
 ﻿using TorTee.Core.Domains.Entities.BaseEntities;
-using TorTee.Core.Domains.Enums;
 
 namespace TorTee.Core.Domains.Entities
 {
@@ -7,7 +6,7 @@ namespace TorTee.Core.Domains.Entities
     {
         public string Content { get; set; } = null!;
         public DateTime SentTime { get; set; } = DateTime.UtcNow;
-        public MessageStatus Status { get; set; } = MessageStatus.UNSEEN;
+        public DateTime? DateRead { get; set; }
 
         public Guid SenderId { get; set; }
         public User Sender { get; set; } = null!;
