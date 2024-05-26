@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
@@ -20,7 +21,7 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ServiceActionResult> CreateMessage(CreateMessageRequest request, Guid userId)
+        public async Task<ServiceActionResult> SendMessage(CreateMessageRequest request, Guid userId)
         {
             var currentUser = userId;
 
@@ -39,9 +40,58 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult(true) { Data = returnMessage };
         }
 
-        public Task<ServiceActionResult> GetMessageForUser(MessageParams messageParams, Guid userId)
+
+        public async Task<ServiceActionResult> GetMessagesOfAChat(ChatBoxParams messageParams, Guid currentUserId)
         {
-            throw new NotImplementedException();
+            var messagesQuery = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
+        .Include(m => m.Sender)
+        .Include(m => m.Receiver)
+        .Where(m => (m.SenderId == currentUserId && m.ReceiverId == messageParams.ChatPartnerId) ||
+                    (m.SenderId == messageParams.ChatPartnerId && m.ReceiverId == currentUserId))
+        .OrderBy(m => m.SentTime)
+        .AsQueryable();
+
+            var messages = await messagesQuery
+                .Skip((messageParams.PageIndex - 1) * messageParams.PageSize ?? 0)
+                .Take(messageParams.PageSize ?? 0)
+                .Select(m => new MessageResponse
+                {
+                    Content = m.Content,
+                    SenderPhotoUrl = m.Sender.ProfilePic ?? "",
+                    SenderName = m.Sender.FullName,
+                    SentTime = m.SentTime,
+                    IsSentByCurrentUser = m.SenderId == currentUserId
+                }).ToListAsync();
+
+            return new ServiceActionResult
+            {
+                Data = messages
+            };
+        }
+
+        public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
+        {
+            var chatBoxes = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
+                .Include(m => m.Sender)
+                .Include(m => m.Receiver)
+                .Where(m => m.SenderId == currentUserId || m.ReceiverId == currentUserId)
+                .GroupBy(m => m.SenderId == currentUserId ? m.ReceiverId : m.SenderId)
+                .Select(g => new ChatBoxResponse
+                {
+                    CurrentUserId = currentUserId,
+                    ChatPartnerId = g.Key,
+                    ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.UserName : g.First().Sender.UserName,
+                    Messages = g.OrderBy(m => m.SentTime)
+                .Take(1).Select(m => new MessageResponse
+                {
+                    Content = m.Content,
+                    SenderPhotoUrl = m.Sender.ProfilePic ?? "",
+                    SenderName = m.Sender.FullName,
+                    SentTime = m.SentTime,
+                    IsSentByCurrentUser = m.SenderId == currentUserId
+                }).OrderBy(m => m.SentTime).ToList()
+                }).ToList();
+            return new ServiceActionResult() { Data = chatBoxes };
         }
     }
 }
