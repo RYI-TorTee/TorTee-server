@@ -23,32 +23,24 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> BrowseMentorList(QueryParametersRequest queryParameters)
         {
             var isSortByRating = queryParameters.OrderBy?.Equals("AverageRating") ?? false;
-            var mentorQuery = isSortByRating && queryParameters.IsDesc == false ? await GetMentorOrderByRating(false) :await GetMentorOrderByRating();
+            var mentorQuery = isSortByRating && queryParameters.IsDesc == false ? await GetMentorOrderByRating(false) : await GetMentorOrderByRating();
 
             mentorQuery.Include(m => m.UserSkills).ThenInclude(uk => uk.Skill);
 
             if (!string.IsNullOrEmpty(queryParameters.Search))
             {
-                mentorQuery.Where(m=>m.FullName.Contains(queryParameters.Search));
+                mentorQuery.Where(m => m.FullName.Contains(queryParameters.Search));
             }
-            
-            if(queryParameters?.Filter?.Count > 0)
+
+            if (queryParameters?.Filter?.Count > 0)
             {
                 mentorQuery.ApplyFilters(queryParameters.Filter);
             }
-            try
-            {
-                if (!string.IsNullOrEmpty(queryParameters?.OrderBy))
-                {
-                    mentorQuery.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc);
-                }
-            }
-            catch
-            {
 
+            if (!string.IsNullOrEmpty(queryParameters?.OrderBy) && (!queryParameters.OrderBy?.Equals("AverageRating") ?? false))
+            {
+                mentorQuery.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc);
             }
-           
-
 
             var paginationResult = PaginationHelper
             .BuildPaginatedResult<User, MentorOverviewResponse>(_mapper, mentorQuery, queryParameters.PageSize ?? 0, queryParameters.PageIndex ?? 0);
@@ -75,11 +67,11 @@ namespace TorTee.BLL.Services
                             AverageRating = m.FeedbacksReceived.Any() ? m.FeedbacksReceived.Average(f => f.Rating) : 0
                         });
 
-             mentorQueryOrderByRating = isDesc
-                                    ? mentorQueryOrderByRating.OrderByDescending(m => m.AverageRating)
-                                    : mentorQueryOrderByRating.OrderBy(m => m.AverageRating);
+            mentorQueryOrderByRating = isDesc
+                                   ? mentorQueryOrderByRating.OrderByDescending(m => m.AverageRating)
+                                   : mentorQueryOrderByRating.OrderBy(m => m.AverageRating);
 
-           
+
             var sortedMentors = mentorQueryOrderByRating.Select(m => m.Mentor);
 
             return sortedMentors;
