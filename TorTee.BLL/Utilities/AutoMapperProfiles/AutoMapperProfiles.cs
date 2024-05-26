@@ -25,7 +25,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
                 CreateMap<CreateMentorApplicationRequest, MentorApplication>()
-                    .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
+                    .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                    .ForMember(dest=>dest.CV, opt=>opt.Ignore());
 
                 CreateMap<User, MentorOverviewResponse>()
                     .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.UserSkills.Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
