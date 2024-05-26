@@ -14,13 +14,13 @@ builder.Services.AddIdentityServices(builder.Configuration);
 //builder.Services.AddGgAuthentication(builder.Configuration);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("AllowReactApp",
         builder =>
         {
-            builder.AllowAnyOrigin()
-                   .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .AllowCredentials();
+            builder.WithOrigins("http://localhost:3000") 
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
         });
 });
 
@@ -48,7 +48,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 
