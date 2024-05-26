@@ -44,12 +44,12 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> GetMessagesOfAChat(ChatBoxParams messageParams, Guid currentUserId)
         {
             var messagesQuery = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
-        .Include(m => m.Sender)
-        .Include(m => m.Receiver)
-        .Where(m => (m.SenderId == currentUserId && m.ReceiverId == messageParams.ChatPartnerId) ||
-                    (m.SenderId == messageParams.ChatPartnerId && m.ReceiverId == currentUserId))
-        .OrderBy(m => m.SentTime)
-        .AsQueryable();
+                .Include(m => m.Sender)
+                .Include(m => m.Receiver)
+                .Where(m => (m.SenderId == currentUserId && m.ReceiverId == messageParams.ChatPartnerId) ||
+                            (m.SenderId == messageParams.ChatPartnerId && m.ReceiverId == currentUserId))
+                .OrderBy(m => m.SentTime)
+                .AsQueryable();
 
             var messages = await messagesQuery
                 .Skip((messageParams.PageIndex - 1) * messageParams.PageSize ?? 0)
@@ -91,6 +91,7 @@ namespace TorTee.BLL.Services
                     IsSentByCurrentUser = m.SenderId == currentUserId
                 }).OrderBy(m => m.SentTime).ToList()
                 }).ToList();
+
             return new ServiceActionResult() { Data = chatBoxes };
         }
     }
