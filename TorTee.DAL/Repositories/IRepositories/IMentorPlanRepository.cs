@@ -5,12 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TorTee.Core.Domains.Entities;
 
-
 namespace TorTee.DAL.Repositories.IRepositories
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IMentorPlanRepository : IGenericRepository<MenteePlan>
     {
-
-        Task<IQueryable<User>> GetAllMentorAsync();
     }
 }
