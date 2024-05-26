@@ -65,8 +65,7 @@ namespace TorTee.BLL.Services
 
 
         public  User GetDetailOne(Guid id)
-        {
-
+        {            
             Expression<Func<User, bool>> filter = user => user.Id == id;
             Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null;
             var x = _unitOfWork.MentorUserRepository.GetDetail(filter, orderBy, "UserSkills", null, null).FirstOrDefault();
