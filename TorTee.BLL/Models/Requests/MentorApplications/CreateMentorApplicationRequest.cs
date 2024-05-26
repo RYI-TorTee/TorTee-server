@@ -1,4 +1,4 @@
-﻿namespace TorTee.BLL.Models.Requests
+﻿namespace TorTee.BLL.Models.Requests.MentorApplications
 {
     public class CreateMentorApplicationRequest
     {
