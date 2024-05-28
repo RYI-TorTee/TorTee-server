@@ -12,6 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
 //builder.Services.AddGgAuthentication(builder.Configuration);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000") 
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+        });
+});
+
 builder.Services.AddCookieConfiguration();
 builder.Services.AddLogging();
 builder.Services.RegisterDALDependencies(builder.Configuration);
@@ -37,6 +49,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 

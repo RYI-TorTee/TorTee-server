@@ -147,6 +147,7 @@ namespace TorTee.API.Controllers
                     return NotFound($"Mentor with ID {id} not found");
                 }
 
+
                 await _mentorUserService.Update(mentor);
                 _logger.LogInformation("UpdateMentor: Mentor with ID {Id} updated successfully", id);
                 return StatusCode(200, "Updated successfully");

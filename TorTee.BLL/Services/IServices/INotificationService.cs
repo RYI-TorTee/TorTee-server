@@ -1,6 +1,6 @@
 ﻿namespace TorTee.BLL.Services.IServices
 {
-    public class INotificationService
+    public interface INotificationService
     {
     }
 }

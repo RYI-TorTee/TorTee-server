@@ -4,6 +4,7 @@ namespace TorTee.BLL.Models.Responses.Mentors
 {
     public class MentorOverviewResponse
     {
+        public Guid Id { get; set; }
         public string? FullName { get; set; }
         public string? ProfilePic { get; set; }
         public string? Company { get; set; }
