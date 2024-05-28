@@ -5,18 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using TorTee.BLL.RequestModel;
 using TorTee.Core.Domains.Entities;
+using TorTee.Core.Dtos;
 
 namespace TorTee.BLL.Services.IServices
 {
     public interface IMentorUserService
     {
-        Task<IList<User>> GetAll();
-        Task<User> GetOne(Guid artistId);
+        Task<IList<MentorDTO>> GetAll();
+        Task<MentorDTO> GetOne(Guid artistId);
 
         Task Update(MentorProfileUpdateRequestModel artist);
-        Task Add(User artist);
+        Task Add(MentorDTO artist);
         Task Delete(Guid artist);
 
-        User GetDetailOne(Guid id );
+        MentorDTO GetDetailOne(Guid id );
     }
 }
