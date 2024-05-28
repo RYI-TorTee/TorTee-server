@@ -13,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
 //builder.Services.AddGgAuthentication(builder.Configuration);
 builder.Services.AddCookieConfiguration();
+builder.Services.AddLogging();
 builder.Services.RegisterDALDependencies(builder.Configuration);
 builder.Services.RegisterBLLDependencies(builder.Configuration);
 builder.Services.AddControllers()
