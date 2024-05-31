@@ -53,7 +53,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 CreateMap<Mentorship, MentorshipCreateRequestModel>().ReverseMap();
                 CreateMap<Mentorship, MentorshipUpdateRequestModel>().ReverseMap();
                 CreateMap<Mentorship, MentorshipRequestModel>().ReverseMap();
-
+                CreateMap<MentorApplication, MentorApplicationUpdateRequestModel>().ReverseMap();
+                CreateMap<MentorApplication, MentorApplicationRequestModel>().ReverseMap();
                 CreateMap<CreateMessageRequest, Message>();
 
                 CreateMap<Message, MessageResponse>();
