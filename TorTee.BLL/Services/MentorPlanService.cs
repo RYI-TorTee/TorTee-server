@@ -1,8 +1,10 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using TorTee.BLL.Models.Requests.MenteePlan;
 using TorTee.BLL.RequestModel;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
@@ -13,16 +15,19 @@ namespace TorTee.BLL.Services
     public class MentorPlanService : IMentorPlanService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public MentorPlanService(IUnitOfWork unitOfWork)
+        public MentorPlanService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task Add(MenteePlan mentorPlan)
+        public async Task Add(MenteePlanCreateRequestModel mentorPlanCreate)
         {
             try
             {
+                var mentorPlan = _mapper.Map<MenteePlan>(mentorPlanCreate);
                 var repos = _unitOfWork.MentorPlanRepository;
                 await repos.AddAsync(mentorPlan);
 
@@ -60,12 +65,13 @@ namespace TorTee.BLL.Services
             return await _unitOfWork.MentorPlanRepository.GetAllAsync();
         }
 
-        public IList<MenteePlan> GetDetailOne(Guid id, int pageSize, int pageIndex)
+        public IList<MenteePlanRequestModel> GetDetailOne(Guid id, int pageSize, int pageIndex)
         {
             Expression<Func<MenteePlan, bool>> filter = mentorPlan => mentorPlan.MentorId == id;
             Func<IQueryable<MenteePlan>, IOrderedQueryable<MenteePlan>> orderBy = null;
             IList<MenteePlan> result = (IList<MenteePlan>)_unitOfWork.MentorPlanRepository.GetDetail(filter, orderBy, "MenteeApplications", pageSize, pageIndex);
-            return result;
+            var mentorPlan = _mapper.Map<IList<MenteePlanRequestModel>>(result);
+            return mentorPlan;
         }
 
         public async Task<MenteePlan> GetOne(Guid mentorPlanId)
@@ -73,7 +79,7 @@ namespace TorTee.BLL.Services
             return await _unitOfWork.MentorPlanRepository.FindAsync(mentorPlanId);
         }
 
-        public async Task Update(MenteePlan mentorPlan)
+        public async Task Update(MenteePlanUpdateRequestModel mentorPlan)
         {
             try
             {
@@ -81,8 +87,12 @@ namespace TorTee.BLL.Services
                 var existingMentorPlan = await repos.FindAsync(mentorPlan.Id);
                 if (existingMentorPlan == null)
                     throw new KeyNotFoundException();
+                existingMentorPlan.TotalSlot = mentorPlan.TotalSlot;
+                existingMentorPlan.Status = mentorPlan.Status;
+                existingMentorPlan.Price = mentorPlan.Price;
+                existingMentorPlan.Description = mentorPlan.Description;
+           
 
-                
                 await _unitOfWork.CommitAsync();
             }
             catch (Exception)
@@ -90,6 +100,15 @@ namespace TorTee.BLL.Services
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
+        }
+
+        public MenteePlanRequestModel GetOneById(Guid id)
+        {
+            Expression<Func<MenteePlan, bool>> filter = mentorPlan => mentorPlan.Id == id;
+            Func<IQueryable<MenteePlan>, IOrderedQueryable<MenteePlan>> orderBy = null;
+            MenteePlan result = _unitOfWork.MentorPlanRepository.GetDetail(filter, orderBy, "MenteeApplications", 1, 1).FirstOrDefault();
+            var mentorPlan = _mapper.Map<MenteePlanRequestModel>(result);
+            return mentorPlan;
         }
     }
 }
