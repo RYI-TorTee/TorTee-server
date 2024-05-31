@@ -14,31 +14,16 @@ namespace TorTee.API.Controllers
     [Route("api/Booking-Feature")]
     public class MenteeApplicationManagerbyMentee : ControllerBase
     {
-        private readonly IMentorUserService _mentorUserService;
-        private readonly IUserSkillService _userSkillService;
-        private readonly IBookingPlanService _bookingPlanService;
         private readonly IMentorPlanService _mentorPlanService;
-        private readonly IApplicationQuestionService _applicationQuestionService;
-        private readonly IMenteeApplicationAnswerService _menteeApplicationAnswerService;
         private readonly IMenteeApplicationService _menteeApplicationService;
         private readonly ILogger<MenteeApplicationManagerbyMentee> _logger;
 
         public MenteeApplicationManagerbyMentee(
-            IMentorUserService mentorUserService,
-            IUserSkillService userSkillService,
-            IBookingPlanService bookingPlanService,
             IMentorPlanService mentorPlanService,
-            IApplicationQuestionService applicationQuestionService,
-            IMenteeApplicationAnswerService menteeApplicationAnswerService,
             IMenteeApplicationService menteeApplicationService,
             ILogger<MenteeApplicationManagerbyMentee> logger)
         {
-            _mentorUserService = mentorUserService;
-            _userSkillService = userSkillService;
-            _bookingPlanService = bookingPlanService;
             _mentorPlanService = mentorPlanService;
-            _applicationQuestionService = applicationQuestionService;
-            _menteeApplicationAnswerService = menteeApplicationAnswerService;
             _menteeApplicationService = menteeApplicationService;
             _logger = logger;
         }

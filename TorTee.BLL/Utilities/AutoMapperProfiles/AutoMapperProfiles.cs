@@ -13,6 +13,7 @@ using TorTee.BLL.Models.Requests.MenteeApplication;
 using TorTee.BLL.Models.Requests.MenteePlan;
 using TorTee.BLL.Models.Requests.Assignment;
 using TorTee.BLL.Models.Requests.AssignmentSubmission;
+using TorTee.BLL.Models.Requests.Mentorship;
 
 namespace TorTee.BLL.Utilities.AutoMapperProfiles
 {
@@ -49,6 +50,9 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 CreateMap<AssignmentSubmission, AssignmentSubmissionCreateRequestModel>().ReverseMap();
                 CreateMap<AssignmentSubmission, AssignmentSubmissionUpdateRequestModel>().ReverseMap();
                 CreateMap<AssignmentSubmission, AssignmentSubmissionRequestModel>().ReverseMap();
+                CreateMap<Mentorship, MentorshipCreateRequestModel>().ReverseMap();
+                CreateMap<Mentorship, MentorshipUpdateRequestModel>().ReverseMap();
+                CreateMap<Mentorship, MentorshipRequestModel>().ReverseMap();
 
                 CreateMap<CreateMessageRequest, Message>();
 
