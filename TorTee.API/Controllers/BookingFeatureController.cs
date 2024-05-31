@@ -257,76 +257,9 @@ namespace TorTee.API.Controllers
             }
         }
 
-        // POST: api/Booking-Feature
-        [HttpPost]
-        public async Task<ActionResult> AddMentor([FromBody] MentorDTO mentor)
-        {
-            if (mentor == null)
-            {
-                return BadRequest("Mentor data is null.");
-            }
-
-            try
-            {
-                await _mentorUserService.Add(mentor);
-                return CreatedAtAction(nameof(GetMentorById), new { id = mentor.Id }, mentor);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while adding a mentor.");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        // PUT: api/Booking-Feature/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateMentor(Guid id, [FromBody] MentorProfileUpdateRequestModel mentor)
-        {
-            if (mentor == null || id != mentor.Id)
-            {
-                return BadRequest("Invalid mentor data.");
-            }
-
-            try
-            {
-                var existingMentor = await _mentorUserService.GetOne(id);
-                if (existingMentor == null)
-                {
-                    return NotFound("Mentor not found.");
-                }
-
-                await _mentorUserService.Update(mentor);
-                return Ok(new { message = "Mentor updated successfully.", mentor });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating a mentor.");
-                return StatusCode(500, "Internal server error");
-            }
-        }
+      
 
 
-        // DELETE: api/Booking-Feature/{id}
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteMentor(Guid id)
-        {
-            try
-            {
-                var mentor = await _mentorUserService.GetOne(id);
-                if (mentor == null)
-                {
-                    return NotFound("Mentor not found.");
-                }
-
-                await _mentorUserService.Delete(id);
-                return Ok("Mentor deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting a mentor.");
-                return StatusCode(500, "Internal server error");
-            }
-        }
 
     }
 }

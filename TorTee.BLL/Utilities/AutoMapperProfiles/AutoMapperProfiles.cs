@@ -40,7 +40,9 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<CreateMessageRequest, Message>();
 
-                CreateMap<Message, MessageResponse>(); 
+                CreateMap<Message, MessageResponse>();
+
+                CreateMap<MenteeApplication, MenteeApplicationRequestModel>();
             }
         }
     }

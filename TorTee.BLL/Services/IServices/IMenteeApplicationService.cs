@@ -19,5 +19,8 @@ namespace TorTee.BLL.Services.IServices
         Task Delete(Guid artist);
 
         IList<MenteeApplication> GetDetailOne(Guid id, int pageSize, int pageIndex);
+
+        IList<MenteeApplicationRequestModel> GetListMenteeApplicationofMentee(Guid id, int pageSize, int pageIndex);
     }
+    
 }
