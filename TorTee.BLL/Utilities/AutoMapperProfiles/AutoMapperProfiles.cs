@@ -10,6 +10,7 @@ using TorTee.Core.Domains.Entities;
 using TorTee.Core.Dtos;
 using TorTee.BLL.Models.Requests.MenteeApplicationAnswer;
 using TorTee.BLL.Models.Requests.MenteeApplication;
+using TorTee.BLL.Models.Requests.MenteePlan;
 
 namespace TorTee.BLL.Utilities.AutoMapperProfiles
 {
@@ -37,7 +38,10 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 CreateMap<User, MentorDTO>().ReverseMap(); 
                 CreateMap<MenteeApplicationAnswer, MenteeApplicationAnswerCreateRequestModel>().ReverseMap();
                 CreateMap<MenteeApplication, MenteeApplicationCreateRequestModel>().ReverseMap();
-
+                CreateMap<MenteePlan, MenteePlanCreateRequestModel>().ReverseMap();
+                CreateMap<MenteePlan, MenteePlanUpdateRequestModel>().ReverseMap();
+                CreateMap<MenteePlan, MenteePlanRequestModel>().ReverseMap();
+                
                 CreateMap<CreateMessageRequest, Message>();
 
                 CreateMap<Message, MessageResponse>();
