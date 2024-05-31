@@ -72,7 +72,14 @@ namespace TorTee.BLL.Services
             IList<MenteeApplication> result = (IList<MenteeApplication>)_unitOfWork.MenteeApplicationRepository.GetDetail(filter, orderBy, "MenteeApplicationAnswers", pageSize, pageIndex);
             return result;
         }
-
+        public IList<MenteeApplicationRequestModel> GetListMenteeApplicationofMentee(Guid id, int pageSize, int pageIndex)
+        {
+            Expression<Func<MenteeApplication, bool>> filter = ma => ma.UserId == id;
+            Func<IQueryable<MenteeApplication>, IOrderedQueryable<MenteeApplication>> orderBy = null;
+            IList<MenteeApplication> result = (IList<MenteeApplication>)_unitOfWork.MenteeApplicationRepository.GetDetail(filter, orderBy, "MenteeApplicationAnswers", pageSize, pageIndex);
+            var menteeApplication = _mapper.Map<IList<MenteeApplicationRequestModel>>(result);
+            return menteeApplication;
+        }
         public async Task<MenteeApplication> GetOne(Guid menteeApplicationId)
         {
             return await _unitOfWork.MenteeApplicationRepository.FindAsync(menteeApplicationId);
