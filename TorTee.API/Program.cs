@@ -15,12 +15,7 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddCookieConfiguration();
 builder.Services.RegisterDALDependencies(builder.Configuration);
 builder.Services.RegisterBLLDependencies(builder.Configuration);
-builder.Services.AddControllers()
-        .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
