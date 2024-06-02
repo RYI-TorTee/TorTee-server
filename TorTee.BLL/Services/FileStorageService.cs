@@ -23,17 +23,43 @@ namespace TorTee.BLL.Services
             _blobContainerClient = GetContainerClient(_azureBlobSettings.BlobContainerName);
         }
 
+
+        //public async Task<IEnumerable<string>> UploadFilesBlobAsync(List<IFormFile> files)
+        //{
+        //    var uriResponse = new List<string>();
+        //    foreach (var file in files)
+        //    {
+        //        string fileName = file.FileName;
+        //        using (var memoryStream = new MemoryStream())
+        //        {
+        //            file.CopyTo(memoryStream);
+        //            memoryStream.Position = 0;
+        //            var client = await _blobContainerClient.UploadBlobAsync(fileName, memoryStream, default);                   
+        //        }
+        //        var blobClient = _blobContainerClient.GetBlobClient(fileName);
+        //        uriResponse.Add(blobClient.Uri.AbsoluteUri);
+        //    };
+
+        //    return uriResponse;
+        //}
+
         public async Task<string> UploadFileBlobAsync(IFormFile file)
         {
             string fileName = file.FileName;
+            var blobClient = _blobContainerClient.GetBlobClient(fileName);
             using (var memoryStream = new MemoryStream())
             {
-                file.CopyTo(memoryStream);
+                await file.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
-                var client = await _blobContainerClient.UploadBlobAsync(fileName, memoryStream, default);                
-              
+                             
+                var httpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = file.ContentType
+                };
+                
+                await blobClient.UploadAsync(memoryStream, new BlobUploadOptions { HttpHeaders = httpHeaders });
             }
-            var blobClient = _blobContainerClient.GetBlobClient(fileName);
+
             return blobClient.Uri.AbsoluteUri;
         }
 
@@ -43,15 +69,22 @@ namespace TorTee.BLL.Services
             foreach (var file in files)
             {
                 string fileName = file.FileName;
+                var blobClient = _blobContainerClient.GetBlobClient(fileName);
                 using (var memoryStream = new MemoryStream())
                 {
-                    file.CopyTo(memoryStream);
-                    memoryStream.Position = 0;
-                    var client = await _blobContainerClient.UploadBlobAsync(fileName, memoryStream, default);                   
+                    await file.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;                   
+
+                    var httpHeaders = new BlobHttpHeaders
+                    {
+                        ContentType = file.ContentType
+                    };
+                                        
+                    await blobClient.UploadAsync(memoryStream, new BlobUploadOptions { HttpHeaders = httpHeaders });
                 }
-                var blobClient = _blobContainerClient.GetBlobClient(fileName);
+
                 uriResponse.Add(blobClient.Uri.AbsoluteUri);
-            };
+            }
 
             return uriResponse;
         }
