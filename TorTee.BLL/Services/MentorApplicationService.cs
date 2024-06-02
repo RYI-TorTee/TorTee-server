@@ -22,11 +22,19 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> CreateMentorApplication(CreateMentorApplicationRequest applicationRequest)
         {
             var mentorApplication = _mapper.Map<MentorApplication>(applicationRequest);
-            var CV = await _fileStorageService.UploadFileBlobAsync(applicationRequest.CV);
-            mentorApplication.CV = CV;
-            await _unitOfWork.MentorApplicationRepository.AddAsync(mentorApplication);
-            await _unitOfWork.CommitAsync();
-            return new ServiceActionResult();
+            try
+            {
+                var CV = await _fileStorageService.UploadFileBlobAsync(applicationRequest.CV);
+                mentorApplication.CV = CV;
+                await _unitOfWork.MentorApplicationRepository.AddAsync(mentorApplication);
+                await _unitOfWork.CommitAsync();
+                return new ServiceActionResult();
+            }
+            catch
+            {
+                throw new Exception("Can not upload your CV");
+            }
+            
         }
     }
 }
