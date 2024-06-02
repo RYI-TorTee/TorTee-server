@@ -111,7 +111,7 @@ namespace TorTee.API.Extensions
                 options.SlidingExpiration = true;
             });
             return services;
-        }
+        }      
 
         public static IServiceCollection AddDefaultCorsPolicy(this IServiceCollection services, IConfiguration configuration)
         {
@@ -119,11 +119,11 @@ namespace TorTee.API.Extensions
                                throw new NullReferenceException("Missing cors settings");
             services.AddCors(options =>
             {
-                options.AddPolicy(CorsConstants.APP_CORS_POLICY, builder =>
+                options.AddPolicy(corsSettings.PolicyName, builder =>
                 {
-                    builder.WithOrigins(corsSettings.GetAllowedOriginsArray())
-                        .WithHeaders(corsSettings.GetAllowedHeadersArray())
-                        .WithMethods(corsSettings.GetAllowedMethodsArray());
+                    builder.WithOrigins(corsSettings.WithOrigins)
+                        .WithHeaders(corsSettings.WithHeaders)
+                        .WithMethods(corsSettings.WithMethods);
                     if (corsSettings.AllowCredentials)
                     {
                         builder.AllowCredentials();

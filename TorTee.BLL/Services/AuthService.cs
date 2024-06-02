@@ -70,7 +70,7 @@ namespace TorTee.BLL.Services
             var token = await _tokenService.CreateToken(user);
             _cookieService.SetJwtCookie(token);
 
-            return new ServiceActionResult(true) { Data = token };
+            return new ServiceActionResult(true) { Data = new { token,  roles = await _userManager.GetRolesAsync(user)} };
         }
 
         public async Task<ServiceActionResult> RegisterAsync(UserToRegisterDTO userToRegisterDTO)
