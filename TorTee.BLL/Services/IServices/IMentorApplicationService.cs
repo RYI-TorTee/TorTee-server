@@ -9,5 +9,6 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> CreateMentorApplication(CreateMentorApplicationRequest applicationRequest);
         Task<ServiceActionResult> GetAllApplications(QueryParametersRequest request);
         Task<ServiceActionResult> GetApplication(Guid id);
+        Task<ServiceActionResult> ReviewApplication(Guid id, string status);
     }
 }
