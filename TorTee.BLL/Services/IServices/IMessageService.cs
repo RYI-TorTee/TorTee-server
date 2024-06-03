@@ -6,8 +6,8 @@ namespace TorTee.BLL.Services.IServices
 {
     public interface IMessageService
     {
-        Task<ServiceActionResult> CreateMessage(CreateMessageRequest request, Guid userId);
-
-        Task<ServiceActionResult> GetMessageForUser(MessageParams messageParams, Guid userId);
+        Task<ServiceActionResult> SendMessage(CreateMessageRequest request, Guid userId);
+        Task<ServiceActionResult> GetMessagesOfAChat(ChatBoxParams messageParams, Guid userId);
+        Task<ServiceActionResult> GetMyChatBoxs(Guid userId);
     }
 }
