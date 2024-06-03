@@ -128,8 +128,6 @@ namespace TorTee.API.Extensions
                     {
                         builder.AllowCredentials();
                     }
-
-                    builder.Build();
                 });
             });
 

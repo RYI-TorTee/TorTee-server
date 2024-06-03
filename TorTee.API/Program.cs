@@ -15,7 +15,7 @@ builder.Services.AddCookieConfiguration();
 builder.Services.AddLogging();
 builder.Services.RegisterDALDependencies(builder.Configuration);
 builder.Services.RegisterBLLDependencies(builder.Configuration);
-builder.Services.AddCors();
+builder.Services.AddDefaultCorsPolicy(builder.Configuration);
 builder.Services.AddVNPaySettings(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
