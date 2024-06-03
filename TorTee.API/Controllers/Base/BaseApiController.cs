@@ -9,7 +9,7 @@ using TorTee.API.Constants;
 namespace TorTee.API.Controllers.Base
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
         private readonly ILogger logger = LogManager.GetLogger(AppDomain.CurrentDomain.FriendlyName);

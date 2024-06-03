@@ -12,8 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
 //builder.Services.AddGgAuthentication(builder.Configuration);
 builder.Services.AddCookieConfiguration();
+builder.Services.AddLogging();
 builder.Services.RegisterDALDependencies(builder.Configuration);
 builder.Services.RegisterBLLDependencies(builder.Configuration);
+builder.Services.AddCors();
+builder.Services.AddVNPaySettings(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 

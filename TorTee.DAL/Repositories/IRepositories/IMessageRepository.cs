@@ -4,5 +4,6 @@ namespace TorTee.DAL.Repositories.IRepositories
 {
     public interface IMessageRepository : IGenericRepository<Message>
     {
+        
     }
 }

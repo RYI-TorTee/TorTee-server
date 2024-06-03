@@ -7,8 +7,20 @@ namespace TorTee.DAL
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         public DbContext _dbContext { get; }
-
         public IMessageRepository MessageRepository => new MessageRepository(_dbContext);
+        public IMentorApplicationRepository MentorApplicationRepository => new MentorApplicationRepository(_dbContext);
+        public IUserRepository UserRepository => new UserRepository(_dbContext);
+        public IUserRepository MentorUserRepository => new UserRepository(_dbContext);
+        public IBookingCallRepository BookingCallRepository => new BookingCallRepository(_dbContext);
+        public IUserSkillRepository UserSkillRepository => new UserSkillRepository(_dbContext);
+        public IMentorPlanRepository MentorPlanRepository => new MentorPlanRepository(_dbContext);        
+        public ISessionRepository SessionRepository => new SessionRepository(_dbContext);
+        public IApplicationQuestionRepository ApplicationQuestionRepository => new ApplicationQuestionRepository(_dbContext);
+        public IMenteeApplicationAnswerRepository MenteeApplicationAnswerRepository => new MenteeApplicationAnswerRepository(_dbContext);
+        public IMenteeApplicationRepository MenteeApplicationRepository => new MenteeApplicationRepository(_dbContext);
+        public IAssignmentRepository AssignmentRepository => new AssignmentRepository(_dbContext);
+        public IAssignmentSubmissionRepository AssignmentSubmissionRepository => new AssignmentSubmissionRepository(_dbContext);
+        public IMentorshipRepository MentorshipRepository => new MentorshipRepository(_dbContext);
 
         public UnitOfWork(DbContext dbContext)
         {

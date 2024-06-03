@@ -111,31 +111,36 @@ namespace TorTee.API.Extensions
                 options.SlidingExpiration = true;
             });
             return services;
+        }      
+
+        public static IServiceCollection AddDefaultCorsPolicy(this IServiceCollection services, IConfiguration configuration)
+        {
+            var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>() ??
+                               throw new NullReferenceException("Missing cors settings");
+            services.AddCors(options =>
+            {
+                options.AddPolicy(corsSettings.PolicyName, builder =>
+                {
+                    builder.WithOrigins(corsSettings.WithOrigins)
+                        .WithHeaders(corsSettings.WithHeaders)
+                        .WithMethods(corsSettings.WithMethods);
+                    if (corsSettings.AllowCredentials)
+                    {
+                        builder.AllowCredentials();
+                    }
+
+                    builder.Build();
+                });
+            });
+
+            return services;
         }
 
-        //public static IServiceCollection AddDefaultCorsPolicy(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>() ??
-        //                       throw new MissingCorsSettingsException();
-        //    services.AddCors(options =>
-        //    {
-        //        options.AddPolicy(CorsConstants.APP_CORS_POLICY, builder =>
-        //        {
-        //            builder.WithOrigins(corsSettings.GetAllowedOriginsArray())
-        //                .WithHeaders(corsSettings.GetAllowedHeadersArray())
-        //                .WithMethods(corsSettings.GetAllowedMethodsArray());
-        //            if (corsSettings.AllowCredentials)
-        //            {
-        //                builder.AllowCredentials();
-        //            }
-
-        //            builder.Build();
-        //        });
-        //    });
-
-        //    return services;
-        //}
-
+        public static IServiceCollection AddVNPaySettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<VNPaySettings>(configuration.GetSection(nameof(VNPaySettings)));
+            return services;
+        }
 
     }
 }
