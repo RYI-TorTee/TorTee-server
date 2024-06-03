@@ -7,6 +7,6 @@
         public string OrderType { get; set; }
         public string Description { get; set; }
         public double Amount { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

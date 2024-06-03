@@ -36,6 +36,8 @@ namespace TorTee.BLL
             services.AddScoped<IAssignmentSubmissionService, AssignmentSubmissionService>();
             services.AddScoped<IMentorShipService, MentorShipService>();
             services.AddScoped<IStaffMentorApplicationService, StaffMentorApplicationService>();
+
+            services.AddScoped<IVnPayService, VnPayService>();
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<UserToLoginDTOValidator>();
 
