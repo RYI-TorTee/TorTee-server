@@ -15,7 +15,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMentorApplication(CreateMentorApplicationRequest request)
+        public async Task<IActionResult> CreateMentorApplication([FromForm]CreateMentorApplicationRequest request)
         {
             return await ExecuteServiceLogic(
                 async () => await _mentorApplicationService.CreateMentorApplication(request).ConfigureAwait(false)
