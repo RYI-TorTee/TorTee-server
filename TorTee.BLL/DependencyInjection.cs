@@ -16,13 +16,6 @@ namespace TorTee.BLL
         {;
             services.AddAutoMapper(typeof(AutoMapperProfiles));
   
-            services.AddScoped<IMentorUserService,MentorUserService>();
-            services.AddScoped<IUserSkillService , UserSkillService>();
-            services.AddScoped<IMentorPlanService, MentorPlanService>();
-            services.AddScoped<IBookingPlanService, BookingPlanService>();
-            services.AddScoped<IMenteeApplicationAnswerService, MenteeApplicationAnswerService>();
-            services.AddScoped<IMenteeApplicationService, MenteeApplicationService>();
-            services.AddScoped<IApplicationQuestionService, ApplicationQuestionService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<IEmailService, EmailService>();
@@ -32,10 +25,6 @@ namespace TorTee.BLL
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
-            services.AddScoped<IAssignmentService, AssignmentService>();
-            services.AddScoped<IAssignmentSubmissionService, AssignmentSubmissionService>();
-            services.AddScoped<IMentorShipService, MentorShipService>();
-            services.AddScoped<IStaffMentorApplicationService, StaffMentorApplicationService>();
 
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddFluentValidationAutoValidation();

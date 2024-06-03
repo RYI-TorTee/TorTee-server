@@ -34,7 +34,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("messages")]
-        public async Task<IActionResult> GetMessagesFromChatBox([FromBody]ChatBoxParams chatBoxParams)
+        public async Task<IActionResult> GetMessagesFromChatBox([FromQuery]ChatBoxParams chatBoxParams)
         {
             //get id from cookie
             var userId = new Guid();
