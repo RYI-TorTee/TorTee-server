@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations;
 namespace TorTee.BLL.Models.Requests.MentorApplications
 {
     public class CreateMentorApplicationRequest
-    {
-        [Length(20, 10000, ErrorMessage = "Please type at least 20 words")]
-        public string FirstName { get; set; } = null!;
-        [Length(20, 10000, ErrorMessage = "Please type at least 20 words")]
+    {        
+        public string FirstName { get; set; } = null!;     
         public string LastName { get; set; } = null!;
         [EmailAddress]
         public string Email { get; set; } = null!;

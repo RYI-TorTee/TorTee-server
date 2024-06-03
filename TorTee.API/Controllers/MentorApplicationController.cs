@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
+using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Services.IServices;
 
@@ -19,6 +20,22 @@ namespace TorTee.API.Controllers
         {
             return await ExecuteServiceLogic(
                 async () => await _mentorApplicationService.CreateMentorApplication(request).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllApplications([FromQuery] QueryParametersRequest request)
+        {
+            return await ExecuteServiceLogic(
+                async () => await _mentorApplicationService.GetAllApplications(request).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetApplication(Guid id)
+        {
+            return await ExecuteServiceLogic(
+                async () => await _mentorApplicationService.GetApplication(id).ConfigureAwait(false)
             ).ConfigureAwait(false);
         }
     }
