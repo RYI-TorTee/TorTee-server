@@ -20,6 +20,7 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<ServiceActionResult> BrowseMentorList(QueryParametersRequest queryParameters)
         {
             var isSortByRating = queryParameters.OrderBy?.Equals("AverageRating") ?? false;
