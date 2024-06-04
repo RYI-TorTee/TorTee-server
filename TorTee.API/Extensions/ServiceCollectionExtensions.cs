@@ -113,7 +113,7 @@ namespace TorTee.API.Extensions
             return services;
         }      
 
-        public static IServiceCollection AddDefaultCorsPolicy(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddCorsPolicy(this IServiceCollection services, IConfiguration configuration)
         {
             var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>() ??
                                throw new NullReferenceException("Missing cors settings");
