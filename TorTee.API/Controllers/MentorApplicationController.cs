@@ -24,7 +24,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllApplications([FromQuery] QueryParametersRequest request)
+        public async Task<IActionResult> GetAllApplications([FromQuery] MentorApplicationRequest request)
         {
             return await ExecuteServiceLogic(
                 async () => await _mentorApplicationService.GetAllApplications(request).ConfigureAwait(false)

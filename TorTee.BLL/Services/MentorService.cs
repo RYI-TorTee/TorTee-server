@@ -30,17 +30,17 @@ namespace TorTee.BLL.Services
 
             if (!string.IsNullOrEmpty(queryParameters.Search))
             {
-                mentorQuery.Where(m => m.FullName.Contains(queryParameters.Search));
+                mentorQuery = mentorQuery.Where(m => m.FullName.Contains(queryParameters.Search));
             }
 
             if (queryParameters?.Filter?.Count > 0)
             {
-                mentorQuery.ApplyFilters(queryParameters.Filter);
+                mentorQuery = mentorQuery.ApplyFilters(queryParameters.Filter);
             }
 
             if (!string.IsNullOrEmpty(queryParameters?.OrderBy) && (!queryParameters.OrderBy?.Equals("AverageRating") ?? false))
             {
-                mentorQuery.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc);
+                mentorQuery = mentorQuery.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc);
             }
 
             var paginationResult = PaginationHelper

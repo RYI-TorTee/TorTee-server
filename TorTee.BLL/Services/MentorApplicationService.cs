@@ -12,8 +12,8 @@ using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Constants;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
-using TorTee.Core.Dtos;
 using TorTee.Core.Extensions;
+using TorTee.Core.Helpers;
 using TorTee.DAL;
 
 namespace TorTee.BLL.Services
@@ -59,28 +59,25 @@ namespace TorTee.BLL.Services
 
         }
 
-        public async Task<ServiceActionResult> GetAllApplications(QueryParametersRequest queryParameters)
+        public async Task<ServiceActionResult> GetAllApplications(MentorApplicationRequest queryParameters)
         {
-            var applicationQuery = (await _unitOfWork.MentorApplicationRepository.GetAllAsyncAsQueryable()).Include(a => a.User);
+            IQueryable<MentorApplication> applicationQuery = (await _unitOfWork.MentorApplicationRepository.GetAllAsyncAsQueryable()).Include(a => a.User);
 
+            if (!string.IsNullOrEmpty(queryParameters.Status))
+            {
+                applicationQuery = applicationQuery.Where(m => (int)m.Status == EnumHelper.CompareStatus<ApplicationStatus>(queryParameters.Status));
+            }
 
             if (!string.IsNullOrEmpty(queryParameters.Search))
             {
-                applicationQuery.Where(m => m.FullName.Contains(queryParameters.Search) || m.PhoneNumber.Equals(queryParameters.Search) || m.Email.Equals(queryParameters.Search));
+                applicationQuery = applicationQuery.Where(m => m.FullName.Contains(queryParameters.Search) || m.PhoneNumber.Equals(queryParameters.Search) || m.Email.Equals(queryParameters.Search));
             }
 
-            if (queryParameters?.Filter?.Count > 0)
-            {
-                applicationQuery.ApplyFilters(queryParameters.Filter);
-            }
-
-            if (!string.IsNullOrEmpty(queryParameters?.OrderBy))
-            {
-                applicationQuery.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc);
-            }
+            applicationQuery = queryParameters.IsDesc ? applicationQuery.OrderByDescending(a => a.AppliedDate) : applicationQuery.OrderBy(a => a.AppliedDate);
 
             var paginationResult = PaginationHelper
             .BuildPaginatedResult<MentorApplication, MentorApplicationResponse>(_mapper, applicationQuery, queryParameters.PageSize ?? 0, queryParameters.PageIndex ?? 0);
+
             return new ServiceActionResult(true) { Data = paginationResult };
 
         }
@@ -88,7 +85,7 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> GetApplication(Guid id)
         {
             var application = await _unitOfWork.MentorApplicationRepository.FindAsync(id) ?? throw new ArgumentNullException("Application is not exist");
-
+            
             var returnApplication = _mapper.Map<MentorApplicationResponse>(application);
 
             return new ServiceActionResult(true) { Data = returnApplication };
