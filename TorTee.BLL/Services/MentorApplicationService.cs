@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using TorTee.BLL.Exceptions;
 using TorTee.BLL.Helpers;
 using TorTee.BLL.Models;
@@ -8,11 +9,12 @@ using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Models.Responses.MentorApplications;
 using TorTee.BLL.Services.IServices;
+using TorTee.Common.Dtos;
 using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Constants;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
-using TorTee.Core.Extensions;
+using TorTee.Core.Dtos;
 using TorTee.Core.Helpers;
 using TorTee.DAL;
 
@@ -25,24 +27,21 @@ namespace TorTee.BLL.Services
         private readonly IFileStorageService _fileStorageService;
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
+        private readonly RoleManager<Role> _roleManager;
 
         public MentorApplicationService(IUnitOfWork unitOfWork,
-            IMapper mapper, IFileStorageService fileStorageService, UserManager<User> userManager, IEmailService emailService)
+            IMapper mapper, IFileStorageService fileStorageService, UserManager<User> userManager, IEmailService emailService, RoleManager<Role> roleManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _fileStorageService = fileStorageService;
             _userManager = userManager;
             _emailService = emailService;
+            _roleManager = roleManager;
         }
         public async Task<ServiceActionResult> CreateMentorApplication(CreateMentorApplicationRequest applicationRequest)
         {
-            var mentorApplication = _mapper.Map<MentorApplication>(applicationRequest);
-
-            var user = await _userManager.FindByEmailAsync(applicationRequest.Email);
-
-            if (user != null)
-                throw new BusinessRuleException($"This email has used in our system");
+            var mentorApplication = _mapper.Map<MentorApplication>(applicationRequest);          
 
             try
             {
@@ -95,49 +94,107 @@ namespace TorTee.BLL.Services
         {
             var application = await _unitOfWork.MentorApplicationRepository.FindAsync(id) ?? throw new ArgumentNullException("Application is not exist");
 
-            if(status.Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase))
+            if (status.Equals(application.Status.ToString(), StringComparison.OrdinalIgnoreCase))
             {
-                application.Status = ApplicationStatus.ACCEPTED;
-                await _emailService.SendEmailAsync(application.Email, "NEW INFORM FROM TORTEE", EmailHelper.GetAcceptedEmailBody("totementoring@gmail.com", application.Email, ""), true);
+                return new ServiceActionResult(false) { Detail = $"Application is already in {status} status"};
+            }else if (application.Status.ToString().Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase) 
+                || application.Status.ToString().Equals(ApplicationStatus.DENIED.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return new ServiceActionResult(false) { Detail = $"Application is already in {application.Status.ToString()} status. Can not modify." };
             }
-
-            if (status.Equals(ApplicationStatus.DENIED.ToString(), StringComparison.OrdinalIgnoreCase))
+            else if(status.Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                var account = await RegisterMentorAsync(application);
+                application.Status = ApplicationStatus.ACCEPTED;
+                await _unitOfWork.CommitAsync();
+                await _emailService.SendEmailAsync(application.Email, "YOU HAVE NEW INFORMATION FROM TORTEE", EmailHelper.GetAcceptedEmailBody("totementoring@gmail.com", application.Email, account.Password), true);
+            }
+            else if (status.Equals(ApplicationStatus.DENIED.ToString(), StringComparison.OrdinalIgnoreCase))
             {
                 application.Status = ApplicationStatus.DENIED;
-                await _emailService.SendEmailAsync(application.Email, "NEW INFORM FROM TORTEE", EmailHelper.GetRejectedEmailBody(application.FullName, "Tortee"), true);
-            }
-
-            
+                await _unitOfWork.CommitAsync();
+                await _emailService.SendEmailAsync(application.Email, "YOU HAVE NEW INFORMATION FROM TORTEE", EmailHelper.GetRejectedEmailBody(application.FullName, "Tortee"), true);
+            }                       
 
             return new ServiceActionResult();
         }
 
-        //private async bool RegisterMentorAsync(MentorApplication application)
-        //{
-        //    var userEntity = new User { Email = application.Email };
+        private async Task<UserToLoginDTO> RegisterMentorAsync(MentorApplication application)
+        {
+            var user = await _userManager.FindByEmailAsync(application.Email);
 
-        //    var result = await _userManager.CreateAsync(userEntity, userToRegisterDTO.Password);
-        //    if (!result.Succeeded)
-        //    {
-        //        var error = result.Errors.First();
-        //        return new ServiceActionResult(false, error.Description);
-        //    }
+            if (user != null)
+            {
+                if (!await _roleManager.RoleExistsAsync(UserRoleConstants.MENTOR))
+                {
+                    await _roleManager.CreateAsync(new Role { Name = UserRoleConstants.MENTOR });
+                }
+                var roleResultIn = await _userManager.AddToRoleAsync(user, UserRoleConstants.MENTOR);
 
-        //    if (!await _roleManager.RoleExistsAsync(UserRoleConstants.MENTEE))
-        //    {
-        //        await _roleManager.CreateAsync(new Role { Name = UserRoleConstants.MENTEE });
-        //    }
-        //    var roleResult = await _userManager.AddToRoleAsync(userEntity, UserRoleConstants.MENTEE);
-        //    if (!roleResult.Succeeded)
-        //    {
-        //        await _userManager.DeleteAsync(userEntity);
-        //        throw new AddRoleException("Can not create account with role Mentee");
-        //    }
+                if (!roleResultIn.Succeeded)
+                {
+                    var error = roleResultIn.Errors.First().Description;
+                    throw new AddRoleException(error);
+                }
+                return new UserToLoginDTO(){Email= application.Email, Password = "Your currently password in my system"};
+            }
 
-        //    var token = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
-        //    await _emailService.SendEmailConfirmationAsync(userEntity, token);
+            var userEntity = new User { Email = application.Email, UserName = application.Email, FullName = application.FullName, PhoneNumber = application.PhoneNumber };
+            var password = GenerateRandomPassword();
 
-        //    return new ServiceActionResult(true);
-        //}
+            var result = await _userManager.CreateAsync(userEntity, password);
+
+            if (!result.Succeeded)
+            {
+                var error = result.Errors.First().Description;
+                throw new Exception(error);
+            }
+
+            if (!await _roleManager.RoleExistsAsync(UserRoleConstants.MENTOR))
+            {
+                await _roleManager.CreateAsync(new Role { Name = UserRoleConstants.MENTOR });
+            }
+            var roleResult = await _userManager.AddToRoleAsync(userEntity, UserRoleConstants.MENTOR);
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(userEntity);
+                throw new AddRoleException("Can not create account with role Mentor");
+            }
+
+            userEntity.EmailConfirmed = true;
+            await _userManager.UpdateAsync(userEntity);        
+
+            return new UserToLoginDTO() { Email = application.Email, Password = password};
+        }
+
+        private string GenerateRandomPassword()
+        {
+            const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowerChars = "abcdefghijklmnopqrstuvwxyz";
+            const string numericChars = "0123456789";
+            const string specialChars = "!@#$%^&*()_+";
+
+            string allChars = upperChars + lowerChars + numericChars + specialChars;
+
+            StringBuilder password = new StringBuilder();
+            Random random = new Random();
+
+            // Ensure at least one character from each character set
+            password.Append(upperChars[random.Next(upperChars.Length)]);
+            password.Append(lowerChars[random.Next(lowerChars.Length)]);
+            password.Append(numericChars[random.Next(numericChars.Length)]);
+
+            // Fill the remaining characters randomly
+            for (int i = 3; i < 8; i++)
+            {
+                password.Append(allChars[random.Next(allChars.Length)]);
+            }
+
+            // Shuffle the password characters
+            string shuffledPassword = new string(password.ToString().OrderBy(c => random.Next()).ToArray());
+
+            return shuffledPassword;
+        }
+
     }
 }

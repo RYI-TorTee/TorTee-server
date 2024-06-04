@@ -64,37 +64,33 @@
 
         public static string GetRejectedEmailBody(string userName, string companyName)
         {
-            return $@"Subject: Rejection of Job Application for [Position Title]
+            return $@"Dear {userName},<br>
 
-                        Dear {userName},
+                        Thank you for your interest in the Mentor position at {companyName}. We appreciate the time and effort you invested in applying for this role.<br>
 
-                        Thank you for your interest in the Mentor position at {companyName}. We appreciate the time and effort you invested in applying for this role.
+                        After careful consideration, we regret to inform you that we have decided not to move forward with your application. <br>
 
-                        After careful consideration, we regret to inform you that we have decided not to move forward with your application. 
+                        While your qualifications are impressive, we have selected another candidate whose skills and experience align more closely with our current needs. <br>                        
 
-                        While your qualifications are impressive, we have selected another candidate whose skills and experience align more closely with our current needs.
+                        Thank you once again for considering {companyName}. We value your interest and hope you find success in your career endeavors.<br>
 
-                        We sincerely appreciate your interest in joining our team and wish you the best in your job search. Please feel free to apply for other positions with us in the future.
-
-                        Thank you once again for considering {companyName}. We value your interest and hope you find success in your career endeavors.
-
-                        Best regards,
+                        Best regards,<br>
 
                         {companyName}";
         }
         public static string GetAcceptedEmailBody(string platformEmail, string account, string password)
         {
-            return $@"Congratulations! 🎉 Your application has been accepted! We are thrilled to welcome you to become a mentor in our platform. 🤝
+            return $@"Congratulations! 🎉 Your application has been accepted! We are thrilled to welcome you to become a mentor in our platform. 🤝<br>
 
-                    We provide you account to become a mentor in our platform:                    
-                    Account: {account}
-                    Password: {password}                    
+                    We provide you account to become a mentor in our platform: <br>
+                    Account: {account}<br>
+                    Password: {password}<br>
 
-                    After log in, please change your password. Make sure to choose a strong and secure password!
+                    After log in, please change your password. Make sure to choose a strong and secure password!<br>
 
-                    If you have any questions or need additional information, feel free to reach out to support team at {platformEmail}.
+                    If you have any questions or need additional information, feel free to reach out to support team at {platformEmail}.<br>
 
-                    Once again, welcome aboard, and we look forward to working with you! 🌟
+                    Once again, welcome aboard, and we look forward to working with you! 🌟<br>
 
                     Best regards,";
         }

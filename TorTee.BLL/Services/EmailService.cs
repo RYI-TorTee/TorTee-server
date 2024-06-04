@@ -27,7 +27,7 @@ namespace TorTee.BLL.Services
 
         }
 
-        public Task SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
+        public async Task SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
         {
             var MailServer = _configuration["EmailSettings:MailServer"];
             var FromEmail = _configuration["EmailSettings:FromEmail"];
@@ -44,7 +44,7 @@ namespace TorTee.BLL.Services
             {
                 IsBodyHtml = IsBodyHtml
             };
-            return client.SendMailAsync(mailMessage);
+            await client.SendMailAsync(mailMessage);
         }
 
         public async Task SendEmailConfirmationAsync(User user, string token = "")
