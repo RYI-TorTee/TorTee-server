@@ -24,7 +24,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllApplications([FromQuery] QueryParametersRequest request)
+        public async Task<IActionResult> GetAllApplications([FromQuery] MentorApplicationRequest request)
         {
             return await ExecuteServiceLogic(
                 async () => await _mentorApplicationService.GetAllApplications(request).ConfigureAwait(false)
@@ -36,6 +36,14 @@ namespace TorTee.API.Controllers
         {
             return await ExecuteServiceLogic(
                 async () => await _mentorApplicationService.GetApplication(id).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ReviewedApplication(Guid id, string status)
+        {
+            return await ExecuteServiceLogic(
+                async () => await _mentorApplicationService.ReviewApplication(id, status).ConfigureAwait(false)
             ).ConfigureAwait(false);
         }
     }

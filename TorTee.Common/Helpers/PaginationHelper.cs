@@ -41,20 +41,9 @@ namespace TorTee.Common.Helpers
 
             IQueryable<T> paginatedQuery;
 
-            if (pageIndex > lastPage / 2)
-            {
-                var mod = total % pageSize;
-                var skip = (lastPage - pageIndex) * pageSize;
-                if (isLastPage)
-                {
-                    skip += mod;
-                }
-                paginatedQuery = source.Reverse().Skip(skip).Take(pageSize).Reverse();
-            }
-            else
-            {
+        
                 paginatedQuery = source.Skip((pageIndex - 1) * pageSize).Take(pageSize);
-            }
+          
 
             var resultList = paginatedQuery.ToList();
             paginatedResult.Data = mapper != null ? mapper.Map<IList<TDto>>(resultList) : (IList<TDto>)(object)resultList;
