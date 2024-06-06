@@ -14,7 +14,6 @@ using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Constants;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
-using TorTee.Core.Dtos;
 using TorTee.Core.Helpers;
 using TorTee.DAL;
 
@@ -55,7 +54,6 @@ namespace TorTee.BLL.Services
             {
                 throw new BusinessRuleException("Can not upload your CV");
             }
-
         }
 
         public async Task<ServiceActionResult> GetAllApplications(MentorApplicationRequest queryParameters)
