@@ -9,10 +9,12 @@ namespace TorTee.API.Controllers
     public class WorkspaceController : BaseApiController
     {
         private readonly IWorkspaceService _workspaceService;
+        private readonly IMentorshipService _mentorshipService;
 
-        public WorkspaceController(IWorkspaceService workspaceService)
+        public WorkspaceController(IWorkspaceService workspaceService, IMentorshipService mentorshipService)
         {
             _workspaceService = workspaceService;
+            _mentorshipService = mentorshipService;
         }
 
         [HttpGet("mentee/my-assignments")]
@@ -39,6 +41,15 @@ namespace TorTee.API.Controllers
             Guid currentUser = new Guid();
             return await ExecuteServiceLogic(
                 async () => await _workspaceService.CreateASubmission(request).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        [HttpGet("mentee/my-mentors")]
+        public async Task<IActionResult> GetMyMentors()
+        {
+            Guid currentUser = new Guid();
+            return await ExecuteServiceLogic(
+                async () => await _mentorshipService.GetMyMentors(currentUser).ConfigureAwait(false)
             ).ConfigureAwait(false);
         }
 
@@ -91,6 +102,15 @@ namespace TorTee.API.Controllers
             Guid currentUser = new Guid();
             return await ExecuteServiceLogic(
                 async () => await _workspaceService.UpdateGradeForSubmission(request).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        [HttpGet("mentor/my-mentees")]
+        public async Task<IActionResult> GetMyMentees()
+        {
+            Guid currentUser = new Guid();
+            return await ExecuteServiceLogic(
+                async () => await _mentorshipService.GetMyMentees(currentUser).ConfigureAwait(false)
             ).ConfigureAwait(false);
         }
     }

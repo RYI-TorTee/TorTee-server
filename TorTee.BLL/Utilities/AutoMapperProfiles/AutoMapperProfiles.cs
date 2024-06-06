@@ -5,6 +5,7 @@ using TorTee.BLL.Models.Requests.Messages;
 using TorTee.BLL.Models.Requests.Submissions;
 using TorTee.BLL.Models.Responses.Assignments;
 using TorTee.BLL.Models.Responses.AssignmentSubmissions;
+using TorTee.BLL.Models.Responses.Mentees;
 using TorTee.BLL.Models.Responses.MentorApplications;
 using TorTee.BLL.Models.Responses.Mentors;
 using TorTee.BLL.Models.Responses.Messages;
@@ -29,6 +30,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<User, MentorOverviewResponse>()
                    .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.UserSkills.Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
+
+                CreateMap<User, MenteeResponse>();
 
                 #endregion
 
