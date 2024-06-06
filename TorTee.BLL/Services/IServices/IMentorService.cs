@@ -7,5 +7,7 @@ namespace TorTee.BLL.Services.IServices
     {
         Task<ServiceActionResult> BrowseMentorList(QueryParametersRequest queryParameters);
         Task<ServiceActionResult> RecommendationMentorList(PagingRequest request);
+        Task<ServiceActionResult> GetMyMentors(Guid menteeId);
+        Task<ServiceActionResult> GetMyMentees(Guid mentorId);
     }
 }

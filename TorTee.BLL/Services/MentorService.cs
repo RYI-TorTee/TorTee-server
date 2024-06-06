@@ -48,6 +48,16 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult(true) { Data = paginationResult };
         }
 
+        public Task<ServiceActionResult> GetMyMentees(Guid mentorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceActionResult> GetMyMentors(Guid menteeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ServiceActionResult> RecommendationMentorList(PagingRequest request)
         {
             var mentorQuery = (await GetMentorOrderByRating()).Include(m => m.UserSkills).ThenInclude(uk => uk.Skill);

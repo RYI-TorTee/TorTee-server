@@ -1,6 +1,19 @@
-﻿namespace TorTee.BLL.Services.IServices
+﻿using TorTee.BLL.Models;
+using TorTee.BLL.Models.Requests.Assignments;
+using TorTee.BLL.Models.Requests.Submissions;
+
+namespace TorTee.BLL.Services.IServices
 {
-    public class IWorkspaceService
+    public interface IWorkspaceService
     {
+        Task<ServiceActionResult> GetMenteeAssignments(Guid menteeId);
+        Task<ServiceActionResult> CreateASubmission(CreateSubmissionRequest request);
+        Task<ServiceActionResult> GetAssignmentDetails(Guid assignmentId);
+        Task<ServiceActionResult> GetSentSubmission(Guid menteeId);
+        Task<ServiceActionResult> GetReceivedSubmission(Guid mentorId);
+        Task<ServiceActionResult> GetSubmissionDetails(Guid submissionId);
+        Task<ServiceActionResult> CreateAAssignment(CreateAssignmentRequest request, Guid mentorId);       
+        Task<ServiceActionResult> GetMentorAssignments(Guid mentorId);
+        Task<ServiceActionResult> UpdateGradeForSubmission(GradeSubmissionRequest request);
     }
 }

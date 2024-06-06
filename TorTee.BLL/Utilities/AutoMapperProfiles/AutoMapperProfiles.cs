@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using TorTee.BLL.Models.Requests.Assignments;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Models.Requests.Messages;
+using TorTee.BLL.Models.Requests.Submissions;
+using TorTee.BLL.Models.Responses.Assignments;
+using TorTee.BLL.Models.Responses.AssignmentSubmissions;
 using TorTee.BLL.Models.Responses.MentorApplications;
 using TorTee.BLL.Models.Responses.Mentors;
 using TorTee.BLL.Models.Responses.Messages;
@@ -47,6 +51,20 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region message mapper
                 CreateMap<CreateMessageRequest, Message>();
                 CreateMap<Message, MessageResponse>();
+                #endregion
+
+                #region assignment mapper
+
+                CreateMap<CreateAssignmentRequest, Assignment>();
+                CreateMap<Assignment, AssignmentResponse>();
+
+                #endregion
+
+                #region submission mapper
+
+                CreateMap<CreateSubmissionRequest, AssignmentSubmission>();
+                CreateMap<AssignmentSubmission, AssignmentSubmissionResponse>();
+
                 #endregion
 
             }

@@ -13,7 +13,7 @@ namespace TorTee.API.Controllers
             _mentorService = mentorService;
         }
 
-        [HttpGet("browse-mentor")]
+        [HttpGet("browse-mentor")]       
         public async Task<IActionResult> GetMentorList([FromQuery] QueryParametersRequest queryParametersRequest)
         {
             return await ExecuteServiceLogic(
