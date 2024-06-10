@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TorTee.BLL.Models.Requests.MenteeApplication;
+using TorTee.BLL.Models.Requests.Mentor;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
 
@@ -17,8 +19,8 @@ namespace TorTee.BLL.Models.Requests.MenteePlan
         public MenteePlanStatus Status { get; set; } = MenteePlanStatus.AVAILABLE;
 
         public Guid MentorId { get; set; }
-        public User Mentor { get; set; } = null!;
+        public MentorRequestModel Mentor { get; set; } = null!;
 
-        public ICollection<TorTee.Core.Domains.Entities.MenteeApplication>? MenteeApplications { get; set; }
+        public ICollection<MenteeApplicationRequestModel>? MenteeApplications { get; set; }
     }
 }

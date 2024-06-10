@@ -26,22 +26,7 @@ namespace TorTee.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/MentorUser
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MentorDTO>>> GetAllMentors()
-        {
-            try
-            {
-                _logger.LogInformation("GetAllMentors: Retrieving all mentors.");
-                var mentors = await _mentorUserService.GetAll();
-                return Ok(mentors);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "GetAllMentors: An unexpected error occurred - {Message}", ex.Message);
-                return StatusCode(500, "An unexpected error occurred while retrieving mentors.");
-            }
-        }
+   
 
         // GET: api/MentorUser/{id}
         [HttpGet("GetMentorById/{{id}}")]

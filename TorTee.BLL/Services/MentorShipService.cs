@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using TorTee.BLL.Models.Requests.Commons;
+using TorTee.BLL.Models.Requests.MenteePlan;
+using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Mentorship;
 using TorTee.BLL.RequestModel;
 using TorTee.BLL.Services.IServices;
+using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
 
@@ -74,6 +78,18 @@ namespace TorTee.BLL.Services
             return mentorShip;
         }
 
+
+        public async Task<ServiceActionResult> GetAllPaging(PagingRequest request, Guid id)
+        {
+            //Code nay hoi nguu vi getall duoi db len lun , co ma do hoi va time huhuhuuh
+            IQueryable<Mentorship> mentorships = _unitOfWork.MentorshipRepository.GetAll().AsQueryable();
+            var filteredPlans = mentorships.Where(mentorship => mentorship.MentorId == id);
+
+            var paginationResult = PaginationHelper
+                .BuildPaginatedResult<Mentorship, MentorshipRequestModel>(_mapper, filteredPlans, request.PageSize ?? 0, request.PageIndex ?? 0);
+
+            return new ServiceActionResult(true) { Data = paginationResult };
+        }
         public async Task<Mentorship> GetOne(Guid mentorShipId)
         {
             return await _unitOfWork.MentorshipRepository.FindAsync(mentorShipId);

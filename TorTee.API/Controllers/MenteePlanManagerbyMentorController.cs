@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TorTee.API.Controllers.Base;
+using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MenteeApplication;
 using TorTee.BLL.Models.Requests.MenteePlan;
+using TorTee.BLL.Services;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Helpers;
@@ -10,7 +13,7 @@ namespace TorTee.API.Controllers
 
     [ApiController]
     [Route("api/MenteePlan-Manager-by-Mentor")]
-    public class MenteePlanManagerbyMentorController : ControllerBase
+    public class MenteePlanManagerbyMentorController : BaseApiController
     {
   
         private readonly IMentorPlanService _mentorPlanService;
@@ -29,28 +32,19 @@ namespace TorTee.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/Booking-Feature/GetAllMentorPlanMentorById/{id}
-        [HttpGet("GetAllMentorPlanMentorById")]
-        public async Task<ActionResult<MenteePlanRequestModel>> GetAllMentorPlanMentorById(Guid id, [FromQuery] FormSearch search)
+
+
+        [HttpGet("GetAll-MentorPlan-By-MentorId")]
+        public async Task<IActionResult> GetMentorApplicationPaging(Guid id,[FromQuery] PagingRequest request)
         {
-            try
-            {
-                var mentorPlans = _mentorPlanService.GetDetailOne(id, search.currentPage, search.pageSize);
-                if (mentorPlans == null)
-                {
-                    return NotFound();
-                }
-                return Ok(mentorPlans);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while getting all mentor plans for mentor by id.");
-                return StatusCode(500, "Internal server error");
-            }
+            return await ExecuteServiceLogic(
+           async () => await _mentorPlanService.GetAllPaging(request,id).ConfigureAwait(false)
+          ).ConfigureAwait(false);
         }
 
+
         // POST: api/Booking-Feature/AddMenteeApplication
-        [HttpPost("AddMenteePlan")]
+        [HttpPost("Add-MenteePlan")]
         public async Task<ActionResult> AddMenteePlan([FromBody] MenteePlanCreateRequestModel menteePlan)
         {
             if (menteePlan == null)
@@ -72,7 +66,7 @@ namespace TorTee.API.Controllers
         }
 
         // PUT: api/Booking-Feature/UpdateStatusMenteeApplication/{id}
-        [HttpPut("UpdateStatusMenteeApplication")]
+        [HttpPut("Update-Status-MenteeApplication")]
         public async Task<ActionResult> UpdateStatusMenteeApplication([FromBody] MenteePlanUpdateRequestModel application)
         {
             if (application == null)
@@ -98,13 +92,13 @@ namespace TorTee.API.Controllers
             }
         }
 
-        // GET: api/Booking-Feature/GetAllMentorPlanMentorById/{id}
-        [HttpGet("GetMentorPlanById")]
+        // GET: api/GetAllMentorPlanMentorById
+        [HttpGet("Get-MentorPlan-By-MentorPlanId")]
         public async Task<ActionResult<MenteePlanRequestModel>> GetMentorPlanById(Guid id)
         {
             try
             {
-                var mentorPlans = _mentorPlanService.GetOneById(id);
+                var mentorPlans =  _mentorPlanService.GetOneById(id);
                 if (mentorPlans == null)
                 {
                     return NotFound();

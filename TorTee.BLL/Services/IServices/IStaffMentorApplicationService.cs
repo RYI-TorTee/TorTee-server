@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TorTee.BLL.Models.Requests.Commons;
+using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MenteePlan;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.Core.Domains.Entities;
@@ -21,5 +23,7 @@ namespace TorTee.BLL.Services.IServices
         IList<MentorApplicationRequestModel> GetDetailOne( int pageSize, int pageIndex);
 
         MentorApplicationRequestModel GetOneById(Guid id);
+
+        Task<ServiceActionResult> GetAllPaging(PagingRequest request);
     }
 }
