@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TorTee.API.Controllers.Base;
+using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MenteeApplication;
 using TorTee.BLL.Models.Requests.MenteeApplicationAnswer;
+using TorTee.BLL.Models.Requests.MenteePlan;
 using TorTee.BLL.RequestModel;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
@@ -11,8 +14,8 @@ namespace TorTee.API.Controllers
 {
 
     [ApiController]
-    [Route("api/Booking-Feature")]
-    public class MenteeApplicationManagerbyMentee : ControllerBase
+    [Route("api/MenteeApplication-Manager-by-Mentee")]
+    public class MenteeApplicationManagerbyMentee : BaseApiController
     {
         private readonly IMentorPlanService _mentorPlanService;
         private readonly IMenteeApplicationService _menteeApplicationService;
@@ -29,32 +32,24 @@ namespace TorTee.API.Controllers
         }
 
 
-        // GET: api/Booking-Feature/GetAllBookingCallMentorById/{id}
-        [HttpGet("GetListMenteeApplicationManagerByMentee")]
-        public async Task<ActionResult<IEnumerable<MenteeApplicationRequestModel>>> GetListMenteeApplicationManagerByMentee(Guid id, [FromQuery] FormSearch search)
+  
+
+
+        [HttpGet("GetAll-MentorPlan-By-MentorId")]
+        public async Task<IActionResult> GetMentorPlanPagingByMenteeId(Guid id, [FromQuery] PagingRequest request)
         {
-            try
-            {
-                var menteeApplicationRequestModel = _menteeApplicationService.GetListMenteeApplicationofMentee(id, search.currentPage, search.pageSize);
-                if (menteeApplicationRequestModel == null)
-                {
-                    return NotFound();
-                }
-                return Ok(menteeApplicationRequestModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while getting all MenteeApplicationRequestModel for mentor by id.");
-                return StatusCode(500, "Internal server error");
-            }
+            return await ExecuteServiceLogic(
+           async () => await _menteeApplicationService.GetAllPaging(request, id).ConfigureAwait(false)
+          ).ConfigureAwait(false);
         }
 
-        [HttpGet("GetMenteePlanByMenteePlanId")]
-        public async Task<ActionResult<IEnumerable<MenteePlan>>> GetMenteePlanByMenteePlanId(Guid id)
+
+        [HttpGet("Get-MenteePlan-By-MenteePlanId")]
+        public async Task<ActionResult<IEnumerable<MenteePlanRequestModel>>> GetMenteePlanByMenteePlanId(Guid id)
         {
             try
             {
-                var menteePlan = _mentorPlanService.GetOne(id);
+                var menteePlan = _mentorPlanService.GetOneById(id);
                 if (menteePlan == null)
                 {
                     return NotFound();

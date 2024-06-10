@@ -1,12 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using TorTee.BLL.Models.Requests.Commons;
+using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MenteePlan;
+using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.RequestModel;
 using TorTee.BLL.Services.IServices;
+using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
 
@@ -74,6 +79,20 @@ namespace TorTee.BLL.Services
             return mentorPlan;
         }
 
+        public async Task<ServiceActionResult> GetAllPaging(PagingRequest request, Guid id)
+        {
+            //Code nay hoi nguu vi getall duoi db len lun , co ma do hoi va time huhuhuuh
+            IQueryable<MenteePlan> menteePlans = _unitOfWork.MentorPlanRepository.GetAll().AsQueryable();
+            var filteredPlans = menteePlans.Where(mentorPlan => mentorPlan.MentorId == id);
+
+            var paginationResult = PaginationHelper
+                .BuildPaginatedResult<MenteePlan, MenteePlanRequestModel>(_mapper, filteredPlans, request.PageSize ?? 0, request.PageIndex ?? 0);
+
+            return new ServiceActionResult(true) { Data = paginationResult };
+        }
+
+       
+
         public async Task<MenteePlan> GetOne(Guid mentorPlanId)
         {
             return await _unitOfWork.MentorPlanRepository.FindAsync(mentorPlanId);
@@ -110,5 +129,15 @@ namespace TorTee.BLL.Services
             var mentorPlan = _mapper.Map<MenteePlanRequestModel>(result);
             return mentorPlan;
         }
+
+        public MenteePlanRequestModel GetByMenteePlanId(Guid id)
+        {
+            Expression<Func<MenteePlan, bool>> filter = mentorPlan => mentorPlan.Id == id;
+            Func<IQueryable<MenteePlan>, IOrderedQueryable<MenteePlan>> orderBy = null;
+            MenteePlan result = _unitOfWork.MentorPlanRepository.GetDetail(filter, orderBy, "MenteeApplications", 1, 1).FirstOrDefault();
+            var mentorPlan = _mapper.Map<MenteePlanRequestModel>(result);
+            return mentorPlan;
+        }
+        
     }
 }

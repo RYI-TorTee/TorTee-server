@@ -4,11 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using TorTee.BLL.Models.Requests.Commons;
+using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MentorApplications;
+using TorTee.BLL.Models.Responses.Mentors;
 using TorTee.BLL.RequestModel;
 using TorTee.BLL.Services.IServices;
+using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
+using Microsoft.EntityFrameworkCore;
 
 namespace TorTee.BLL.Services
 {
@@ -57,6 +62,33 @@ namespace TorTee.BLL.Services
             return staffMentorApplication;
         }
 
+        public async Task<ServiceActionResult> GetAllPaging(PagingRequest request)
+        {
+          //  var mentorQuery = (await GetMentorOrderByRating()).Include(m => m.UserSkills).ThenInclude(uk => uk.Skill);
+            IQueryable<MentorApplication> x = (IQueryable<MentorApplication>)_unitOfWork.MentorApplicationRepository.GetAll();
+            var paginationResult = PaginationHelper
+                .BuildPaginatedResult<MentorApplication, MentorApplicationRequestModel>(_mapper, x, request.PageSize ?? 0, request.PageIndex ?? 0);
+            return new ServiceActionResult(true) { Data = paginationResult };
+        }
+        private async Task<IQueryable<User>> GetMentorOrderByRating(bool isDesc = true)
+        {
+            var mentorQuery = await _unitOfWork.UserRepository.GetAllMentorAsync();
+            var mentorQueryOrderByRating = mentorQuery.Include(m => m.FeedbacksReceived)
+                        .Select(m => new
+                        {
+                            Mentor = m,
+                            AverageRating = m.FeedbacksReceived.Any() ? m.FeedbacksReceived.Average(f => f.Rating) : 0
+                        });
+
+            mentorQueryOrderByRating = isDesc
+                                   ? mentorQueryOrderByRating.OrderByDescending(m => m.AverageRating)
+                                   : mentorQueryOrderByRating.OrderBy(m => m.AverageRating);
+
+
+            var sortedMentors = mentorQueryOrderByRating.Select(m => m.Mentor);
+
+            return sortedMentors;
+        }
         public async Task<MentorApplication> GetOne(Guid staffMentorApplicationId)
         {
             return await _unitOfWork.MentorApplicationRepository.FindAsync(staffMentorApplicationId);
@@ -90,5 +122,9 @@ namespace TorTee.BLL.Services
             var staffMentorApplication = _mapper.Map<MentorApplicationRequestModel>(result);
             return staffMentorApplication;
         }
+
+      
+
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TorTee.API.Controllers.Base;
+using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MenteePlan;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Services.IServices;
@@ -9,7 +11,7 @@ namespace TorTee.API.Controllers
    
     [ApiController]
     [Route("api/Mentor-Application-Manager-By-Staff")]
-    public class MentorApplicationManagerByStaff : ControllerBase
+    public class MentorApplicationManagerByStaff : BaseApiController
     {
 
         private readonly IStaffMentorApplicationService _staffMentorApplicationService;
@@ -28,29 +30,10 @@ namespace TorTee.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/GetAllMentorApplication
-        [HttpGet("GetAllMentorApplication")]
-        public async Task<ActionResult<MentorApplicationRequestModel>> GetAllMentorApplication( [FromQuery] FormSearch search)
-        {
-            try
-            {
-                var mentorPlans = _staffMentorApplicationService.GetDetailOne(search.currentPage, search.pageSize);
-                if (mentorPlans == null)
-                {
-                    return NotFound();
-                }
-                return Ok(mentorPlans);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while getting all MentorApplication for mentor by id.");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
+   
 
         // PUT: api/UpdateStatusMentorApplication
-        [HttpPut("UpdateStatusMentorApplication")]
+        [HttpPut("Update-Status-MentorApplication")]
         public async Task<ActionResult> UpdateStatusMentorApplication([FromBody] MentorApplicationUpdateRequestModel application)
         {
             if (application == null)
@@ -76,7 +59,7 @@ namespace TorTee.API.Controllers
         }
 
         // GET: api/GetDetailMentorApplicationById
-        [HttpGet("GetDetailMentorApplicationById")]
+        [HttpGet("GetDetail-MentorApplication-By-Id")]
         public async Task<ActionResult<MentorApplicationRequestModel>> GetDetailMentorApplicationById(Guid id)
         {
             try
@@ -93,6 +76,14 @@ namespace TorTee.API.Controllers
                 _logger.LogError(ex, "Error occurred while getting all MentorApplication for mentor by id.");
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+        [HttpGet("GetAll-MentorApplication-Paging")]
+        public async Task<IActionResult> GetMentorApplicationPaging([FromQuery] PagingRequest request)
+        {
+            return await ExecuteServiceLogic(
+           async () => await _staffMentorApplicationService.GetAllPaging(request).ConfigureAwait(false)
+          ).ConfigureAwait(false);
         }
 
     }
