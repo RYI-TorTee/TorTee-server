@@ -21,5 +21,14 @@ namespace TorTee.BLL.Models.Requests.MentorApplications
         public string Reason { get; set; } = null!;
         [Length(50, 10000, ErrorMessage = "Please type at least 50 words")]
         public string Achievement { get; set; } = null!;
+        public string? DescriptionOfPlan { get; set; }
+        [Range(1,100, ErrorMessage = "The accepted number is in 1 to 100")]
+        public int CallPerMonth { get; set; }
+        [Range(30, 1000, ErrorMessage = "The accepted number is in 30 to 1000")]
+        public int DurationOfMeeting { get; set; }
+        [Range(1, 100, ErrorMessage = "The accepted number is in 1 to 100")]
+        public int TotalSlot { get; set; }
+        public double Price { get; set; }
     }
+
 }

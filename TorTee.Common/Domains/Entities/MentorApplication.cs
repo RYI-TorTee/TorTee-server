@@ -17,9 +17,17 @@ namespace TorTee.Core.Domains.Entities
         public string? Company { get; set; }
         public string? JobTitle { get; set; }
 
+        //MenteePlanRequest
+        public string? DescriptionOfPlan { get; set; }
+        public int CallPerMonth { get; set; }
+        public int DurationOfMeeting { get; set; }
+        public int TotalSlot { get; set; }
+        public double Price { get; set; }
+
         public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
 
         public Guid? UserId { get; set; }
         public User? User { get; set; }
+        
     }
 }

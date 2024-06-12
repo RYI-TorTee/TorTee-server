@@ -119,6 +119,25 @@ namespace TorTee.DAL.DataContext
                 .WithMany(s=>s.BookingCalls)
                 .HasForeignKey(c=>c.SessionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<ApplicationQuestion>().HasData(
+            new ApplicationQuestion
+            {
+                Id = Guid.NewGuid(),
+                Content = "What best describes the goal of your mentorship?"
+            },
+            new ApplicationQuestion
+            {
+                Id = Guid.NewGuid(),
+                Content = "When would you like to reach that goal?"
+            },
+            new ApplicationQuestion
+            {
+                Id = Guid.NewGuid(),
+                Content = "Write a message to Mentor"
+            }
+        );
         }
     }
 }

@@ -40,7 +40,7 @@ namespace TorTee.BLL.Services
         }
         public async Task<ServiceActionResult> CreateMentorApplication(CreateMentorApplicationRequest applicationRequest)
         {
-            var mentorApplication = _mapper.Map<MentorApplication>(applicationRequest);          
+            var mentorApplication = _mapper.Map<MentorApplication>(applicationRequest);
 
             try
             {
@@ -82,7 +82,7 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> GetApplication(Guid id)
         {
             var application = await _unitOfWork.MentorApplicationRepository.FindAsync(id) ?? throw new ArgumentNullException("Application is not exist");
-            
+
             var returnApplication = _mapper.Map<MentorApplicationResponse>(application);
 
             return new ServiceActionResult(true) { Data = returnApplication };
@@ -94,16 +94,28 @@ namespace TorTee.BLL.Services
 
             if (status.Equals(application.Status.ToString(), StringComparison.OrdinalIgnoreCase))
             {
-                return new ServiceActionResult(false) { Detail = $"Application is already in {status} status"};
-            }else if (application.Status.ToString().Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase) 
+                return new ServiceActionResult(false) { Detail = $"Application is already in {status} status" };
+            }
+            else if (application.Status.ToString().Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase)
                 || application.Status.ToString().Equals(ApplicationStatus.DENIED.ToString(), StringComparison.OrdinalIgnoreCase))
             {
                 return new ServiceActionResult(false) { Detail = $"Application is already in {application.Status.ToString()} status. Can not modify." };
             }
-            else if(status.Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase))
+            else if (status.Equals(ApplicationStatus.ACCEPTED.ToString(), StringComparison.OrdinalIgnoreCase))
             {
                 var account = await RegisterMentorAsync(application);
                 application.Status = ApplicationStatus.ACCEPTED;
+                var user = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
+                    .Where(u => u.Email.ToLower().Equals(account.Email.ToLower())).FirstOrDefault() ?? throw new ArgumentNullException("Can not retrieve this mentor");
+                user.MenteePlans = new MenteePlan()
+                {
+                    Id = new Guid(),
+                    CallPerMonth = application.CallPerMonth,
+                    DescriptionOfPlan = application.DescriptionOfPlan,
+                    Price = application.Price,
+                    DurationOfMeeting = application.DurationOfMeeting,
+                    TotalSlot = application.TotalSlot
+                };
                 await _unitOfWork.CommitAsync();
                 await _emailService.SendEmailAsync(application.Email, "YOU HAVE NEW INFORMATION FROM TORTEE", EmailHelper.GetAcceptedEmailBody("totementoring@gmail.com", application.Email, account.Password), true);
             }
@@ -112,7 +124,7 @@ namespace TorTee.BLL.Services
                 application.Status = ApplicationStatus.DENIED;
                 await _unitOfWork.CommitAsync();
                 await _emailService.SendEmailAsync(application.Email, "YOU HAVE NEW INFORMATION FROM TORTEE", EmailHelper.GetRejectedEmailBody(application.FullName, "Tortee"), true);
-            }                       
+            }
 
             return new ServiceActionResult();
         }
@@ -134,7 +146,7 @@ namespace TorTee.BLL.Services
                     var error = roleResultIn.Errors.First().Description;
                     throw new AddRoleException(error);
                 }
-                return new UserToLoginDTO(){Email= application.Email, Password = "Your currently password in my system"};
+                return new UserToLoginDTO() { Email = application.Email, Password = "Your currently password in my system" };
             }
 
             var userEntity = new User { Email = application.Email, UserName = application.Email, FullName = application.FullName, PhoneNumber = application.PhoneNumber };
@@ -160,9 +172,9 @@ namespace TorTee.BLL.Services
             }
 
             userEntity.EmailConfirmed = true;
-            await _userManager.UpdateAsync(userEntity);        
+            await _userManager.UpdateAsync(userEntity);
 
-            return new UserToLoginDTO() { Email = application.Email, Password = password};
+            return new UserToLoginDTO() { Email = application.Email, Password = password };
         }
 
         private string GenerateRandomPassword()
