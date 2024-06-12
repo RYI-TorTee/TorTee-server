@@ -5,7 +5,7 @@ namespace TorTee.Core.Domains.Entities
 {
     public class MenteeApplication: EntityBase<Guid>
     {
-        public DateTime AppliedDate { get; set; } = DateTime.UtcNow;
+        public DateTime AppliedDate { get; set; } = DateTime.Now;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
 
         public Guid UserId { get; set; }

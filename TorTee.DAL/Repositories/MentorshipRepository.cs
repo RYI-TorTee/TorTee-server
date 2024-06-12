@@ -14,14 +14,14 @@ namespace TorTee.DAL.Repositories
         public async Task<IQueryable<Mentorship>> GetAvailableMentorshipByMenteeId(Guid menteeId)
         {
             var mentorshipQueryable = (await GetAllAsyncAsQueryable()).Where(m=>m.MenteeId == menteeId)
-                .Where(m=>m.EndDate < DateTime.UtcNow);
+                .Where(m=>m.EndDate < DateTime.Now);
             return mentorshipQueryable;
         }
 
         public async Task<IQueryable<Mentorship>> GetAvailableMentorshipByMentorId(Guid mentorId)
         {
             var mentorshipQueryable = (await GetAllAsyncAsQueryable()).Where(m => m.MentorId == mentorId)
-                .Where(m => m.EndDate < DateTime.UtcNow);
+                .Where(m => m.EndDate < DateTime.Now);
             return mentorshipQueryable;
         }
 

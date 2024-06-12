@@ -14,9 +14,9 @@ namespace TorTee.BLL.Services
     public class MenteeApplicationService : IMenteeApplicationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
 
-        public MenteeApplicationService(IUnitOfWork unitOfWork, Mapper mapper)
+        public MenteeApplicationService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -27,6 +27,7 @@ namespace TorTee.BLL.Services
             applicationEntity.UserId = currentUserId;
 
             await _unitOfWork.MenteeApplicationRepository.AddAsync(applicationEntity);
+            await _unitOfWork.CommitAsync();
             return new ServiceActionResult(true);
         }
 

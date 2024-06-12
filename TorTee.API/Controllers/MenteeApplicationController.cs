@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
+using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MenteeApplications;
 using TorTee.BLL.Services.IServices;
 
@@ -10,10 +11,14 @@ namespace TorTee.API.Controllers
     public class MenteeApplicationController : BaseApiController
     {
         private readonly IMenteeApplicationService _menteeApplicationService;
+        private readonly IUserClaimsService _userClaimsService;
+        private UserClaims _userClaims;
 
-        public MenteeApplicationController(IMenteeApplicationService menteeApplicationService)
+        public MenteeApplicationController(IMenteeApplicationService menteeApplicationService, IUserClaimsService userClaimsService)
         {
             _menteeApplicationService = menteeApplicationService;
+            _userClaimsService = userClaimsService;
+            _userClaims = _userClaimsService.GetUserClaims();
         }
 
         /// <summary>
@@ -23,7 +28,7 @@ namespace TorTee.API.Controllers
          [HttpPost("mentee/apply")]
         public async Task<IActionResult> ApplyToMentor(CreateMenteeApplicationRequest request)
         {
-            var userId = new Guid();
+            var userId = _userClaims.UserId;
             return await ExecuteServiceLogic(
             async () => await _menteeApplicationService.CreateMenteeApplication(request, userId).ConfigureAwait(false)
            ).ConfigureAwait(false);
