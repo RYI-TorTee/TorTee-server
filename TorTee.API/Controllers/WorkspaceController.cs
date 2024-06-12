@@ -79,9 +79,9 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost("mentor/create-assignment")]
-        public async Task<IActionResult> CreateAssignment(CreateAssignmentRequest request)
+        public async Task<IActionResult> CreateAssignment([FromBody] CreateAssignmentRequest request)
         {
-            Guid currentUser = new Guid();
+            Guid currentUser = new Guid("34E51525-5B2C-4B66-29CD-08DC7B8919DB");
             return await ExecuteServiceLogic(
                 async () => await _workspaceService.CreateAAssignment(request, currentUser).ConfigureAwait(false)
             ).ConfigureAwait(false);

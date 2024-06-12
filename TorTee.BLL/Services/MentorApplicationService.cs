@@ -40,6 +40,16 @@ namespace TorTee.BLL.Services
         }
         public async Task<ServiceActionResult> CreateMentorApplication(CreateMentorApplicationRequest applicationRequest)
         {
+            var user = await _userManager.FindByEmailAsync(applicationRequest.Email);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                bool isInMentorRole = roles.Contains(UserRoleConstants.MENTOR);
+                if (isInMentorRole)
+                {
+                    throw new BusinessRuleException($"{applicationRequest.Email} is already used by a Mentor in System");
+                }
+            }
             var mentorApplication = _mapper.Map<MentorApplication>(applicationRequest);
 
             try

@@ -22,13 +22,11 @@ namespace TorTee.Core.Domains.Entities
         public ICollection<Feedback>? FeedbacksGiven { get; set; }
         public ICollection<Assignment>? AssignmentsReceived { get; set; }
         public ICollection<BookingCall>? BookingCallAsMentee { get; set; }
-        public ICollection<Mentorship>? MentorshipAsMentee { get; set; }
         public ICollection<MenteeApplication>? MenteeApplications { get; set; }
 
         //Mentor
         public ICollection<Feedback>? FeedbacksReceived { get; set; }
-        public ICollection<Assignment>? AssignmentsGiven { get; set; }        
-        public ICollection<Mentorship>? MentorshipAsMentor { get; set; }       
+        public ICollection<Assignment>? AssignmentsGiven { get; set; }      
         public Session? Sessions { get; set; }        
         public MenteePlan? MenteePlans { get; set; }
         

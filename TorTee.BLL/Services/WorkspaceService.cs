@@ -31,11 +31,15 @@ namespace TorTee.BLL.Services
                 entity.File = await _fileStorageService.UploadFileBlobAsync(request.File);            
             entity.MentorId = mentorId;
             await _unitOfWork.AssignmentRepository.AddAsync(entity);
+            await _unitOfWork.CommitAsync();
             return new ServiceActionResult(true);
         }
 
         public async Task<ServiceActionResult> CreateASubmission(CreateSubmissionRequest request)
         {
+            //var isOnDurationOdMentoring = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+            //    .Where(app => app. && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now);
+
             var entity = _mapper.Map<AssignmentSubmission>(request);
             if (request.File != null)
                 entity.File = await _fileStorageService.UploadFileBlobAsync(request.File);
@@ -110,5 +114,7 @@ namespace TorTee.BLL.Services
             await _unitOfWork.CommitAsync();
             return new ServiceActionResult(true);
         }
+        
+        
     }
 }
