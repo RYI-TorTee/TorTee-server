@@ -7,7 +7,7 @@ namespace TorTee.Core.Domains.Entities
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? File { get; set; }
-        public DateTime AssignedDate { get; set; } = DateTime.UtcNow;
+        public DateTime AssignedDate { get; set; } = DateTime.Now;
         public DateTime Deadline { get; set; }        
 
         public Guid MentorId { get; set; }

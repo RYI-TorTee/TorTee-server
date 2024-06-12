@@ -5,7 +5,7 @@ namespace TorTee.Core.Domains.Entities
     public class Message : EntityBase<Guid>
     {
         public string Content { get; set; } = null!;
-        public DateTime SentTime { get; set; } = DateTime.UtcNow;
+        public DateTime SentTime { get; set; } = DateTime.Now;
         public DateTime? DateRead { get; set; }
 
         public Guid SenderId { get; set; }
