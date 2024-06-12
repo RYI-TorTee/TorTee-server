@@ -16,9 +16,7 @@ namespace TorTee.BLL.Models.Responses.MentorApplications
         public string Achievement { get; set; } = null!;
         public string? Company { get; set; }
         public string? JobTitle { get; set; }
-
-        public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
-
+        public ApplicationStatus Status { get; set; }
         public Guid? UserId { get; set; }
     }
 }

@@ -25,6 +25,8 @@ namespace TorTee.BLL
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserClaimsService, UserClaimsService>();
 
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddFluentValidationAutoValidation();

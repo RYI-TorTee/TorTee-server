@@ -11,11 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
 //builder.Services.AddGgAuthentication(builder.Configuration);
-builder.Services.AddCookieConfiguration();
+//builder.Services.AddCookieConfiguration();
 builder.Services.AddLogging();
 builder.Services.RegisterDALDependencies(builder.Configuration);
 builder.Services.RegisterBLLDependencies(builder.Configuration);
-builder.Services.AddDefaultCorsPolicy(builder.Configuration);
+builder.Services.AddCorsPolicy(builder.Configuration);
 builder.Services.AddVNPaySettings(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

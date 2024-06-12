@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Constants;
 
 namespace TorTee.API.Controllers
 {
@@ -16,12 +18,13 @@ namespace TorTee.API.Controllers
         [HttpGet("browse-mentor")]
         public async Task<IActionResult> GetMentorList([FromQuery] QueryParametersRequest queryParametersRequest)
         {
+          
             return await ExecuteServiceLogic(
             async () => await _mentorService.BrowseMentorList(queryParametersRequest).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
 
-        [HttpGet("recommendation")]
+        [HttpGet("recommendation")]        
         public async Task<IActionResult> GetRecommendedMetor([FromQuery] PagingRequest request)
         {
             return await ExecuteServiceLogic(
