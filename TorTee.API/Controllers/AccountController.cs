@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models.Requests.Commons;
+using TorTee.BLL.Models.Requests.Users;
 using TorTee.BLL.Services.IServices;
+using TorTee.DAL.Migrations;
 
 namespace TorTee.API.Controllers
 {
@@ -30,6 +32,15 @@ namespace TorTee.API.Controllers
         {
             return await ExecuteServiceLogic(
             async () => await _accountService.GetDetails(id).ConfigureAwait(false)
+           ).ConfigureAwait(false);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile(UserRequest request)
+        {
+            var user = _userClaimsService.GetUserClaims();
+            return await ExecuteServiceLogic(
+            async () => await _accountService.UpdateDetails(request, user.UserId).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
     }
