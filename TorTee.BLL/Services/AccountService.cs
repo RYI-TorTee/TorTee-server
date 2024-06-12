@@ -21,11 +21,11 @@ namespace TorTee.BLL.Services
             _fileStorageService = fileStorageService;
         }
         public async Task<ServiceActionResult> GetDetails(Guid id)
-        {
-            ArgumentNullException.ThrowIfNull(nameof(id));
+        {            
             var entity = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
-                .Where(u=>u.Id==id).Include(u=>u.UserSkills).FirstOrDefault();
-            ArgumentNullException.ThrowIfNull(nameof(entity));
+                .Where(u=>u.Id==id).Include(u=>u.UserSkills).FirstOrDefault()
+                ?? throw new NullReferenceException("User are not found");
+         
             return new ServiceActionResult() { Data = _mapper.Map<UserResponse>(entity) };
         }
 
