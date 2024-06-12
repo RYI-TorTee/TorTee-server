@@ -7,6 +7,6 @@
         public int DurationOfMeeting { get; set; }
         public int RemainSlot { get; set; }
         public double Price { get; set; }
-        public string? Status { get; set; }
+        public string? Status { get; set; }        
     }
 }

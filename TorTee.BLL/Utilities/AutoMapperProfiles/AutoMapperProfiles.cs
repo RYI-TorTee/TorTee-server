@@ -93,8 +93,9 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 CreateMap<CreateMenteeApplicationRequest, MenteeApplication>();
 
                 CreateMap<MenteeApplication, MenteeApplicationResponse>()
-                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status.ToString()));
-
+                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status.ToString()))
+                    .ForMember(dest => dest.MentorName, otp => otp.MapFrom(src=>src.MenteePlan.Mentor.FullName));
+                
                 #endregion
 
                 #region mentee plan 
