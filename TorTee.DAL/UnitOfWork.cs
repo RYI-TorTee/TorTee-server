@@ -20,8 +20,7 @@ namespace TorTee.DAL
         public IMenteeApplicationRepository MenteeApplicationRepository => new MenteeApplicationRepository(_dbContext);
         public IAssignmentRepository AssignmentRepository => new AssignmentRepository(_dbContext);
         public IAssignmentSubmissionRepository AssignmentSubmissionRepository => new AssignmentSubmissionRepository(_dbContext);
-        public IMentorshipRepository MentorshipRepository => new MentorshipRepository(_dbContext);
-
+       
         public UnitOfWork(DbContext dbContext)
         {
             _dbContext = dbContext;

@@ -30,6 +30,7 @@ namespace TorTee.BLL
             services.AddScoped<IApplicationQuestionService, ApplicationQuestionService>();
             services.AddScoped<IMenteePlanService, MenteePlanService>();
             services.AddScoped<IMenteeApplicationService, MenteeApplicationService>();
+            services.AddScoped<IWorkspaceService, WorkspaceService>();
 
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddFluentValidationAutoValidation();

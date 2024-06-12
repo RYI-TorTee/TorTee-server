@@ -25,7 +25,6 @@ namespace TorTee.DAL.DataContext
         public DbSet<MenteeApplicationAnswer> MenteeApplicationAnswers { get; set; }
         public DbSet<MenteePlan> MenteePlans { get; set; }
         public DbSet<MentorApplication> MentorApplications { get; set; }
-        public DbSet<Mentorship> Mentorships { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Session> Sessions { get; set; }
@@ -74,18 +73,6 @@ namespace TorTee.DAL.DataContext
             modelBuilder.Entity<Feedback>()
                 .HasOne(a => a.Mentee)
                 .WithMany(u => u.FeedbacksGiven)
-                .HasForeignKey(a => a.MenteeId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Mentorship>()
-                .HasOne(a => a.Mentor)
-                .WithMany(u => u.MentorshipAsMentor)
-                .HasForeignKey(a => a.MentorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Mentorship>()
-                .HasOne(a => a.Mentee)
-                .WithMany(u => u.MentorshipAsMentee)
                 .HasForeignKey(a => a.MenteeId)
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -7,6 +7,10 @@ namespace TorTee.Core.Domains.Entities
     {
         public DateTime AppliedDate { get; set; } = DateTime.Now;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
+
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
         public Guid UserId { get; set; }
         public User? User { get; set; }
 
