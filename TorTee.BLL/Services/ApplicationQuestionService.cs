@@ -10,9 +10,9 @@ namespace TorTee.BLL.Services
     public class ApplicationQuestionService : IApplicationQuestionService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
 
-        public ApplicationQuestionService(IUnitOfWork unitOfWork, Mapper mapper)
+        public ApplicationQuestionService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
