@@ -40,7 +40,7 @@ namespace TorTee.API.Controllers
         [HttpGet("mentor/applications")]
         public async Task<IActionResult> AllApplicationReceived()
         {
-            var userId = new Guid();
+            var userId = _userClaims.UserId;
             return await ExecuteServiceLogic(
             async () => await _menteeApplicationService.GetAllMenteeApplicationsReceived(userId).ConfigureAwait(false)
            ).ConfigureAwait(false);
@@ -52,7 +52,6 @@ namespace TorTee.API.Controllers
         [HttpPut("mentor/update-application")]
         public async Task<IActionResult> UpdateApplicationReceived(UpdateMenteeApplicationRequest request)
         {
-            var userId = new Guid();
             return await ExecuteServiceLogic(
             async () => await _menteeApplicationService.UpdateMenteeApplicationStatus(request).ConfigureAwait(false)
            ).ConfigureAwait(false);
@@ -64,7 +63,7 @@ namespace TorTee.API.Controllers
         [HttpGet("mentee/applications")]
         public async Task<IActionResult> AllApplicationSent()
         {
-            var userId = new Guid();
+            var userId = _userClaims.UserId;
             return await ExecuteServiceLogic(
             async () => await _menteeApplicationService.GetAllMenteeApplicationsSent(userId).ConfigureAwait(false)
            ).ConfigureAwait(false);

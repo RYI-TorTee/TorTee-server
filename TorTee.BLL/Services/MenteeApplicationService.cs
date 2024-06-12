@@ -35,6 +35,7 @@ namespace TorTee.BLL.Services
         {
             var applications = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Include(a => a.MenteePlan)
+                .ThenInclude(p => p.Mentor)
                 .Where(a => a.MenteePlan.MentorId == mentorId)
                 .Include(a => a.User)
                 .ProjectTo<MenteeApplicationResponse>(_mapper.ConfigurationProvider);
@@ -47,7 +48,8 @@ namespace TorTee.BLL.Services
         {
             var applications = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                  .Where(a => a.UserId == menteeId)
-                .Include(a => a.MenteePlan)               
+                .Include(a => a.MenteePlan)
+                .ThenInclude(p => p.Mentor)
                 .ProjectTo<MenteeApplicationResponse>(_mapper.ConfigurationProvider);
 
             return new ServiceActionResult(true) { Data = applications };
@@ -60,7 +62,8 @@ namespace TorTee.BLL.Services
                 .Include(a=>a.User)
                 .Include(a=>a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
-                .Include(a=>a.MenteeApplicationAnswers)
+                .Include(a=>a.MenteeApplicationAnswers!)
+                .ThenInclude(ans=>ans.Question)
                 .FirstOrDefault();
             return new ServiceActionResult(true) { Data = _mapper.Map<MenteeApplicationResponse>(application)};
         }
@@ -68,8 +71,17 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> UpdateMenteeApplicationStatus(UpdateMenteeApplicationRequest request)
         {
             var application = await _unitOfWork.MenteeApplicationRepository.FindAsync(request.Id);
+            if(application.Status!=ApplicationStatus.PENDING|| application.Status.ToString().Equals(request.Status, StringComparison.OrdinalIgnoreCase))
+            {
+                return new ServiceActionResult(false, $"Application already {application.Status.ToString()}");
+            }
 
-            Enum.TryParse(request.Status, true, out ApplicationStatus status);
+            var canParsed = Enum.TryParse(request.Status, true, out ApplicationStatus status);
+            if (!canParsed)
+            {
+                return new ServiceActionResult(false, $"Invalid application status {request.Status}");
+            }
+
             application.Status = status;
 
             await _unitOfWork.CommitAsync();
