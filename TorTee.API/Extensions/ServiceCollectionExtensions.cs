@@ -66,7 +66,7 @@ namespace TorTee.API.Extensions
                         //    path.StartsWithSegments("/hubs"))
                         //{
                         //    context.Token = accessToken;
-                        //}
+                        //}                       
 
                         return Task.CompletedTask;
                     }

@@ -12,6 +12,7 @@ namespace TorTee.Core.Domains.Entities
         public string? JobTitle { get; set; }
 
         //Common
+        public ICollection<UserSkill> UserSkills { get; set; }
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<Message> MessagesSent { get; set; }
         public ICollection<Message> MessagesReceived { get; set; }
@@ -28,8 +29,7 @@ namespace TorTee.Core.Domains.Entities
         public ICollection<Feedback> FeedbacksReceived { get; set; }
         public ICollection<Assignment> AssignmentsGiven { get; set; }        
         public ICollection<Session> Sessions { get; set; }        
-        public ICollection<Mentorship> MentorshipAsMentor { get; set; }        
-        public ICollection<UserSkill> UserSkills { get; set; }        
+        public ICollection<Mentorship> MentorshipAsMentor { get; set; }       
         public ICollection<MenteePlan> MenteePlans { get; set; }
         
     }

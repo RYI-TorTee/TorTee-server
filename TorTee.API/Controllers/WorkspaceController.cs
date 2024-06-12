@@ -79,7 +79,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost("mentor/create-assignment")]
-        public async Task<IActionResult> GetSubmissionSent(CreateAssignmentRequest request)
+        public async Task<IActionResult> CreateAssignment(CreateAssignmentRequest request)
         {
             Guid currentUser = new Guid();
             return await ExecuteServiceLogic(

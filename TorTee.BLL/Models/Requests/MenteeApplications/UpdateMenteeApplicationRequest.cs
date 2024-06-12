@@ -1,4 +1,4 @@
-﻿Snamespace TorTee.BLL.Models.Requests.MenteeApplications
+﻿namespace TorTee.BLL.Models.Requests.MenteeApplications
 {
     public class UpdateMenteeApplicationRequest
     {
