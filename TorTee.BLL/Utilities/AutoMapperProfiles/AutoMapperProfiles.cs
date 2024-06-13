@@ -103,7 +103,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<MenteeApplication, MenteeApplicationResponse>()
                     .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status.ToString()))
-                    .ForMember(dest => dest.MentorName, otp => otp.MapFrom(src => src.MenteePlan.Mentor.FullName));
+                    .ForMember(dest => dest.Mentor, otp => otp.MapFrom(src => src.MenteePlan.Mentor));
 
                 #endregion
 
