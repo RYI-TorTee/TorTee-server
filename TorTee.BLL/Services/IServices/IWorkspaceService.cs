@@ -7,7 +7,7 @@ namespace TorTee.BLL.Services.IServices
     public interface IWorkspaceService
     {
         Task<ServiceActionResult> GetMenteeAssignments(Guid menteeId);
-        Task<ServiceActionResult> CreateASubmission(CreateSubmissionRequest request);
+        Task<ServiceActionResult> CreateASubmission(CreateSubmissionRequest request, Guid menteeId);
         Task<ServiceActionResult> GetAssignmentDetails(Guid assignmentId);
         Task<ServiceActionResult> GetSentSubmission(Guid menteeId);
         Task<ServiceActionResult> GetReceivedSubmission(Guid mentorId);

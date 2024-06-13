@@ -71,14 +71,17 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region assignment
 
                 CreateMap<CreateAssignmentRequest, Assignment>();
-                CreateMap<Assignment, AssignmentResponse>();
+                CreateMap<Assignment, AssignmentResponse>()
+                .ForMember(dest => dest.IsSubmited,
+                    opt => opt.MapFrom(src => (src.Submissions ?? new List<AssignmentSubmission>()).Count() > 0));
 
                 #endregion
 
                 #region submission
 
                 CreateMap<CreateSubmissionRequest, AssignmentSubmission>();
-                CreateMap<AssignmentSubmission, AssignmentSubmissionResponse>();
+                CreateMap<AssignmentSubmission, AssignmentSubmissionResponse>()
+                    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 
                 #endregion
 
@@ -94,8 +97,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<MenteeApplication, MenteeApplicationResponse>()
                     .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status.ToString()))
-                    .ForMember(dest => dest.MentorName, otp => otp.MapFrom(src=>src.MenteePlan.Mentor.FullName));
-                
+                    .ForMember(dest => dest.MentorName, otp => otp.MapFrom(src => src.MenteePlan.Mentor.FullName));
+
                 #endregion
 
                 #region mentee plan 

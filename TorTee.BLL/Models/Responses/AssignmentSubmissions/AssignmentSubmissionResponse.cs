@@ -9,7 +9,7 @@ namespace TorTee.BLL.Models.Responses.AssignmentSubmissions
         public string? Description { get; set; }
         public float Grade { get; set; }
         public DateTime SubmitedDate { get; set; } 
-        public SubmissionStatus Status { get; set; } 
+        public string? Status { get; set; } 
         public Guid AssignmentId { get; set; }       
     }
 }
