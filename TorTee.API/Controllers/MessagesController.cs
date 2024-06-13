@@ -27,7 +27,7 @@ namespace TorTee.API.Controllers
         public async Task<IActionResult> GetMyChatBoxs()
         {
             //get id from cookie
-            var userId = new Guid();
+            var userId = new Guid("34e51525-5b2c-4b66-29cd-08dc7b8919db");
             return await ExecuteServiceLogic(
            async () => await _messageService.GetMyChatBoxs(userId).ConfigureAwait(false)
           ).ConfigureAwait(false);
@@ -37,7 +37,7 @@ namespace TorTee.API.Controllers
         public async Task<IActionResult> GetMessagesFromChatBox([FromQuery]ChatBoxParams chatBoxParams)
         {
             //get id from cookie
-            var userId = new Guid();
+            var userId = new Guid("34e51525-5b2c-4b66-29cd-08dc7b8919db");
             return await ExecuteServiceLogic(
            async () => await _messageService.GetMessagesOfAChat(chatBoxParams, userId).ConfigureAwait(false)
           ).ConfigureAwait(false);

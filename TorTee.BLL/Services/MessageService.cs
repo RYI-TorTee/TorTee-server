@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using TorTee.API.SignalR;
 using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
@@ -15,6 +17,7 @@ namespace TorTee.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IHubContext<MessageHub> _hubContext;
         public MessageService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
@@ -37,7 +40,10 @@ namespace TorTee.BLL.Services
 
             var returnMessage = _mapper.Map<MessageResponse>(request);
 
-            return new ServiceActionResult(true) { Data = returnMessage };
+            await _hubContext.Clients.User(receiver.Id.ToString())
+           .SendAsync("ReceiveMessage", returnMessage);
+
+            return new ServiceActionResult(true);
         }
 
 
@@ -80,7 +86,7 @@ namespace TorTee.BLL.Services
                 {
                     CurrentUserId = currentUserId,
                     ChatPartnerId = g.Key,
-                    ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.UserName : g.First().Sender.UserName,
+                    ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
                     Messages = g.OrderBy(m => m.SentTime)
                 .Take(1).Select(m => new MessageResponse
                 {
