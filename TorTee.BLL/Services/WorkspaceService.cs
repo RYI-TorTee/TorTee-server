@@ -6,6 +6,8 @@ using TorTee.BLL.Models.Requests.Assignments;
 using TorTee.BLL.Models.Requests.Submissions;
 using TorTee.BLL.Models.Responses.Assignments;
 using TorTee.BLL.Models.Responses.AssignmentSubmissions;
+using TorTee.BLL.Models.Responses.Mentees;
+using TorTee.BLL.Models.Responses.Users;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
@@ -82,16 +84,16 @@ namespace TorTee.BLL.Services
             var returnAssignment = (await _unitOfWork.AssignmentRepository.GetAllAsyncAsQueryable())
                 .Where(a => a.Id == assignmentId)
                 .Include(a => a.Submissions)
-                .ToList()
                 .FirstOrDefault();
 
-            return new ServiceActionResult(true) { Data = _mapper.Map<AssignmentResponse>(returnAssignment) };
+            return new ServiceActionResult(true) { Data = _mapper.Map<AssignmentDetailResponse>(returnAssignment) };
         }
 
         public async Task<ServiceActionResult> GetMenteeAssignments(Guid menteeId)
         {
             var myAssignments = (await _unitOfWork.AssignmentRepository.GetAllAsyncAsQueryable())
                                 .Where(a => a.MenteeId == menteeId)
+                                .Include (a => a.Mentor)
                                 .Include(a => a.Submissions)
                                 .OrderByDescending(a=>a.AssignedDate);
 
@@ -103,10 +105,31 @@ namespace TorTee.BLL.Services
         {
             var myAssignments = (await _unitOfWork.AssignmentRepository.GetAllAsyncAsQueryable())
                                 .Where(a => a.MentorId == mentorId)
+                                .Include(a=>a.Mentee)
                                 .Include(a => a.Submissions)
                                 .OrderByDescending(a => a.AssignedDate); ;
 
             return new ServiceActionResult(true) { Data = myAssignments.ProjectTo<AssignmentResponse>(_mapper.ConfigurationProvider) };
+        }
+
+        public async Task<ServiceActionResult> GetMyMentee(Guid mentorId)
+        {
+            var mentorShip = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Include(app => app.MenteePlan)
+                .Where(app => app.MenteePlan.MentorId == mentorId && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now)
+                .Select(app=>app.User);
+
+            return new ServiceActionResult(true) { Data = mentorShip.ProjectTo<UserResponse>(_mapper.ConfigurationProvider) };
+        }
+
+        public async Task<ServiceActionResult> GetMyMentor(Guid menteeId)
+        {
+            var mentorShip = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Where(app => app.UserId == menteeId && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now)
+                .Select(app=>app.MenteePlan.Mentor);
+
+            return new ServiceActionResult(true) { Data = mentorShip.ProjectTo<MenteeResponse>(_mapper.ConfigurationProvider) };
+
         }
 
         public async Task<ServiceActionResult> GetReceivedSubmission(Guid mentorId)
@@ -121,12 +144,12 @@ namespace TorTee.BLL.Services
 
         public async Task<ServiceActionResult> GetSentSubmission(Guid menteeId)
         {
-            //var submissions = (await _unitOfWork.AssignmentSubmissionRepository.GetAllAsyncAsQueryable())
-            //    .Include(s => s.Assignment)
-            //    .Where(s => s.Assignment.MenteeId == menteeId).OrderByDescending(s => s.SubmitedDate)S.
-            //    ProjectTo<AssignmentSubmissionResponse>(_mapper.ConfigurationProvider);
+            var submissions = (await _unitOfWork.AssignmentSubmissionRepository.GetAllAsyncAsQueryable())
+                .Include(s => s.Assignment)
+                .Where(s => s.Assignment.MenteeId == menteeId).OrderByDescending(s => s.SubmitedDate).
+                ProjectTo<AssignmentSubmissionResponse>(_mapper.ConfigurationProvider);
 
-            return new ServiceActionResult(true) { Data = { }  };
+            return new ServiceActionResult(true) { Data = submissions };
         }
 
         public async Task<ServiceActionResult> GetSubmissionDetails(Guid submissionId)
@@ -140,7 +163,10 @@ namespace TorTee.BLL.Services
         {
             var submission = await _unitOfWork.AssignmentSubmissionRepository.FindAsync(request.Id);
 
-            submission.Description = request.Description;
+            if(submission==null)
+                return new ServiceActionResult(false) { Detail = "Invalid submission"};
+
+            submission.CommentOfMentor = request.CommentOfMentor;
             submission.Grade = request.Grade;
             submission.Status = Core.Domains.Enums.SubmissionStatus.GRADED;
 

@@ -23,7 +23,7 @@ namespace TorTee.API.Controllers
         [HttpGet("mentee/my-assignments")]
         public async Task<IActionResult> GetAssignmentsReceived()
         {
-            Guid currentUser = new Guid();
+            Guid currentUser = new Guid("5a08a055-6168-4c7d-8158-08dc845d49d6");
             return await ExecuteServiceLogic(
                 async () => await _workspaceService.GetMenteeAssignments(currentUser).ConfigureAwait(false)
             ).ConfigureAwait(false);
@@ -47,15 +47,16 @@ namespace TorTee.API.Controllers
             ).ConfigureAwait(false);
         }
 
-        //[HttpGet("mentee/my-mentors")]
-        //public async Task<IActionResult> GetMyMentors()
-        //{ Guid currentUser = new Guid("5a08a055-6168-4c7d-8158-08dc845d49d6"); mentee
-        //Guid currentUser = new Guid("34E51525-5B2C-4B66-29CD-08DC7B8919DB"); mentor
-        //    Guid currentUser = new Guid();
-        //    return await ExecuteServiceLogic(
-        //        async () => await _mentorshipService.GetMyMentors(currentUser).ConfigureAwait(false)
-        //    ).ConfigureAwait(false);
-        //}
+        [HttpGet("mentee/my-mentors")]
+        public async Task<IActionResult> GetMyMentors()
+        {
+            Guid currentUser = new Guid("5a08a055-6168-4c7d-8158-08dc845d49d6");
+      
+           
+            return await ExecuteServiceLogic(
+                async () => await _workspaceService.GetMyMentor(currentUser).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
 
         [HttpGet("assignments/{id}")]
         public async Task<IActionResult> GetAssignmentsDetails(Guid id)
@@ -108,13 +109,13 @@ namespace TorTee.API.Controllers
             ).ConfigureAwait(false);
         }
 
-        //[HttpGet("mentor/my-mentees")]
-        //public async Task<IActionResult> GetMyMentees()
-        //{
-        //    Guid currentUser = new Guid();
-        //    return await ExecuteServiceLogic(
-        //        async () => await _mentorshipService.GetMyMentees(currentUser).ConfigureAwait(false)
-        //    ).ConfigureAwait(false);
-        //}
+        [HttpGet("mentor/my-mentees")]
+        public async Task<IActionResult> GetMyMentees()
+        {
+            Guid currentUser = new Guid("34E51525-5B2C-4B66-29CD-08DC7B8919DB");
+            return await ExecuteServiceLogic(
+                async () => await _workspaceService.GetMyMentee(currentUser).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
     }
 }

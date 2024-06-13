@@ -10,11 +10,18 @@ namespace TorTee.BLL.Models.Responses.Assignments
         public string? File { get; set; }
         public DateTime AssignedDate { get; set; }
         public DateTime Deadline { get; set; }
-        public UserResponse? Mentor { get; set; }       
-        public UserResponse? Mentee { get; set; }       
+        public AssignmentUserResponse? Mentor { get; set; }       
+        public AssignmentUserResponse? Mentee { get; set; }       
         public Guid MentorId { get; set; }       
         public Guid MenteeId { get; set; }   
+        public int TotalOfSubmission { get; set; }   
         public bool IsSubmited { get; set; }   
-        public bool ÍsGraded { get; set; }   
+    }
+
+    public record AssignmentUserResponse
+    {
+        public Guid Id { get; set; }
+        public string FullName { get; set; } = null!;
+        public string? ProfilePic { get; set; }
     }
 }

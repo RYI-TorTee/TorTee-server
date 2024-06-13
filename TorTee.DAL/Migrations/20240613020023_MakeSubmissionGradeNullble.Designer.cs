@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TorTee.DAL.DataContext;
 
@@ -11,9 +12,11 @@ using TorTee.DAL.DataContext;
 namespace TorTee.DAL.Migrations
 {
     [DbContext(typeof(TorTeeDbContext))]
-    partial class TorTeeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613020023_MakeSubmissionGradeNullble")]
+    partial class MakeSubmissionGradeNullble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,17 +130,17 @@ namespace TorTee.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("601b9d75-5497-450a-8ed4-6b7787d09b08"),
+                            Id = new Guid("89767658-b21c-41b6-9bc9-ec830c48be04"),
                             Content = "What best describes the goal of your mentorship?"
                         },
                         new
                         {
-                            Id = new Guid("6a48ad81-5323-4cfd-bd51-ebe76ddade2a"),
+                            Id = new Guid("365e0b99-785a-4b84-a671-cc39973623d9"),
                             Content = "When would you like to reach that goal?"
                         },
                         new
                         {
-                            Id = new Guid("b23def17-c946-40f6-91b9-aeb193d2191c"),
+                            Id = new Guid("09be1a9b-7e1f-49f1-9898-a2837e44b7d4"),
                             Content = "Write a message to Mentor"
                         });
                 });
@@ -186,9 +189,6 @@ namespace TorTee.DAL.Migrations
 
                     b.Property<Guid>("AssignmentId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CommentOfMentor")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
