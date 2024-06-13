@@ -23,6 +23,18 @@ namespace TorTee.BLL.Services
         }
         public async Task<ServiceActionResult> CreateMenteeApplication(CreateMenteeApplicationRequest request, Guid currentUserId)
         {
+            var menteePlan = (await _unitOfWork.MentorPlanRepository.GetAllAsyncAsQueryable())
+                .Where(m => m.Id == request.MenteePlanId)
+                .Include(m => m.MenteeApplications)
+                .FirstOrDefault();
+
+            if (menteePlan == null)
+                return new ServiceActionResult(false) { Detail = "Invalid metorship plan" };
+
+            var isRemainingSlot = menteePlan.TotalSlot >= menteePlan.MenteeApplications?.Where(m=>m.Status == ApplicationStatus.ACCEPTED).Count();
+            if (!isRemainingSlot)
+                return new ServiceActionResult(false) { Detail = "This mentor is full slot for mentoring" };
+
             var applicationEntity = _mapper.Map<MenteeApplication>(request);
             applicationEntity.UserId = currentUserId;
 
@@ -58,20 +70,20 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> GetMenteeApplicationDetails(Guid Id)
         {
             var application = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
-                .Where(a=>a.Id == Id)
-                .Include(a=>a.User)
-                .Include(a=>a.MenteePlan)
+                .Where(a => a.Id == Id)
+                .Include(a => a.User)
+                .Include(a => a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
-                .Include(a=>a.MenteeApplicationAnswers!)
-                .ThenInclude(ans=>ans.Question)
+                .Include(a => a.MenteeApplicationAnswers!)
+                .ThenInclude(ans => ans.Question)
                 .FirstOrDefault();
-            return new ServiceActionResult(true) { Data = _mapper.Map<MenteeApplicationResponse>(application)};
+            return new ServiceActionResult(true) { Data = _mapper.Map<MenteeApplicationResponse>(application) };
         }
 
         public async Task<ServiceActionResult> UpdateMenteeApplicationStatus(UpdateMenteeApplicationRequest request)
         {
             var application = await _unitOfWork.MenteeApplicationRepository.FindAsync(request.Id);
-            if(application.Status!=ApplicationStatus.PENDING|| application.Status.ToString().Equals(request.Status, StringComparison.OrdinalIgnoreCase))
+            if (application.Status != ApplicationStatus.PENDING || application.Status.ToString().Equals(request.Status, StringComparison.OrdinalIgnoreCase))
             {
                 return new ServiceActionResult(false, $"Application already {application.Status.ToString()}");
             }

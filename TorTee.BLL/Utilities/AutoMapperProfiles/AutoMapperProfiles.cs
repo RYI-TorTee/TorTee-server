@@ -19,6 +19,7 @@ using TorTee.BLL.Models.Responses.Messages;
 using TorTee.BLL.Models.Responses.Skills;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.Core.Domains.Entities;
+using TorTee.Core.Domains.Enums;
 using TorTee.Core.Dtos;
 
 namespace TorTee.BLL.Utilities.AutoMapperProfiles
@@ -45,6 +46,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<UserRequest, User>();
 
+                CreateMap<User, AssignmentUserResponse>();
+
                 #endregion
 
                 #region mentor application 
@@ -59,7 +62,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 #region skill        
 
-                CreateMap<Skill, SkillReponse>();
+                CreateMap<UserSkill, SkillReponse>();
 
                 #endregion
 
@@ -71,7 +74,10 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region assignment
 
                 CreateMap<CreateAssignmentRequest, Assignment>();
+                CreateMap<Assignment, AssignmentDetailResponse>();
                 CreateMap<Assignment, AssignmentResponse>()
+                    .ForMember(dest => dest.TotalOfSubmission,
+                    opt => opt.MapFrom(src => (src.Submissions ?? new List<AssignmentSubmission>()).Count()))
                 .ForMember(dest => dest.IsSubmited,
                     opt => opt.MapFrom(src => (src.Submissions ?? new List<AssignmentSubmission>()).Count() > 0));
 
@@ -104,8 +110,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region mentee plan 
 
                 CreateMap<MenteePlan, MenteePlanResponse>()
-                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.TotalSlot - src.MenteeApplications.Count() <= 0 ? "Full Slot" : "Available"))
-                    .ForMember(dest => dest.RemainSlot, opt => opt.MapFrom(src => src.TotalSlot - src.MenteeApplications.Count()));
+                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.TotalSlot - (src.MenteeApplications.Where(m => m.Status == ApplicationStatus.ACCEPTED) ?? new List<MenteeApplication>()).Count() <= 0 ? "Full Slot" : "Available"))
+                    .ForMember(dest => dest.RemainSlot, opt => opt.MapFrom(src => src.TotalSlot - (src.MenteeApplications.Where(m => m.Status == ApplicationStatus.ACCEPTED) ?? new List<MenteeApplication>()).Count()));
 
                 #endregion
 

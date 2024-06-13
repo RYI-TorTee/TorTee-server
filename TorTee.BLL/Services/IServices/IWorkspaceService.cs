@@ -15,5 +15,7 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> CreateAAssignment(CreateAssignmentRequest request, Guid mentorId);       
         Task<ServiceActionResult> GetMentorAssignments(Guid mentorId);
         Task<ServiceActionResult> UpdateGradeForSubmission(GradeSubmissionRequest request);
+        Task<ServiceActionResult> GetMyMentee(Guid mentorId);
+        Task<ServiceActionResult> GetMyMentor(Guid menteeId);
     }
 }

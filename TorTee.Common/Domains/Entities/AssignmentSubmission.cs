@@ -7,7 +7,8 @@ namespace TorTee.Core.Domains.Entities
     {
         public string? File { get; set; }
         public string? Description { get; set; }
-        public float Grade { get; set; }
+        public string? CommentOfMentor { get; set; }
+        public float? Grade { get; set; }
         public DateTime SubmitedDate { get; set; } = DateTime.Now;
         public SubmissionStatus Status { get; set; } = SubmissionStatus.UNGRADED;
 
