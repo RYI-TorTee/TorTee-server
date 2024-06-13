@@ -38,7 +38,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
                 CreateMap<User, MentorOverviewResponse>()
-                   .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.UserSkills.Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
+                   .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => (src.UserSkills??new List<UserSkill>()).Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
 
                 CreateMap<User, MenteeResponse>();
 
@@ -103,15 +103,15 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<MenteeApplication, MenteeApplicationResponse>()
                     .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status.ToString()))
-                    .ForMember(dest => dest.Mentor, otp => otp.MapFrom(src => src.MenteePlan.Mentor));
+                    .ForMember(dest => dest.Mentor, otp => otp.MapFrom(src =>src.MenteePlan.Mentor));
 
                 #endregion
 
                 #region mentee plan 
 
                 CreateMap<MenteePlan, MenteePlanResponse>()
-                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.TotalSlot - (src.MenteeApplications.Where(m => m.Status == ApplicationStatus.ACCEPTED) ?? new List<MenteeApplication>()).Count() <= 0 ? "Full Slot" : "Available"))
-                    .ForMember(dest => dest.RemainSlot, opt => opt.MapFrom(src => src.TotalSlot - (src.MenteeApplications.Where(m => m.Status == ApplicationStatus.ACCEPTED) ?? new List<MenteeApplication>()).Count()));
+                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.TotalSlot - (src.MenteeApplications ?? new List<MenteeApplication>()).Where(m => m.Status == ApplicationStatus.ACCEPTED).Count() <= 0 ? "Full Slot" : "Available"))
+                    .ForMember(dest => dest.RemainSlot, opt => opt.MapFrom(src => src.TotalSlot - (src.MenteeApplications ?? new List<MenteeApplication>()).Where(m => m.Status == ApplicationStatus.ACCEPTED).Count()));
 
                 #endregion
 

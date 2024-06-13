@@ -63,9 +63,9 @@ namespace TorTee.API.Controllers
         [HttpGet("mentee/applications")]
         public async Task<IActionResult> AllApplicationSent()
         {
-            var userId = _userClaims.UserId;
+            //var userId = _userClaims.UserId;
             return await ExecuteServiceLogic(
-            async () => await _menteeApplicationService.GetAllMenteeApplicationsSent(userId).ConfigureAwait(false)
+            async () => await _menteeApplicationService.GetAllMenteeApplicationsSent(new Guid("5A08A055-6168-4C7D-8158-08DC845D49D6")).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
         /// <summary>
