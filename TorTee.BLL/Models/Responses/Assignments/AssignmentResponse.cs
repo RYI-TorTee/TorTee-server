@@ -1,4 +1,4 @@
-﻿using TorTee.BLL.Models.Responses.AssignmentSubmissions;
+﻿using TorTee.BLL.Models.Responses.Users;
 
 namespace TorTee.BLL.Models.Responses.Assignments
 {
@@ -10,8 +10,11 @@ namespace TorTee.BLL.Models.Responses.Assignments
         public string? File { get; set; }
         public DateTime AssignedDate { get; set; }
         public DateTime Deadline { get; set; }
+        public UserResponse? Mentor { get; set; }       
+        public UserResponse? Mentee { get; set; }       
         public Guid MentorId { get; set; }       
         public Guid MenteeId { get; set; }   
-        public ICollection<AssignmentSubmissionResponse>? Submissions { get; set; }
+        public bool IsSubmited { get; set; }   
+        public bool ÍsGraded { get; set; }   
     }
 }
