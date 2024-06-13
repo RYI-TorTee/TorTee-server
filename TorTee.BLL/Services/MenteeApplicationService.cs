@@ -8,6 +8,7 @@ using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
 using TorTee.DAL;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TorTee.BLL.Services
 {
@@ -31,7 +32,7 @@ namespace TorTee.BLL.Services
             if (menteePlan == null)
                 return new ServiceActionResult(false) { Detail = "Invalid metorship plan" };
 
-            var isRemainingSlot = menteePlan.TotalSlot >= menteePlan.MenteeApplications?.Where(m=>m.Status == ApplicationStatus.ACCEPTED).Count();
+            var isRemainingSlot = menteePlan.TotalSlot >= menteePlan.MenteeApplications?.Where(m => m.Status == ApplicationStatus.ACCEPTED).Count();
             if (!isRemainingSlot)
                 return new ServiceActionResult(false) { Detail = "This mentor is full slot for mentoring" };
 
@@ -45,14 +46,14 @@ namespace TorTee.BLL.Services
 
         public async Task<ServiceActionResult> GetAllMenteeApplicationsReceived(Guid mentorId)
         {
-            var applications = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+            var applications = await (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Include(a => a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
                 .Where(a => a.MenteePlan.MentorId == mentorId)
                 .Include(a => a.User)
-                .ProjectTo<MenteeApplicationResponse>(_mapper.ConfigurationProvider);
+                .ToListAsync(); ;
 
-            return new ServiceActionResult(true) { Data = applications };
+            return new ServiceActionResult(true) { Data = _mapper.Map<List<MenteeApplication>, List<MenteeApplicationResponse>>(applications) };
 
         }
 
@@ -62,8 +63,7 @@ namespace TorTee.BLL.Services
                  .Where(a => a.UserId == menteeId)
                 .Include(a => a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
-                //.ProjectTo<MenteeApplicationResponse>(_mapper.ConfigurationProvider)
-                .ToListAsync(); 
+                .ToListAsync();
 
             return new ServiceActionResult(true) { Data = _mapper.Map<List<MenteeApplication>, List<MenteeApplicationResponse>>(applications) };
         }
