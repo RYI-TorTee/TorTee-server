@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -70,9 +71,10 @@ namespace TorTee.BLL.Services
         {
             IQueryable<MentorApplication> applicationQuery = (await _unitOfWork.MentorApplicationRepository.GetAllAsyncAsQueryable()).Include(a => a.User);
 
-            if (!string.IsNullOrEmpty(queryParameters.Status))
+            var canParsed = Enum.TryParse(queryParameters.Status, true, out ApplicationStatus status);
+            if (canParsed)
             {
-                applicationQuery = applicationQuery.Where(m => (int)m.Status == EnumHelper.CompareStatus<ApplicationStatus>(queryParameters.Status));
+                applicationQuery = applicationQuery.Where(m => m.Status == status);
             }
 
             if (!string.IsNullOrEmpty(queryParameters.Search))

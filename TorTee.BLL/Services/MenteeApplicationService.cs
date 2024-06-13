@@ -58,13 +58,14 @@ namespace TorTee.BLL.Services
 
         public async Task<ServiceActionResult> GetAllMenteeApplicationsSent(Guid menteeId)
         {
-            var applications = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+            var applications = await (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                  .Where(a => a.UserId == menteeId)
                 .Include(a => a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
-                .ProjectTo<MenteeApplicationResponse>(_mapper.ConfigurationProvider);
+                //.ProjectTo<MenteeApplicationResponse>(_mapper.ConfigurationProvider)
+                .ToListAsync(); 
 
-            return new ServiceActionResult(true) { Data = applications };
+            return new ServiceActionResult(true) { Data = _mapper.Map<List<MenteeApplication>, List<MenteeApplicationResponse>>(applications) };
         }
 
         public async Task<ServiceActionResult> GetMenteeApplicationDetails(Guid Id)
