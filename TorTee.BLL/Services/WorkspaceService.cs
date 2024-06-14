@@ -93,6 +93,7 @@ namespace TorTee.BLL.Services
         {
             var returnAssignment = (await _unitOfWork.AssignmentRepository.GetAllAsyncAsQueryable())
                 .Where(a => a.Id == assignmentId)
+                .Include(a => a.Mentee)
                 .Include(a => a.Submissions)
                 .FirstOrDefault();
 

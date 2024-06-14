@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using TorTee.API.SignalR;
 using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
@@ -24,8 +25,7 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-           // await _hubContext.Clients.User(receiver.Id.ToString())
-           //.SendAsync("ReceiveMessage", returnMessage);
+           
         public async Task<ServiceActionResult> SendMessage(CreateMessageRequest request, Guid userId)
         {
             var currentUser = userId;
@@ -41,7 +41,7 @@ namespace TorTee.BLL.Services
             await _unitOfWork.CommitAsync();
 
             var returnMessage = _mapper.Map<MessageResponse>(request);
-
+            //await _hubContext.
 
             return new ServiceActionResult(true);
         }
