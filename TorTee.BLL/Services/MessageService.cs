@@ -24,6 +24,8 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
+           // await _hubContext.Clients.User(receiver.Id.ToString())
+           //.SendAsync("ReceiveMessage", returnMessage);
         public async Task<ServiceActionResult> SendMessage(CreateMessageRequest request, Guid userId)
         {
             var currentUser = userId;
@@ -40,8 +42,6 @@ namespace TorTee.BLL.Services
 
             var returnMessage = _mapper.Map<MessageResponse>(request);
 
-            await _hubContext.Clients.User(receiver.Id.ToString())
-           .SendAsync("ReceiveMessage", returnMessage);
 
             return new ServiceActionResult(true);
         }
