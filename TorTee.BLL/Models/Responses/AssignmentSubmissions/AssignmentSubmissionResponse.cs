@@ -7,6 +7,7 @@ namespace TorTee.BLL.Models.Responses.AssignmentSubmissions
         public Guid Id { get; set; }
         public string? File { get; set; }
         public string? Description { get; set; }
+        public string? CommentOfMentor { get; set; }
         public float Grade { get; set; }
         public DateTime SubmitedDate { get; set; } 
         public string? Status { get; set; } 
