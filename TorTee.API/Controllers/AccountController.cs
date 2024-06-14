@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
-using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Users;
 using TorTee.BLL.Services.IServices;
-using TorTee.DAL.Migrations;
 
 namespace TorTee.API.Controllers
 {
