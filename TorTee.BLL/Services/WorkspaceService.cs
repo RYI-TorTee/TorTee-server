@@ -26,11 +26,21 @@ namespace TorTee.BLL.Services
             _mapper = mapper;
             _fileStorageService = fileStorageService;
         }
+
+        public async Task<ServiceActionResult> GetMyMentee(Guid mentorId)
+        {
+            var mentorShip = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Include(app => app.MenteePlan)
+                .Where(app => app.MenteePlan.MentorId == mentorId && app.StartDate <= DateTime.Now && app.EndDate >= DateTime.Now)
+                .Select(app => app.User);
+
+            return new ServiceActionResult(true) { Data = mentorShip.ProjectTo<UserResponse>(_mapper.ConfigurationProvider) };
+        }
         public async Task<ServiceActionResult> CreateAAssignment(CreateAssignmentRequest request, Guid mentorId)
         {
             var isOnDurationOdMentoring = await (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Include(app => app.MenteePlan)
-                .Where(app => app.UserId == request.MenteeId && app.MenteePlan.MentorId == mentorId && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now)
+                .Where(app => app.UserId == request.MenteeId && app.MenteePlan.MentorId == mentorId && app.StartDate <= DateTime.Now && DateTime.Now <= app.EndDate)
                 .AnyAsync();
 
             var mentee = await _unitOfWork.UserRepository.FindAsync(request.MenteeId);
@@ -61,7 +71,7 @@ namespace TorTee.BLL.Services
 
             var isOnDurationOdMentoring = await (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Include(app => app.MenteePlan)
-                .Where(app => app.UserId == menteeId && app.MenteePlan.MentorId == assignment.MentorId && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now)
+                .Where(app => app.UserId == menteeId && app.MenteePlan.MentorId == assignment.MentorId && app.StartDate <= DateTime.Now && DateTime.Now <= app.EndDate)
                 .AnyAsync();
 
             if (!isOnDurationOdMentoring)
@@ -112,20 +122,11 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult(true) { Data = myAssignments.ProjectTo<AssignmentResponse>(_mapper.ConfigurationProvider) };
         }
 
-        public async Task<ServiceActionResult> GetMyMentee(Guid mentorId)
-        {
-            var mentorShip = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
-                .Include(app => app.MenteePlan)
-                .Where(app => app.MenteePlan.MentorId == mentorId && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now)
-                .Select(app=>app.User);
-
-            return new ServiceActionResult(true) { Data = mentorShip.ProjectTo<UserResponse>(_mapper.ConfigurationProvider) };
-        }
-
+      
         public async Task<ServiceActionResult> GetMyMentor(Guid menteeId)
         {
             var mentorShip = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
-                .Where(app => app.UserId == menteeId && app.StartDate >= DateTime.Now && app.EndDate <= DateTime.Now)
+                .Where(app => app.UserId == menteeId && app.StartDate <= DateTime.Now && DateTime.Now <= app.EndDate)
                 .Select(app=>app.MenteePlan.Mentor);
 
             return new ServiceActionResult(true) { Data = mentorShip.ProjectTo<MenteeResponse>(_mapper.ConfigurationProvider) };
