@@ -125,6 +125,57 @@ namespace TorTee.DAL.DataContext
                 Content = "Write a message to Mentor"
             }
         );
+
+            modelBuilder.Entity<Skill>().HasData(
+            new Skill { Id = Guid.NewGuid(), SkillName = "Project Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Software Development" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Data Analysis" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Digital Marketing" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Machine Learning" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Communication" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Team Leadership" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Problem Solving" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Critical Thinking" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Financial Analysis" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Graphic Design" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Customer Service" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Sales" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Strategic Planning" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Web Development" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Mobile Development" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Cloud Computing" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Cybersecurity" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Database Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Network Administration" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "DevOps" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Artificial Intelligence" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Blockchain" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "IT Support" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Time Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Adaptability" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Collaboration" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Conflict Resolution" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Creativity" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Work Ethic" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Interpersonal Skills" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Emotional Intelligence" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Business Analysis" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Product Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Business Strategy" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Operations Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Supply Chain Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Entrepreneurship" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Negotiation" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Risk Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "SEO (Search Engine Optimization)" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "SEM (Search Engine Marketing)" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Content Marketing" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Social Media Marketing" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Brand Management" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Market Research" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Email Marketing" },
+            new Skill { Id = Guid.NewGuid(), SkillName = "Public Relations" }
+        );
         }
     }
 }

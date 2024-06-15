@@ -23,7 +23,7 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> GetDetails(Guid id)
         {            
             var entity = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
-                .Where(u=>u.Id==id).Include(u=>u.UserSkills).FirstOrDefault()
+                .Where(u=>u.Id==id).Include(u=>u.UserSkills)!.ThenInclude(uk=>uk.Skill).FirstOrDefault()
                 ?? throw new NullReferenceException("User are not found");
          
             return new ServiceActionResult() { Data = _mapper.Map<UserResponse>(entity) };

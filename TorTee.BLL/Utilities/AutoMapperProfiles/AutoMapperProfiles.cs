@@ -62,7 +62,10 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 #region skill        
 
-                CreateMap<UserSkill, SkillReponse>();
+                CreateMap<UserSkill, SkillReponse>()
+                    .ForMember(dest=>dest.Id, opt =>opt.MapFrom(src=>src.SkillId))
+                    .ForMember(dest=>dest.SkillName, opt =>opt.MapFrom(src=>src.Skill.SkillName));
+                CreateMap<Skill, SkillReponse>();
 
                 #endregion
 
