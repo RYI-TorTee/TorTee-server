@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Users;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
 
 namespace TorTee.BLL.Services
@@ -13,12 +15,14 @@ namespace TorTee.BLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
+        private readonly UserManager<User> _userManager;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _fileStorageService = fileStorageService;
+            _userManager = userManager;
         }
         public async Task<ServiceActionResult> GetDetails(Guid id)
         {            
@@ -45,9 +49,23 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult();
         }
 
-        public Task<ServiceActionResult> UpdatePassword(UpdatePasswordRequest request)
+        public async Task<ServiceActionResult> UpdatePassword(UpdatePasswordRequest request, Guid userId)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new ServiceActionResult(false, "User not found");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                var error = result.Errors.First();
+                return new ServiceActionResult(false, error.Description);
+            }
+
+            return new ServiceActionResult();
         }
     }
 }

@@ -8,6 +8,6 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> GetDetails(Guid id);
 
         Task<ServiceActionResult> UpdateDetails(UserRequest request, Guid userId);
-        Task<ServiceActionResult> UpdatePassword(UpdatePasswordRequest request);
+        Task<ServiceActionResult> UpdatePassword(UpdatePasswordRequest request, Guid userId);
     }
 }
