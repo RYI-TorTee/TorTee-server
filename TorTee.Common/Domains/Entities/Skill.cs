@@ -5,5 +5,6 @@ namespace TorTee.Core.Domains.Entities
     public class Skill: EntityBase<Guid>
     {
         public string SkillName { get; set; } = null!;
+        public ICollection<UserSkill>? UserSkills { get; set; }
     }
 }
