@@ -12,7 +12,7 @@ namespace TorTee.Core.Domains.Entities
         public string? JobTitle { get; set; }
 
         //Common
-        public ICollection<UserSkill>? UserSkills { get; set; } = new List<UserSkill>();
+        public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
         public ICollection<Notification>? Notifications { get; set; }
         public ICollection<Message>? MessagesSent { get; set; }
         public ICollection<Message>? MessagesReceived { get; set; }
