@@ -47,7 +47,7 @@ namespace TorTee.API.Controllers
         {
             var user = _userClaimsService.GetUserClaims();
             return await ExecuteServiceLogic(
-            async () => await _accountService.UpdatePassword(request, new Guid("34E51525-5B2C-4B66-29CD-08DC7B8919DB")).ConfigureAwait(false)
+            async () => await _accountService.UpdatePassword(request, _userClaims.UserId).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
     }
