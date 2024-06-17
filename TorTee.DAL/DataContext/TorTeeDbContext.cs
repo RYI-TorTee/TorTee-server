@@ -107,6 +107,16 @@ namespace TorTee.DAL.DataContext
                 .HasForeignKey(c=>c.SessionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<MenteeApplication>()
+           .HasOne(ma => ma.Transaction)
+           .WithOne(t => t.MenteeApplication)
+           .HasForeignKey<MenteeApplication>(ma => ma.TransactionId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.MenteeApplication)
+                .WithOne(ma => ma.Transaction)
+                .HasForeignKey<Transaction>(t => t.MenteeApplicationId);
+
 
             modelBuilder.Entity<ApplicationQuestion>().HasData(
             new ApplicationQuestion

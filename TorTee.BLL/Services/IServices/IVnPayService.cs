@@ -7,7 +7,7 @@ namespace TorTee.BLL.Services.IServices
 {
     public interface IVnPayService
     {
-        Task<ServiceActionResult> CreatePaymentUrl(HttpContext context, VnPayRequest request);
-        Task<ServiceActionResult> PaymentExecute(VnPayResponse response);
+        Task<ServiceActionResult> CreatePaymentUrl(HttpContext context, VnPayRequest request);       
+        Task<ServiceActionResult> PaymentExecute(VnPayResponse response, bool isIPN = false);
     }
 }

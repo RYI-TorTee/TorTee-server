@@ -4,6 +4,7 @@
     {
         PENDING,
         ACCEPTED,
-        DENIED
+        DENIED, 
+        PAID
     }
 }

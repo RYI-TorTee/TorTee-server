@@ -17,6 +17,9 @@ namespace TorTee.Core.Domains.Entities
         public Guid MenteePlanId { get; set; }
         public MenteePlan MenteePlan { get; set; } = null!;
 
+        public Guid TransactionId { get; set; }
+        public Transaction? Transaction { get; set; }
+
         public ICollection<MenteeApplicationAnswer>? MenteeApplicationAnswers { get; set; }
     }
 }
