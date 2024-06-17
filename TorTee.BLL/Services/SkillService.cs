@@ -51,6 +51,11 @@ namespace TorTee.BLL.Services
 
             foreach (var skill in request.Skills)
             {
+                var skilkExist = await _unitOfWork.SkillRepository.FindAsync(skill.Id);
+                if (skilkExist == null)
+                {
+                    return new ServiceActionResult(false, $"Skill with id {skill.Id} not found");
+                }
                 if (!userSkills.Contains(skill.Id))
                 {
                     user.UserSkills.Add(new UserSkill { SkillId = skill.Id, UserId = userId });
