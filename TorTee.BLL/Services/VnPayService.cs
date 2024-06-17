@@ -29,7 +29,7 @@ namespace TorTee.BLL.Services
             vnpay.AddRequestData(VnPayConstansts.COMMAND, _vnPaySettings.Command);
             vnpay.AddRequestData(VnPayConstansts.TMN_CODE, _vnPaySettings.TmnCode);
             vnpay.AddRequestData(VnPayConstansts.AMOUNT, (vnPayRequest.Amount * 100).ToString());
-            vnpay.AddRequestData(VnPayConstansts.CREATE_DATE, vnPayRequest.CreatedDate.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData(VnPayConstansts.CREATE_DATE, DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData(VnPayConstansts.CURR_CODE, _vnPaySettings.CurrencyCode);
             vnpay.AddRequestData(VnPayConstansts.IP_ADDRESS, Utils.GetIpAddress(context));
             vnpay.AddRequestData(VnPayConstansts.LOCALE, _vnPaySettings.Locale);
