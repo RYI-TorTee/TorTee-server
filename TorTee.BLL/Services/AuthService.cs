@@ -40,17 +40,18 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> ConfirmEmail(string userId, string token)
         {
             if (userId == null || token == null)
-            return new ServiceActionResult(false);
-                
+                return new ServiceActionResult(false);
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 throw new UserNotFoundException();
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
-            if (result.Succeeded)
-                return new ServiceActionResult(true, "Email comfirmed");
-            
-            return new ServiceActionResult(false);
+
+            if (!result.Succeeded)
+                return new ServiceActionResult(false) { Detail = result.Errors.First().Description };
+
+            return new ServiceActionResult(true, "Email comfirmed");
         }
 
         public async Task<ServiceActionResult> LoginAsync(UserToLoginDTO userToLoginDTO)
@@ -70,7 +71,7 @@ namespace TorTee.BLL.Services
             var token = await _tokenService.CreateToken(user);
             _cookieService.SetJwtCookie(token);
 
-            return new ServiceActionResult(true) { Data = new { roles = await _userManager.GetRolesAsync(user)} };
+            return new ServiceActionResult(true) { Data = new { roles = await _userManager.GetRolesAsync(user) } };
         }
 
         public async Task<ServiceActionResult> RegisterAsync(UserToRegisterDTO userToRegisterDTO)
@@ -89,15 +90,15 @@ namespace TorTee.BLL.Services
                 await _roleManager.CreateAsync(new Role { Name = UserRoleConstants.MENTEE });
             }
             var roleResult = await _userManager.AddToRoleAsync(userEntity, UserRoleConstants.MENTEE);
-            if (!roleResult.Succeeded) 
-            { 
-                await _userManager.DeleteAsync(userEntity); 
-                throw new AddRoleException("Can not create account with role Mentee"); 
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(userEntity);
+                throw new AddRoleException("Can not create account with role Mentee");
             }
 
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
-                await _emailService.SendEmailConfirmationAsync(userEntity, token);
-          
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
+            await _emailService.SendEmailConfirmationAsync(userEntity, token);
+
             return new ServiceActionResult(true);
         }
     }

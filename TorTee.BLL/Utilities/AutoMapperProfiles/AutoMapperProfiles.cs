@@ -74,6 +74,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 CreateMap<Message, MessageResponse>()
                     .ForMember(dest => dest.IsSentByCurrentUser, opt => opt.MapFrom(_ => true))
                     .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => src.Sender.FullName))
+                    .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.Sender.Id))
                     .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(src => src.Sender.ProfilePic));
 
                 CreateMap<User, ChatBoxResponse>()
