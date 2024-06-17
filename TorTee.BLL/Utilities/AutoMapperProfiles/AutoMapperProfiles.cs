@@ -71,7 +71,11 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 #region message
                 CreateMap<CreateMessageRequest, Message>();
-                CreateMap<Message, MessageResponse>();
+                CreateMap<Message, MessageResponse>()
+                    .ForMember(dest => dest.IsSentByCurrentUser, opt => opt.MapFrom(_ => true))
+                    .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => src.Sender.FullName))
+                    .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(src => src.Sender.ProfilePic));
+
                 CreateMap<User, ChatBoxResponse>()
                     .ForMember(dest => dest.ChatPartnerName, opt => opt.MapFrom(src => src.FullName))
                     .ForMember(dest => dest.ChatPartnerId, opt => opt.MapFrom(src => src.Id))

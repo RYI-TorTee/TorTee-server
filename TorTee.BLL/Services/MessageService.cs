@@ -17,7 +17,6 @@ namespace TorTee.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IHubContext<MessageHub> _hubContext;
         public MessageService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
@@ -35,14 +34,14 @@ namespace TorTee.BLL.Services
             var messageEntity = _mapper.Map<Message>(request);
             messageEntity.Sender = sender;
             messageEntity.Receiver = receiver;
+            messageEntity.SentTime = DateTime.Now;            
 
             await _unitOfWork.MessageRepository.AddAsync(messageEntity);
             await _unitOfWork.CommitAsync();
 
-            var returnMessage = _mapper.Map<MessageResponse>(request);
-            //await _hubContext.
+            var returnMessage = _mapper.Map<MessageResponse>(messageEntity);
 
-            return new ServiceActionResult(true);
+            return new ServiceActionResult() { Data = returnMessage};
         }
 
 
