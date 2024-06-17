@@ -38,5 +38,13 @@ namespace TorTee.API.Controllers
                 async () => await _authService.ConfirmEmail(userId, token).ConfigureAwait(false)
             ).ConfigureAwait(false);
         }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Remove the JWT token cookie
+            HttpContext.Response.Cookies.Delete("JwtToken");
+            return Ok();
+        }
     }
 }

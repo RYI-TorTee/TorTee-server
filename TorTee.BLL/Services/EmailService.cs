@@ -49,9 +49,10 @@ namespace TorTee.BLL.Services
 
         public async Task SendEmailConfirmationAsync(User user, string token = "")
         {
-            var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext(_httpContextAccessor.HttpContext, new RouteData(), new ActionDescriptor()));
-            var confirmationLink = urlHelper.Action("ConfirmEmail", "Auth", new { userId = user.Id, token }, _httpContextAccessor.HttpContext.Request.Scheme);
-            await SendEmailAsync(user.Email, "Confirm Your Account Registration", EmailHelper.GetConfirmEmailBody(confirmationLink, user.FullName, "totementoring@gmail.com"), true);
+            //var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext(_httpContextAccessor.HttpContext, new RouteData(), new ActionDescriptor()));
+            //var confirmationLink = urlHelper.Action("ConfirmEmail", "Auth", new { userId = user.Id, token }, _httpContextAccessor.HttpContext.Request.Scheme);
+            //will improve this later
+            await SendEmailAsync(user.Email, "Confirm Your Account Registration", EmailHelper.GetConfirmEmailBody($"http://localhost:3000?userId={user.Id}&token={token}", user.FullName, "totementoring@gmail.com"), true);
         }
 
         
