@@ -43,7 +43,7 @@ namespace TorTee.API.Controllers
         public IActionResult Logout()
         {
             // Remove the JWT token cookie
-            HttpContext.Response.Cookies.Delete("JwtToken");
+            HttpContext.Response.Cookies.Delete("token");
             return Ok();
         }
     }
