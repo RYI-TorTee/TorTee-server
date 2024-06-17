@@ -36,10 +36,10 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowReactApp");
 
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseRouting();
 
 app.MapControllers();
 app.MapHub<MessageHub>("/chathub");
