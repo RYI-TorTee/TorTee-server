@@ -52,7 +52,8 @@ namespace TorTee.BLL.Services
             //var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext(_httpContextAccessor.HttpContext, new RouteData(), new ActionDescriptor()));
             //var confirmationLink = urlHelper.Action("ConfirmEmail", "Auth", new { userId = user.Id, token }, _httpContextAccessor.HttpContext.Request.Scheme);
             //will improve this later
-            await SendEmailAsync(user.Email, "Confirm Your Account Registration", EmailHelper.GetConfirmEmailBody($"http://localhost:3000/mentee-signup-success?userId={user.Id}&token={token}", user.FullName, "totementoring@gmail.com"), true);
+            var encodedToken = WebUtility.UrlEncode(token);
+            await SendEmailAsync(user.Email, "Confirm Your Account Registration", EmailHelper.GetConfirmEmailBody($"http://localhost:3000/mentee-signup-success?userId={user.Id}&token={encodedToken}", user.FullName, "totementoring@gmail.com"), true);
         }
 
         
