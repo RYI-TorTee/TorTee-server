@@ -24,7 +24,7 @@
                 Expires = DateTime.Now.AddMinutes(60),
                 Secure = true,
                 IsEssential = true,
-                SameSite = SameSiteMode.Strict // to prevent CSRF
+                SameSite = SameSiteMode.None 
             };
 
             _httpContextAccessor.HttpContext?.Response.Cookies.Append("token", token, cookieOptions);
