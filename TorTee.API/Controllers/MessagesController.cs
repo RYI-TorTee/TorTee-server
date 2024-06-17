@@ -42,5 +42,13 @@ namespace TorTee.API.Controllers
            async () => await _messageService.GetMessagesOfAChat(chatBoxParams, userId).ConfigureAwait(false)
           ).ConfigureAwait(false);
         }
+
+        [HttpGet("search-chat")]
+        public async Task<IActionResult> SearchMessages([FromQuery] string search)
+        {            
+            return await ExecuteServiceLogic(
+           async () => await _messageService.SearchChat(search).ConfigureAwait(false)
+          ).ConfigureAwait(false);
+        }
     }
 }

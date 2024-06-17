@@ -38,7 +38,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
                 CreateMap<User, MentorOverviewResponse>()
-                   .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => (src.UserSkills??new List<UserSkill>()).Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
+                   .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => (src.UserSkills ?? new List<UserSkill>()).Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
 
                 CreateMap<User, MenteeResponse>();
 
@@ -63,8 +63,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region skill        
 
                 CreateMap<UserSkill, SkillReponse>()
-                    .ForMember(dest=>dest.Id, opt =>opt.MapFrom(src=>src.SkillId))
-                    .ForMember(dest=>dest.SkillName, opt =>opt.MapFrom(src=>src.Skill.SkillName));
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SkillId))
+                    .ForMember(dest => dest.SkillName, opt => opt.MapFrom(src => src.Skill.SkillName));
                 CreateMap<Skill, SkillReponse>();
 
                 #endregion
@@ -72,6 +72,10 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region message
                 CreateMap<CreateMessageRequest, Message>();
                 CreateMap<Message, MessageResponse>();
+                CreateMap<User, ChatBoxResponse>()
+                    .ForMember(dest => dest.ChatPartnerName, opt => opt.MapFrom(src => src.FullName))
+                    .ForMember(dest => dest.ChatPartnerId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.ChatPartnerPhoto, opt => opt.MapFrom(src => src.ProfilePic));
                 #endregion
 
                 #region assignment
@@ -106,7 +110,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<MenteeApplication, MenteeApplicationResponse>()
                     .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status.ToString()))
-                    .ForMember(dest => dest.Mentor, otp => otp.MapFrom(src =>src.MenteePlan.Mentor));
+                    .ForMember(dest => dest.Mentor, otp => otp.MapFrom(src => src.MenteePlan.Mentor));
 
                 #endregion
 

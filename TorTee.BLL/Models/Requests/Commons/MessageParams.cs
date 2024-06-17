@@ -2,12 +2,12 @@
 
 namespace TorTee.BLL.Models.Requests.Commons
 {
-    public class MessageParams : PagingRequest
+    public class MessageParams 
     {
         
     }
 
-    public class ChatBoxParams : PagingRequest
+    public class ChatBoxParams 
     {
         [Required]
         public Guid ChatPartnerId { get; set; } 

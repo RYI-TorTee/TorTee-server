@@ -9,5 +9,6 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> SendMessage(CreateMessageRequest request, Guid userId);
         Task<ServiceActionResult> GetMessagesOfAChat(ChatBoxParams messageParams, Guid userId);
         Task<ServiceActionResult> GetMyChatBoxs(Guid userId);
+        Task<ServiceActionResult> SearchChat(string search);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using TorTee.API.SignalR;
 using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
@@ -58,8 +57,8 @@ namespace TorTee.BLL.Services
                 .AsQueryable();
 
             var messages = await messagesQuery
-                .Skip((messageParams.PageIndex - 1) * messageParams.PageSize ?? 0)
-                .Take(messageParams.PageSize ?? 0)
+                //.Skip((messageParams.PageIndex - 1) * messageParams.PageSize ?? 0)
+                //.Take(messageParams.PageSize ?? 0)
                 .Select(m => new MessageResponse
                 {
                     Content = m.Content,
@@ -100,5 +99,14 @@ namespace TorTee.BLL.Services
 
             return new ServiceActionResult() { Data = chatBoxes };
         }
+
+        public async Task<ServiceActionResult> SearchChat(string search)
+        {
+            var users = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
+                .Where(u => u.FullName.ToLower().Contains(search.ToLower()));
+
+            return new ServiceActionResult() { Data = _mapper.ProjectTo<ChatBoxResponse>(users)};
+        }
+
     }
 }
