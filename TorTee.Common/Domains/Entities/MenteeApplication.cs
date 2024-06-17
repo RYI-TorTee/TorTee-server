@@ -8,6 +8,8 @@ namespace TorTee.Core.Domains.Entities
         public DateTime AppliedDate { get; set; } = DateTime.Now;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
 
+        public double Price { get; set; }
+
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 

@@ -10,6 +10,7 @@ namespace TorTee.BLL.Models.Responses.MenteeApplications
         public Guid Id { get; set; } 
         public DateTime AppliedDate { get; set; } 
         public string? Status { get; set; }
+        public double? Price { get; set; }
         public MenteeResponse? User { get; set; }
         public UserResponse? Mentor { get; set; }
         public MenteePlanResponse MenteePlan { get; set; } = null!;

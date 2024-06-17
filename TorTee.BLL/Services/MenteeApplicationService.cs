@@ -38,6 +38,7 @@ namespace TorTee.BLL.Services
 
             var applicationEntity = _mapper.Map<MenteeApplication>(request);
             applicationEntity.UserId = currentUserId;
+            applicationEntity.Price = menteePlan.Price;
 
             await _unitOfWork.MenteeApplicationRepository.AddAsync(applicationEntity);
             await _unitOfWork.CommitAsync();
