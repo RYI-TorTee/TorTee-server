@@ -53,7 +53,7 @@ namespace TorTee.API.SignalR
             {
                 var messageReaponseToReceiver = (MessageResponse)data.Data;
                 messageReaponseToReceiver.IsSentByCurrentUser = false;
-                await Clients.Client(receiverConnectionId!).SendAsync("ReceiveMessage", messageReaponseToReceiver);
+                await Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", messageReaponseToReceiver);
             }            
         }
     }
