@@ -31,7 +31,7 @@ namespace TorTee.BLL.Services
             // Fetch all skills and exclude the ones the user already has
             var skillsQuery = (await _unitOfWork.SkillRepository.GetAllAsyncAsQueryable())
                 .Where(s => !userSkills.Contains(s.Id));
-            
+
             if (!string.IsNullOrEmpty(search))
             {
                 skillsQuery = skillsQuery.Where(s => s.SkillName.ToLower().Contains(search.ToLower()));
@@ -39,15 +39,15 @@ namespace TorTee.BLL.Services
 
             var skills = skillsQuery.Take(8);
 
-            return new ServiceActionResult(true) { Data = skills.ProjectTo<SkillReponse>(_mapper.ConfigurationProvider)};
+            return new ServiceActionResult(true) { Data = skills.ProjectTo<SkillReponse>(_mapper.ConfigurationProvider) };
         }
 
         public async Task<ServiceActionResult> UpdateSkillsOfAUser(UserSkillsRequest request, Guid userId)
         {
-            var user = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
-                .Include(u=>u.UserSkills).FirstOrDefault() ?? throw new ArgumentNullException("User not found");
+            var user = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable()).Where(u => u.Id == userId)
+                .Include(u => u.UserSkills).FirstOrDefault() ?? throw new ArgumentNullException("User not found");
 
-            var userSkills = user.UserSkills.Select(us=>us.SkillId);
+            var userSkills = user.UserSkills.Select(us => us.SkillId);
 
             foreach (var skill in request.Skills)
             {

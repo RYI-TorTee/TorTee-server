@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using TorTee.BLL.Models.Responses.Skills;
 
 namespace TorTee.BLL.Models.Requests.Users
 {

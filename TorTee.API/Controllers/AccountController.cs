@@ -45,7 +45,6 @@ namespace TorTee.API.Controllers
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword(UpdatePasswordRequest request)
         {
-            var user = _userClaimsService.GetUserClaims();
             return await ExecuteServiceLogic(
             async () => await _accountService.UpdatePassword(request, _userClaims.UserId).ConfigureAwait(false)
            ).ConfigureAwait(false);
