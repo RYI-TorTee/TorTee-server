@@ -83,7 +83,7 @@ namespace TorTee.BLL.Services
                     CurrentUserId = currentUserId,
                     ChatPartnerId = g.Key,
                     ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
-                    Messages = g.OrderBy(m => m.SentTime)
+                    Messages = g.OrderByDescending(m => m.SentTime)
                 .Take(1).Select(m => new MessageResponse
                 {
                     Content = m.Content,
@@ -91,7 +91,7 @@ namespace TorTee.BLL.Services
                     SenderName = m.Sender.FullName,
                     SentTime = m.SentTime,
                     IsSentByCurrentUser = m.SenderId == currentUserId
-                }).OrderBy(m => m.SentTime).ToList()
+                }).OrderByDescending(m => m.SentTime).ToList()
                 }).ToList();
 
             return new ServiceActionResult() { Data = chatBoxes };
