@@ -11,5 +11,8 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> UpdateDetails(UserRequest request, Guid userId);
         Task<ServiceActionResult> UpdatePassword(UpdatePasswordRequest request, Guid userId);
         Task<ServiceActionResult> GetAll(QueryParametersRequest queryParameters);
+        Task<ServiceActionResult> AddStaffAccount(CreateStaffAccountRequest request);
+        Task<ServiceActionResult> GetAllStaffAccount(QueryParametersRequest queryParameters);
+        Task<ServiceActionResult> GetAllMentorAccount(QueryParametersRequest queryParameters);
     }
 }
