@@ -44,7 +44,7 @@ namespace TorTee.BLL.Services
             }
 
             var paginationResult = PaginationHelper
-            .BuildPaginatedResult<User, MentorOverviewResponse>(_mapper, mentorQuery, queryParameters.PageSize ?? 0, queryParameters.PageIndex ?? 0);
+            .BuildPaginatedResult<User, MentorOverviewResponse>(_mapper, mentorQuery, queryParameters.PageSize, queryParameters.PageIndex);
             return new ServiceActionResult(true) { Data = paginationResult };
         }
 
@@ -63,7 +63,7 @@ namespace TorTee.BLL.Services
             var mentorQuery = (await GetMentorOrderByRating()).Include(m => m.UserSkills).ThenInclude(uk => uk.Skill);
 
             var paginationResult = PaginationHelper
-                .BuildPaginatedResult<User, MentorOverviewResponse>(_mapper, mentorQuery, request.PageSize ?? 0, request.PageIndex ?? 0);
+                .BuildPaginatedResult<User, MentorOverviewResponse>(_mapper, mentorQuery, request.PageSize, request.PageIndex);
 
             return new ServiceActionResult(true) { Data = paginationResult };
         }

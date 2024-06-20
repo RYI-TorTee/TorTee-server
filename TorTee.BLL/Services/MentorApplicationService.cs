@@ -85,7 +85,7 @@ namespace TorTee.BLL.Services
             applicationQuery = queryParameters.IsDesc ? applicationQuery.OrderByDescending(a => a.AppliedDate) : applicationQuery.OrderBy(a => a.AppliedDate);
 
             var paginationResult = PaginationHelper
-            .BuildPaginatedResult<MentorApplication, MentorApplicationResponse>(_mapper, applicationQuery, queryParameters.PageSize ?? 0, queryParameters.PageIndex ?? 0);
+            .BuildPaginatedResult<MentorApplication, MentorApplicationResponse>(_mapper, applicationQuery, queryParameters.PageSize, queryParameters.PageIndex);
 
             return new ServiceActionResult(true) { Data = paginationResult };
 
