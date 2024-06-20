@@ -83,6 +83,7 @@ namespace TorTee.BLL.Services
                     CurrentUserId = currentUserId,
                     ChatPartnerId = g.Key,
                     ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
+                    ChatPartnerPhoto = g.First().SenderId == currentUserId ? g.First().Receiver.ProfilePic : g.First().Sender.ProfilePic,
                     Messages = g.OrderByDescending(m => m.SentTime)
                 .Take(1).Select(m => new MessageResponse
                 {
