@@ -18,6 +18,7 @@ namespace TorTee.DAL
         public IAssignmentRepository AssignmentRepository { get; }
         public IAssignmentSubmissionRepository AssignmentSubmissionRepository { get; }
         public ISkillRepository SkillRepository { get; }
+        public ITransactionRepository TransactionRepository { get; }
        
         void Commit();
         Task CommitAsync();

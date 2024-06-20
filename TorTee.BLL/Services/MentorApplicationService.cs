@@ -10,6 +10,7 @@ using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Models.Responses.MentorApplications;
 using TorTee.BLL.Services.IServices;
+using TorTee.BLL.Utilities;
 using TorTee.Common.Dtos;
 using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Constants;
@@ -162,7 +163,7 @@ namespace TorTee.BLL.Services
             }
 
             var userEntity = new User { Email = application.Email, UserName = application.Email, FullName = application.FullName, PhoneNumber = application.PhoneNumber };
-            var password = GenerateRandomPassword();
+            var password = AccountCreationHelper.GenerateRandomPassword();
 
             var result = await _userManager.CreateAsync(userEntity, password);
 
@@ -189,34 +190,7 @@ namespace TorTee.BLL.Services
             return new UserToLoginDTO() { Email = application.Email, Password = password };
         }
 
-        private string GenerateRandomPassword()
-        {
-            const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string lowerChars = "abcdefghijklmnopqrstuvwxyz";
-            const string numericChars = "0123456789";
-            const string specialChars = "!@#$%^&*()_+";
-
-            string allChars = upperChars + lowerChars + numericChars + specialChars;
-
-            StringBuilder password = new StringBuilder();
-            Random random = new Random();
-
-            // Ensure at least one character from each character set
-            password.Append(upperChars[random.Next(upperChars.Length)]);
-            password.Append(lowerChars[random.Next(lowerChars.Length)]);
-            password.Append(numericChars[random.Next(numericChars.Length)]);
-
-            // Fill the remaining characters randomly
-            for (int i = 3; i < 8; i++)
-            {
-                password.Append(allChars[random.Next(allChars.Length)]);
-            }
-
-            // Shuffle the password characters
-            string shuffledPassword = new string(password.ToString().OrderBy(c => random.Next()).ToArray());
-
-            return shuffledPassword;
-        }
+       
 
     }
 }

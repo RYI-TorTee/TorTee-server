@@ -15,6 +15,7 @@ namespace TorTee.BLL.Models.Responses.Users
         public string? Company { get; set; }
         public string? JobTitle { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string? PassAutoGenerate { get; set; }
 
         public ICollection<SkillReponse>? UserSkills { get; set; }
         public ICollection<RoleResponse>? UserRoles { get; set; }

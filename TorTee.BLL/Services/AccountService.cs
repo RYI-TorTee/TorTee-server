@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Users;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.BLL.Services.IServices;
+using TorTee.BLL.Utilities;
 using TorTee.Common.Helpers;
+using TorTee.Core.Domains.Constants;
 using TorTee.Core.Domains.Entities;
+using TorTee.Core.Dtos;
 using TorTee.Core.Extensions;
 using TorTee.DAL;
 
@@ -19,13 +23,47 @@ namespace TorTee.BLL.Services
         private readonly IMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService, UserManager<User> userManager)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, 
+            IFileStorageService fileStorageService, 
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _fileStorageService = fileStorageService;
             _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        public async Task<ServiceActionResult> AddStaffAccount(CreateStaffAccountRequest request)
+        {
+            var userEntity = _mapper.Map<User>(request);
+            var password = AccountCreationHelper.GenerateRandomPassword();
+            userEntity.PassAutoGenerate = password;
+            var result = _userManager.CreateAsync(userEntity, password).Result;
+            if (!result.Succeeded)
+            {
+                var error = result.Errors.First();
+                return new ServiceActionResult(false, error.Description);
+            }
+
+            if (!await _roleManager.RoleExistsAsync(UserRoleConstants.STAFF))
+            {
+                await _roleManager.CreateAsync(new Role { Name = UserRoleConstants.STAFF });
+            }
+            var roleResult = await _userManager.AddToRoleAsync(userEntity, UserRoleConstants.STAFF);
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(userEntity);
+                throw new AddRoleException($"Can not create account with role {UserRoleConstants.STAFF}");
+            }
+
+            userEntity.EmailConfirmed = true;
+            await _userManager.UpdateAsync(userEntity);
+
+            return new ServiceActionResult(true) { Data = new { UserName = userEntity.UserName, Password = password, CreatedDate = userEntity.CreatedDate} };
         }
 
         public async Task<ServiceActionResult> GetAll(QueryParametersRequest queryParameters)
@@ -45,6 +83,52 @@ namespace TorTee.BLL.Services
             {
                 Data = PaginationHelper.BuildPaginatedResult<User, UserResponse>
                 (_mapper, userQueryable.Include(u => u.UserRoles)!.ThenInclude(r => r.Role), queryParameters.PageSize, queryParameters.PageIndex)
+            };
+        }
+
+        public async Task<ServiceActionResult> GetAllMentorAccount(QueryParametersRequest queryParameters)
+        {
+            var userQueryable = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable());
+
+            userQueryable = string.IsNullOrEmpty(queryParameters.Search)
+                ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.Email!.Contains(queryParameters.Search))
+                : userQueryable;
+
+            userQueryable = queryParameters.Filter != null ? userQueryable.ApplyFilters(queryParameters.Filter) : userQueryable;
+            userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
+                ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
+                : userQueryable.OrderByDescending(u => u.CreatedDate);
+
+            return new ServiceActionResult()
+            {
+                Data = PaginationHelper.BuildPaginatedResult<User, UserResponse>
+                (_mapper,
+                userQueryable.Include(u => u.UserRoles)!.ThenInclude(r => r.Role)
+                .Where(u => u.UserRoles.Any(r => r.Role.Name.Equals(UserRoleConstants.MENTOR))),
+                queryParameters.PageSize, queryParameters.PageIndex)
+            };
+        }
+
+        public async Task<ServiceActionResult> GetAllStaffAccount(QueryParametersRequest queryParameters)
+        {
+            var userQueryable = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable());
+
+            userQueryable = string.IsNullOrEmpty(queryParameters.Search)
+                ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.UserName!.Contains(queryParameters.Search))
+                : userQueryable;
+
+            userQueryable = queryParameters.Filter != null ? userQueryable.ApplyFilters(queryParameters.Filter) : userQueryable;
+            userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
+                ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
+                : userQueryable.OrderByDescending(u => u.CreatedDate);
+
+            return new ServiceActionResult()
+            {
+                Data = PaginationHelper.BuildPaginatedResult<User, UserResponse>
+                (_mapper, 
+                userQueryable.Include(u => u.UserRoles)!.ThenInclude(r => r.Role)
+                .Where(u=>u.UserRoles.Any(r=>r.Role.Name.Equals(UserRoleConstants.STAFF))), 
+                queryParameters.PageSize, queryParameters.PageIndex)
             };
         }
 

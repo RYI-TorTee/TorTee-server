@@ -6,6 +6,7 @@ using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Models.Requests.Messages;
 using TorTee.BLL.Models.Requests.Submissions;
 using TorTee.BLL.Models.Requests.Users;
+using TorTee.BLL.Models.Responses;
 using TorTee.BLL.Models.Responses.Answers;
 using TorTee.BLL.Models.Responses.ApplicationQuestions;
 using TorTee.BLL.Models.Responses.Assignments;
@@ -34,9 +35,13 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region user 
 
                 CreateMap<UserToRegisterDTO, User>()
-               .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
-               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
-               .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+                   .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                   .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+                   .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+
+                CreateMap<CreateStaffAccountRequest, User>()
+                  .ForMember(dest => dest.Email, opt => opt.MapFrom(src => $"{src.Username}@gmail.com"))
+                  .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());            
 
                 CreateMap<User, MentorOverviewResponse>()
                    .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => (src.UserSkills ?? new List<UserSkill>()).Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
@@ -70,7 +75,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 #endregion
 
-                #region
+                #region role
 
                 CreateMap<UserRole, RoleResponse>()
                     .ForMember(dest => dest.Name, src => src.MapFrom(opt => opt.Role.Name));
@@ -141,6 +146,16 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 ;
                 CreateMap<MenteeApplicationAnswer, AnswerResponses>()
                     .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question.Content));
+                #endregion
+
+                #region transaction
+
+                CreateMap<Transaction, TransactionResponse>()
+                    .ForMember(dest => dest.MenteeId, opt => opt.MapFrom(src => src.MenteeApplication.User!.Id))
+                    .ForMember(dest => dest.MenteeName, opt => opt.MapFrom(src => src.MenteeApplication.User!.FullName))
+                    .ForMember(dest => dest.MentorId, opt => opt.MapFrom(src => src.MenteeApplication.MenteePlan.Mentor.Id))
+                    .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.MenteeApplication.MenteePlan.Mentor.FullName));
+
                 #endregion
             }
         }

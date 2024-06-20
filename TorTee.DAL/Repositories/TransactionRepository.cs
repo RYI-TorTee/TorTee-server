@@ -4,10 +4,9 @@ using TorTee.DAL.Repositories.IRepositories;
 
 namespace TorTee.DAL.Repositories
 {
-
-    public class BookingCallRepository : GenericRepository<BookingCall>, IBookingCallRepository
+    public class TransactionRepository : GenericRepository<Transaction>, ITransactionRepository
     {
-        public BookingCallRepository(DbContext dbContext) : base(dbContext)
+        public TransactionRepository(DbContext dbContext) : base(dbContext)
         {
         }
     }
