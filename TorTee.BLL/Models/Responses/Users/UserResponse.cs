@@ -1,4 +1,6 @@
-﻿using TorTee.BLL.Models.Responses.Skills;
+﻿using TorTee.BLL.Models.Responses.Roles;
+using TorTee.BLL.Models.Responses.Skills;
+using TorTee.Core.Domains.Entities;
 
 namespace TorTee.BLL.Models.Responses.Users
 {
@@ -12,7 +14,9 @@ namespace TorTee.BLL.Models.Responses.Users
         public string? Bio { get; set; }
         public string? Company { get; set; }
         public string? JobTitle { get; set; }
-      
-        public ICollection<SkillReponse> UserSkills { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+        public ICollection<SkillReponse>? UserSkills { get; set; }
+        public ICollection<RoleResponse>? UserRoles { get; set; }
     }
 }

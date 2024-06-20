@@ -10,6 +10,7 @@ namespace TorTee.Core.Domains.Entities
         public string? Bio { get; set; }
         public string? Company { get; set; }
         public string? JobTitle { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         //Common
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();

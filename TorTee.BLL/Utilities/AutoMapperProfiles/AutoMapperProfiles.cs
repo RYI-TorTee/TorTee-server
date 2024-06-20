@@ -16,6 +16,7 @@ using TorTee.BLL.Models.Responses.Mentees;
 using TorTee.BLL.Models.Responses.MentorApplications;
 using TorTee.BLL.Models.Responses.Mentors;
 using TorTee.BLL.Models.Responses.Messages;
+using TorTee.BLL.Models.Responses.Roles;
 using TorTee.BLL.Models.Responses.Skills;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.Core.Domains.Entities;
@@ -66,6 +67,13 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SkillId))
                     .ForMember(dest => dest.SkillName, opt => opt.MapFrom(src => src.Skill.SkillName));
                 CreateMap<Skill, SkillReponse>();
+
+                #endregion
+
+                #region
+
+                CreateMap<UserRole, RoleResponse>()
+                    .ForMember(dest => dest.Name, src => src.MapFrom(opt => opt.Role.Name));
 
                 #endregion
 
