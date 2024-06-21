@@ -31,7 +31,7 @@ namespace TorTee.API.Controllers
            ).ConfigureAwait(false);
         }
 
-        [HttpGet("IPN")]
+        [HttpGet("/IPN")]
         public async Task<IActionResult> IPN([FromQuery] VnPayResponse response)
         {
             return await ExecuteServiceLogic(
