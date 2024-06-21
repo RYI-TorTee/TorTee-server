@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TorTee.BLL.Models.Requests.Answers;
 using TorTee.BLL.Models.Requests.Assignments;
+using TorTee.BLL.Models.Requests.Feedbacks;
 using TorTee.BLL.Models.Requests.MenteeApplications;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Models.Requests.Messages;
@@ -11,6 +12,7 @@ using TorTee.BLL.Models.Responses.Answers;
 using TorTee.BLL.Models.Responses.ApplicationQuestions;
 using TorTee.BLL.Models.Responses.Assignments;
 using TorTee.BLL.Models.Responses.AssignmentSubmissions;
+using TorTee.BLL.Models.Responses.Feedbacks;
 using TorTee.BLL.Models.Responses.MenteeApplications;
 using TorTee.BLL.Models.Responses.MenteePlans;
 using TorTee.BLL.Models.Responses.Mentees;
@@ -41,7 +43,7 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<CreateStaffAccountRequest, User>()
                   .ForMember(dest => dest.Email, opt => opt.MapFrom(src => $"{src.Username}@gmail.com"))
-                  .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());            
+                  .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
                 CreateMap<User, MentorOverviewResponse>()
                    .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => (src.UserSkills ?? new List<UserSkill>()).Select(us => new SkillReponse { SkillName = us.Skill.SkillName })));
@@ -155,6 +157,20 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                     .ForMember(dest => dest.MenteeName, opt => opt.MapFrom(src => src.MenteeApplication.User!.FullName))
                     .ForMember(dest => dest.MentorId, opt => opt.MapFrom(src => src.MenteeApplication.MenteePlan.Mentor.Id))
                     .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.MenteeApplication.MenteePlan.Mentor.FullName));
+
+                #endregion
+
+                #region feedback
+
+                CreateMap<Feedback, FeedbackResponse>()
+                    .ForMember(dest => dest.CreatedUserName, opt => opt.MapFrom(src => src.MenteeApplication.User!.FullName))
+                    .ForMember(dest => dest.CreatedUserName, opt => opt.MapFrom(src => src.MenteeApplication.User!.ProfilePic));
+
+                CreateMap<FeedbackRequest, Feedback>();
+
+                CreateMap<MenteeApplication, MentorForFeedbackResponse>()
+                    .ForMember(dest => dest.MenteeApplicationId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.UserResponse, opt => opt.MapFrom(src => src.MenteePlan.Mentor));
 
                 #endregion
             }

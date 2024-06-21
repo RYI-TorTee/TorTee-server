@@ -120,7 +120,7 @@ namespace TorTee.BLL.Services
                 application.Status = ApplicationStatus.ACCEPTED;
                 var user = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
                     .Where(u => u.Email.ToLower().Equals(account.Email.ToLower())).FirstOrDefault() ?? throw new ArgumentNullException("Can not retrieve this mentor");
-                user.MenteePlans = new MenteePlan()
+                user.MenteePlan = new MenteePlan()
                 {
                     Id = new Guid(),
                     CallPerMonth = application.CallPerMonth,

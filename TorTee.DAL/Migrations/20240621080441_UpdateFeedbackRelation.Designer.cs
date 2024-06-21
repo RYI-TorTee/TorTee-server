@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TorTee.DAL.DataContext;
 
@@ -11,9 +12,11 @@ using TorTee.DAL.DataContext;
 namespace TorTee.DAL.Migrations
 {
     [DbContext(typeof(TorTeeDbContext))]
-    partial class TorTeeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240621080441_UpdateFeedbackRelation")]
+    partial class UpdateFeedbackRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,17 +130,17 @@ namespace TorTee.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3685c6c7-f1e9-4194-a6b0-8835596ab0e1"),
+                            Id = new Guid("5572fc8c-ea17-4fa8-a195-2e3a98407904"),
                             Content = "What best describes the goal of your mentorship?"
                         },
                         new
                         {
-                            Id = new Guid("9856643c-00d2-49f8-bf1d-d6c0a7d38d8f"),
+                            Id = new Guid("399f967c-b42f-4691-8a7b-4cb00b04b5e0"),
                             Content = "When would you like to reach that goal?"
                         },
                         new
                         {
-                            Id = new Guid("461fc821-87a0-48c0-8bec-aaa5af2ab490"),
+                            Id = new Guid("a5cda77d-3085-40b9-8f32-bc3a819dd68a"),
                             Content = "Write a message to Mentor"
                         });
                 });
@@ -257,9 +260,6 @@ namespace TorTee.DAL.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("MenteeApplicationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
@@ -267,9 +267,6 @@ namespace TorTee.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MenteeApplicationId")
-                        .IsUnique();
 
                     b.ToTable("Feedbacks");
                 });
@@ -308,6 +305,8 @@ namespace TorTee.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FeedbackId");
 
                     b.HasIndex("MenteePlanId");
 
@@ -586,242 +585,242 @@ namespace TorTee.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4c1bc776-86d1-416a-80e9-33efcc5205b6"),
+                            Id = new Guid("65fbddf0-16ce-4347-a900-9a1b37ea6151"),
                             SkillName = "Project Management"
                         },
                         new
                         {
-                            Id = new Guid("7f9ad1d6-f1b9-4993-874a-b0d07ec340f6"),
+                            Id = new Guid("bb2b0c84-bbab-4408-b242-fdfb1be63178"),
                             SkillName = "Software Development"
                         },
                         new
                         {
-                            Id = new Guid("bc35de5c-4b78-4c6d-9a4c-3ae296a1c319"),
+                            Id = new Guid("2f0d1852-3c1b-47a3-8e23-48c1e457b08b"),
                             SkillName = "Data Analysis"
                         },
                         new
                         {
-                            Id = new Guid("3a032dd9-3792-40bc-a0b2-a6418dc06575"),
+                            Id = new Guid("9dbd14b4-115b-456f-baff-7b1947bf1480"),
                             SkillName = "Digital Marketing"
                         },
                         new
                         {
-                            Id = new Guid("bdd968b0-16a5-4e68-9d5c-8176e1aacbd5"),
+                            Id = new Guid("e1d14a84-748a-4019-bca5-97e18510f556"),
                             SkillName = "Machine Learning"
                         },
                         new
                         {
-                            Id = new Guid("ad1993f4-a5e3-457b-8d2f-c0172e04c680"),
+                            Id = new Guid("7d19e2b0-7e20-4536-a138-b9fdcde5e25f"),
                             SkillName = "Communication"
                         },
                         new
                         {
-                            Id = new Guid("e616fa1c-d5f4-461b-be2d-3ab3cbd0287d"),
+                            Id = new Guid("4f12897d-0070-457f-94ca-1ca8396bb67f"),
                             SkillName = "Team Leadership"
                         },
                         new
                         {
-                            Id = new Guid("54747524-62d5-4332-bedd-f1f2569938e2"),
+                            Id = new Guid("ffc61ffd-57b1-4bf0-8f58-bdca77d883b3"),
                             SkillName = "Problem Solving"
                         },
                         new
                         {
-                            Id = new Guid("62f6b960-267a-4270-be36-bffd545b7840"),
+                            Id = new Guid("57dad023-cc0f-449b-b14a-3eb43c9ff4f8"),
                             SkillName = "Critical Thinking"
                         },
                         new
                         {
-                            Id = new Guid("bc7593ac-1c6c-4c2c-b259-c941cf93f056"),
+                            Id = new Guid("5d80227c-103a-4c5b-8406-063553bd5eeb"),
                             SkillName = "Financial Analysis"
                         },
                         new
                         {
-                            Id = new Guid("55c4ab2c-19e6-4198-83c0-c42719a4d1e5"),
+                            Id = new Guid("6d6c6eec-c699-48fb-bd41-79ae88dae9e0"),
                             SkillName = "Graphic Design"
                         },
                         new
                         {
-                            Id = new Guid("a87fbb79-17de-4b6c-b145-995fa32733b8"),
+                            Id = new Guid("42cf4ffa-90ce-40b2-98bb-6c3968342a07"),
                             SkillName = "Customer Service"
                         },
                         new
                         {
-                            Id = new Guid("bff74aad-d237-4ef6-b985-316884913369"),
+                            Id = new Guid("43376596-e697-42d9-a9c0-62906f4b7771"),
                             SkillName = "Sales"
                         },
                         new
                         {
-                            Id = new Guid("47852fac-0e6d-4b14-828c-15e8a92b3b34"),
+                            Id = new Guid("52f83ce7-8b53-45bf-81eb-bde2ddf974b3"),
                             SkillName = "Strategic Planning"
                         },
                         new
                         {
-                            Id = new Guid("4c9da501-69cd-4c89-a69c-ee0a94f538b3"),
+                            Id = new Guid("8741f27d-1e9c-4ffc-8c94-6eef47e3b089"),
                             SkillName = "Web Development"
                         },
                         new
                         {
-                            Id = new Guid("d16a29ee-b1fe-4d55-a619-5ace614b2f28"),
+                            Id = new Guid("2df33056-efd3-4487-9e3c-7a98579375bc"),
                             SkillName = "Mobile Development"
                         },
                         new
                         {
-                            Id = new Guid("98601cac-8d41-4310-a0b3-2eb0da753693"),
+                            Id = new Guid("b585a6d8-65b1-4cfc-a84a-d577ab850286"),
                             SkillName = "Cloud Computing"
                         },
                         new
                         {
-                            Id = new Guid("914b2319-4a0a-454b-a013-c92c5b70b5c0"),
+                            Id = new Guid("121d714e-dca2-4caa-92f7-84d5dde7fc46"),
                             SkillName = "Cybersecurity"
                         },
                         new
                         {
-                            Id = new Guid("7c75da39-e1d2-4f00-9f7f-5e001ff45772"),
+                            Id = new Guid("b67241df-64e5-472f-a038-f927cc7fef91"),
                             SkillName = "Database Management"
                         },
                         new
                         {
-                            Id = new Guid("d61e8480-8676-4884-bb00-640d1f23d025"),
+                            Id = new Guid("0793cc8b-f8f1-4e7c-86c1-f6cdbfa2b876"),
                             SkillName = "Network Administration"
                         },
                         new
                         {
-                            Id = new Guid("d86d9a47-934f-402b-a34e-4b2b99839e32"),
+                            Id = new Guid("5d7a5532-8aea-48e2-869f-1c3f53b5d395"),
                             SkillName = "DevOps"
                         },
                         new
                         {
-                            Id = new Guid("e42050cf-ce91-4f22-b04b-7af899d4d5de"),
+                            Id = new Guid("8fbcf041-bab2-4e30-8381-e06139f3671b"),
                             SkillName = "Artificial Intelligence"
                         },
                         new
                         {
-                            Id = new Guid("acb98f99-52c5-485b-b706-6988ff7df8d2"),
+                            Id = new Guid("11eaa480-d687-4006-9375-9ed88d76dd4c"),
                             SkillName = "Blockchain"
                         },
                         new
                         {
-                            Id = new Guid("634306ff-9115-4c53-8ba5-34a9e2aedf88"),
+                            Id = new Guid("c0a30f4f-1783-4173-8ac4-b3b2931742c5"),
                             SkillName = "IT Support"
                         },
                         new
                         {
-                            Id = new Guid("4e8ddb89-bd86-44ed-89b2-7121ec9b9e2f"),
+                            Id = new Guid("fc8ced59-5979-4fa9-94ff-68e112c5ccb0"),
                             SkillName = "Time Management"
                         },
                         new
                         {
-                            Id = new Guid("f06e7fee-abf4-4d82-8278-9b724b7cc776"),
+                            Id = new Guid("f53c00f3-9e4b-47e9-bf10-87738e6f421c"),
                             SkillName = "Adaptability"
                         },
                         new
                         {
-                            Id = new Guid("75e9cfc2-8227-4283-b3ab-615a3506c4f4"),
+                            Id = new Guid("47f330b4-a7f8-4c57-835a-cac48882e01f"),
                             SkillName = "Collaboration"
                         },
                         new
                         {
-                            Id = new Guid("d115aacb-3529-4b64-946e-8788bf7b23d7"),
+                            Id = new Guid("ae5eed13-759c-4444-b412-896880dda209"),
                             SkillName = "Conflict Resolution"
                         },
                         new
                         {
-                            Id = new Guid("cd017d80-9165-43e5-86cd-4aaa26598b3f"),
+                            Id = new Guid("60eaf85e-86a0-45b2-9f6d-3a8263708ea7"),
                             SkillName = "Creativity"
                         },
                         new
                         {
-                            Id = new Guid("813f8143-0ab0-44bf-8bcb-e318d129b0dd"),
+                            Id = new Guid("2e3c43ee-a7cc-482d-a5f1-9a1d4d67f601"),
                             SkillName = "Work Ethic"
                         },
                         new
                         {
-                            Id = new Guid("abf4c33a-74a8-40d7-aa25-2489d231388a"),
+                            Id = new Guid("532c9a0d-0352-4798-a640-1bdb7b4971a0"),
                             SkillName = "Interpersonal Skills"
                         },
                         new
                         {
-                            Id = new Guid("78109c45-3ede-4b45-a886-0198fb7f11ed"),
+                            Id = new Guid("f3675ef9-96bc-4e36-85be-4fcd3c599996"),
                             SkillName = "Emotional Intelligence"
                         },
                         new
                         {
-                            Id = new Guid("87c297c2-422b-4247-87c6-68da564785d6"),
+                            Id = new Guid("6de91cf4-9349-46ed-b676-0af5de760462"),
                             SkillName = "Business Analysis"
                         },
                         new
                         {
-                            Id = new Guid("f3490198-5603-4c22-9714-2f7861ad2c97"),
+                            Id = new Guid("0c275c3d-dbe1-469f-bfde-a8fa1bd497b7"),
                             SkillName = "Product Management"
                         },
                         new
                         {
-                            Id = new Guid("ec75adce-91c9-4b7f-a915-2c979a8cdeb3"),
+                            Id = new Guid("4e9aad22-f613-4676-8efa-d2189fed8432"),
                             SkillName = "Business Strategy"
                         },
                         new
                         {
-                            Id = new Guid("366a0a18-037f-4afd-87be-b3159e1138ab"),
+                            Id = new Guid("e42956f1-3b98-4cc6-ae7b-ebe114c15c00"),
                             SkillName = "Operations Management"
                         },
                         new
                         {
-                            Id = new Guid("e2270e3c-266d-4613-a2a0-d0ea518e6c2b"),
+                            Id = new Guid("3ab3d5bb-1888-43e2-9d74-dafb0b399109"),
                             SkillName = "Supply Chain Management"
                         },
                         new
                         {
-                            Id = new Guid("1872f05b-2720-4b24-a392-f5cd2eae7d25"),
+                            Id = new Guid("e53776f9-eb9d-4a03-a510-5b1458292cc3"),
                             SkillName = "Entrepreneurship"
                         },
                         new
                         {
-                            Id = new Guid("b64d867a-8cbb-4a56-a3d1-9f224754608d"),
+                            Id = new Guid("27aeaa7c-7ed2-41d3-9541-17b043b67a21"),
                             SkillName = "Negotiation"
                         },
                         new
                         {
-                            Id = new Guid("63a247f4-fe79-4c87-8f9d-070058d6d2e5"),
+                            Id = new Guid("0694db78-d695-4cbb-9935-5899c8bc0aaa"),
                             SkillName = "Risk Management"
                         },
                         new
                         {
-                            Id = new Guid("aab569c8-e81d-4dc6-ac4b-cf5d484052be"),
+                            Id = new Guid("2cf7e387-d756-4f9e-a3b9-4ce8280d99d3"),
                             SkillName = "SEO (Search Engine Optimization)"
                         },
                         new
                         {
-                            Id = new Guid("bf710b1c-5bb0-47bc-80c0-0a4b21013a97"),
+                            Id = new Guid("8b093ae3-4ce6-486b-aa79-ef7364dee61c"),
                             SkillName = "SEM (Search Engine Marketing)"
                         },
                         new
                         {
-                            Id = new Guid("bb3be023-0dfe-4a22-aa51-5f71b0827227"),
+                            Id = new Guid("50b151cc-5b3d-4d64-be2f-e7d8c5cfa98b"),
                             SkillName = "Content Marketing"
                         },
                         new
                         {
-                            Id = new Guid("9209a98c-58f0-4b6c-b0b8-2268a857f069"),
+                            Id = new Guid("b534ec31-b5e6-4425-9032-45fb82f63801"),
                             SkillName = "Social Media Marketing"
                         },
                         new
                         {
-                            Id = new Guid("ba866550-c0a4-43a1-9321-a9eaed601de1"),
+                            Id = new Guid("35941563-7b63-4db6-b756-6f157ba0aa0f"),
                             SkillName = "Brand Management"
                         },
                         new
                         {
-                            Id = new Guid("b6db4002-b608-426a-b70c-2957b9953f57"),
+                            Id = new Guid("d2076ce7-a95e-4617-bd0a-2df551c18cee"),
                             SkillName = "Market Research"
                         },
                         new
                         {
-                            Id = new Guid("89910884-7dd5-4e04-8636-e0a912711b93"),
+                            Id = new Guid("e8795ac1-77b4-4c30-90eb-636537d7bd34"),
                             SkillName = "Email Marketing"
                         },
                         new
                         {
-                            Id = new Guid("0e68507c-4c6e-4489-8532-20d4d03637fb"),
+                            Id = new Guid("43675e2a-e173-4c64-bc96-727defcd10b2"),
                             SkillName = "Public Relations"
                         });
                 });
@@ -1061,19 +1060,12 @@ namespace TorTee.DAL.Migrations
                     b.Navigation("Session");
                 });
 
-            modelBuilder.Entity("TorTee.Core.Domains.Entities.Feedback", b =>
-                {
-                    b.HasOne("TorTee.Core.Domains.Entities.MenteeApplication", "MenteeApplication")
-                        .WithOne("Feedback")
-                        .HasForeignKey("TorTee.Core.Domains.Entities.Feedback", "MenteeApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MenteeApplication");
-                });
-
             modelBuilder.Entity("TorTee.Core.Domains.Entities.MenteeApplication", b =>
                 {
+                    b.HasOne("TorTee.Core.Domains.Entities.Feedback", "Feedback")
+                        .WithMany()
+                        .HasForeignKey("FeedbackId");
+
                     b.HasOne("TorTee.Core.Domains.Entities.MenteePlan", "MenteePlan")
                         .WithMany("MenteeApplications")
                         .HasForeignKey("MenteePlanId")
@@ -1085,6 +1077,8 @@ namespace TorTee.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Feedback");
 
                     b.Navigation("MenteePlan");
 
@@ -1240,8 +1234,6 @@ namespace TorTee.DAL.Migrations
 
             modelBuilder.Entity("TorTee.Core.Domains.Entities.MenteeApplication", b =>
                 {
-                    b.Navigation("Feedback");
-
                     b.Navigation("MenteeApplicationAnswers");
 
                     b.Navigation("Transaction");

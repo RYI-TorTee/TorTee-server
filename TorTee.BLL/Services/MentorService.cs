@@ -48,16 +48,6 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult(true) { Data = paginationResult };
         }
 
-        public Task<ServiceActionResult> GetMyMentees(Guid mentorId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ServiceActionResult> GetMyMentors(Guid menteeId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ServiceActionResult> RecommendationMentorList(PagingRequest request)
         {
             var mentorQuery = (await GetMentorOrderByRating()).Include(m => m.UserSkills).ThenInclude(uk => uk.Skill);
@@ -70,20 +60,33 @@ namespace TorTee.BLL.Services
 
         private async Task<IQueryable<User>> GetMentorOrderByRating(bool isDesc = true)
         {
-            var mentorQuery = await _unitOfWork.UserRepository.GetAllMentorAsync();
-            var mentorQueryOrderByRating = mentorQuery.Include(m => m.FeedbacksReceived)
-                        .Select(m => new
-                        {
-                            Mentor = m,
-                            AverageRating = m.FeedbacksReceived.Any() ? m.FeedbacksReceived.Average(f => f.Rating) : 0
-                        });
+            var mentors = await _unitOfWork.UserRepository.GetAllMentorAsync();
 
-            mentorQueryOrderByRating = isDesc
-                                   ? mentorQueryOrderByRating.OrderByDescending(m => m.AverageRating)
-                                   : mentorQueryOrderByRating.OrderBy(m => m.AverageRating);
+            // Include related entities to get the feedbacks through MenteePlan and MenteeApplications
+            var mentorQuery = mentors
+                    .Include(m => m.MenteePlan)?
+                    .ThenInclude(p => p.MenteeApplications)
+                    .ThenInclude(a => a.Feedback);
 
+            // Compute the average rating for each mentor
 
-            var sortedMentors = mentorQueryOrderByRating.Select(m => m.Mentor);
+            var mentorQueryOrderByRating = mentors
+                  .Select(m => new
+                  {
+                      Mentor = m,
+                      AverageRating = m.MenteePlan.MenteeApplications
+                          .Where(a => a.Feedback != null)
+                          .Select(a => (double?)a.Feedback.Rating) // Use nullable double
+                          .Average() ?? 0 // Default to 0 if there are no feedbacks
+                  });
+
+            // Order mentors by average rating
+            var orderedMentors = isDesc
+                ? mentorQueryOrderByRating.OrderByDescending(m => m.AverageRating)
+                : mentorQueryOrderByRating.OrderBy(m => m.AverageRating);
+
+            // Project the result to only include mentors
+            var sortedMentors = orderedMentors.Select(m => m.Mentor);
 
             return sortedMentors;
         }

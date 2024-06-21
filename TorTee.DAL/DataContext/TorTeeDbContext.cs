@@ -11,11 +11,11 @@ namespace TorTee.DAL.DataContext
     {
         public TorTeeDbContext()
         {
-            
+
         }
         public TorTeeDbContext(DbContextOptions options) : base(options)
         {
-            
+
         }
         public DbSet<ApplicationQuestion> ApplicationQuestion { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
@@ -55,24 +55,11 @@ namespace TorTee.DAL.DataContext
                 .HasOne(a => a.Mentor)
                 .WithMany(u => u.AssignmentsGiven)
                 .HasForeignKey(a => a.MentorId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Assignment>()
                 .HasOne(a => a.Mentee)
                 .WithMany(u => u.AssignmentsReceived)
-                .HasForeignKey(a => a.MenteeId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
-
-            modelBuilder.Entity<Feedback>()
-                .HasOne(a => a.Mentor)
-                .WithMany(u => u.FeedbacksReceived)
-                .HasForeignKey(a => a.MentorId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
-            modelBuilder.Entity<Feedback>()
-                .HasOne(a => a.Mentee)
-                .WithMany(u => u.FeedbacksGiven)
                 .HasForeignKey(a => a.MenteeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -87,7 +74,7 @@ namespace TorTee.DAL.DataContext
                 .WithMany(u => u.MessagesReceived)
                 .HasForeignKey(a => a.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
 
             modelBuilder.Entity<Notification>()
                 .HasOne(a => a.Receiver)
@@ -102,9 +89,9 @@ namespace TorTee.DAL.DataContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<BookingCall>()
-                .HasOne(c=>c.Session)
-                .WithMany(s=>s.BookingCalls)
-                .HasForeignKey(c=>c.SessionId)
+                .HasOne(c => c.Session)
+                .WithMany(s => s.BookingCalls)
+                .HasForeignKey(c => c.SessionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MenteeApplication>()
@@ -116,6 +103,16 @@ namespace TorTee.DAL.DataContext
                 .HasOne(t => t.MenteeApplication)
                 .WithOne(ma => ma.Transaction)
                 .HasForeignKey<Transaction>(t => t.MenteeApplicationId);
+
+            modelBuilder.Entity<MenteeApplication>()
+          .HasOne(ma => ma.Feedback)
+          .WithOne(t => t.MenteeApplication)
+          .HasForeignKey<MenteeApplication>(ma => ma.FeedbackId);
+
+            modelBuilder.Entity<Feedback>()
+                .HasOne(t => t.MenteeApplication)
+                .WithOne(ma => ma.Feedback)
+                .HasForeignKey<Feedback>(t => t.MenteeApplicationId);
 
 
             modelBuilder.Entity<ApplicationQuestion>().HasData(
