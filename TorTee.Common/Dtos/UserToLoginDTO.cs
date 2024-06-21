@@ -4,8 +4,7 @@ namespace TorTee.Common.Dtos
 {
     public class UserToLoginDTO
     {
-        [Required]
-        [EmailAddress] 
+        [Required]       
         public string Email { get; set; }
 
         [Required]
