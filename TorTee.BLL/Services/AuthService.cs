@@ -56,13 +56,13 @@ namespace TorTee.BLL.Services
 
         public async Task<ServiceActionResult> LoginAsync(UserToLoginDTO userToLoginDTO)
         {
-            var user = await _userManager.FindByEmailAsync(userToLoginDTO.Email);
+            var user = await _userManager.FindByNameAsync(userToLoginDTO.Email);
             if (user == null)
                 throw new UserNotFoundException($"Invalid user with email {userToLoginDTO.Email}");
 
             var isEmailActivated = await _userManager.IsEmailConfirmedAsync(user);
             if (!isEmailActivated)
-                throw new UnactivatedEmailException($"Invalid user with email {userToLoginDTO.Email}");
+                throw new UnactivatedEmailException($"User with email {userToLoginDTO.Email} unconfirmed.");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userToLoginDTO.Password, false);
             if (!result.Succeeded)
