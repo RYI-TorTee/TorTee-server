@@ -22,13 +22,13 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<ServiceActionResult> AddFeedback(FeedbackRequest request, Guid mentorId)
+        public async Task<ServiceActionResult> AddFeedback(FeedbackRequest request, Guid menteeId)
         {
             var menteeApplication = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Include(ma => ma.Feedback).FirstOrDefault()
                 ?? throw new ArgumentNullException("Mentorship not found");
 
-            if (menteeApplication.UserId != mentorId)
+            if (menteeApplication.UserId != menteeId)
                 throw new ArgumentException("You have no permission to feedback this mentor");
 
             if (menteeApplication.Status != Core.Domains.Enums.ApplicationStatus.PAID)

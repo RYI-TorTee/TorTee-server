@@ -7,7 +7,7 @@ namespace TorTee.BLL.Services.IServices
     public interface IFeedbackService
     {
         Task<ServiceActionResult> GetAllFeedbacksOfAMentor(Guid mentorId, PagingRequest request);
-        Task<ServiceActionResult> AddFeedback(FeedbackRequest request, Guid mentorId);
+        Task<ServiceActionResult> AddFeedback(FeedbackRequest request, Guid menteeId);
         Task<ServiceActionResult> GetAllMentorForFeedback(Guid menteeId);
 
     }
