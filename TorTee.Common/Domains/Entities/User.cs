@@ -20,17 +20,15 @@ namespace TorTee.Core.Domains.Entities
         public ICollection<Message>? MessagesReceived { get; set; }
         public ICollection<UserRole>? UserRoles { get; set; }
 
-        //Mentee
-        public ICollection<Feedback>? FeedbacksGiven { get; set; }
+        //Mentee       
         public ICollection<Assignment>? AssignmentsReceived { get; set; }
         public ICollection<BookingCall>? BookingCallAsMentee { get; set; }
         public ICollection<MenteeApplication>? MenteeApplications { get; set; }
 
-        //Mentor
-        public ICollection<Feedback>? FeedbacksReceived { get; set; }
+        //Mentor        
         public ICollection<Assignment>? AssignmentsGiven { get; set; }      
         public Session? Sessions { get; set; }        
-        public MenteePlan? MenteePlans { get; set; }
+        public MenteePlan? MenteePlan { get; set; }
         
     }
 }

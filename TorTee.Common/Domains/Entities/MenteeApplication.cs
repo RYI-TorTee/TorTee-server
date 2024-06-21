@@ -21,6 +21,8 @@ namespace TorTee.Core.Domains.Entities
 
         public Guid TransactionId { get; set; }
         public Transaction? Transaction { get; set; }
+        public Guid? FeedbackId { get; set; }
+        public Feedback? Feedback { get; set; }
 
         public ICollection<MenteeApplicationAnswer>? MenteeApplicationAnswers { get; set; }
     }

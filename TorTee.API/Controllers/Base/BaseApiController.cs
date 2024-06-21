@@ -58,10 +58,6 @@ namespace TorTee.API.Controllers.Base
             {
                 var result = await serviceLogicFunc();
 
-                StringInterpolationHelper.AppendToStart("Result of [[");
-                StringInterpolationHelper.Append(methodInfo);
-                StringInterpolationHelper.Append($"]]. IsSuccess: {result.IsSuccess}");
-                StringInterpolationHelper.Append(". Detail: ");
                 StringInterpolationHelper.Append(result.Detail ?? "no details.");
                 logger.Info(StringInterpolationHelper.BuildAndClear());
 
@@ -72,10 +68,6 @@ namespace TorTee.API.Controllers.Base
                 if (errorHandler is not null)
                     await errorHandler();
 
-                StringInterpolationHelper.AppendToStart("Result of [[");
-                StringInterpolationHelper.Append(methodInfo);
-                StringInterpolationHelper.Append($"]]. IsSuccess: false");
-                StringInterpolationHelper.Append(". Detail: ");
                 StringInterpolationHelper.Append(ex.Message);
                 logger.Info(StringInterpolationHelper.BuildAndClear());
 

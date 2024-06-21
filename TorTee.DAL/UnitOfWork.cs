@@ -22,6 +22,7 @@ namespace TorTee.DAL
         public IAssignmentSubmissionRepository AssignmentSubmissionRepository => new AssignmentSubmissionRepository(_dbContext);
         public ISkillRepository SkillRepository => new SkillRepository(_dbContext);
         public ITransactionRepository TransactionRepository => new TransactionRepository(_dbContext);
+        public IFeedbackRepository FeedbackRepository => new FeedbackRepository(_dbContext);
 
         public UnitOfWork(DbContext dbContext)
         {
