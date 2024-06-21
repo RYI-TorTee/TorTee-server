@@ -39,7 +39,7 @@ namespace TorTee.BLL.Services
 
             var feedbackEntity = _mapper.Map<Feedback>(request);
 
-            await _unitOfWork.FeedbackRepository.AddAsync(feedbackEntity);
+            menteeApplication.Feedback = feedbackEntity;
             await _unitOfWork.CommitAsync();
 
             return new ServiceActionResult();
@@ -49,12 +49,12 @@ namespace TorTee.BLL.Services
         {
             var mentor = (await _unitOfWork.UserRepository.FindAsync(mentorId)) ?? throw new ArgumentNullException("Mentor not found");
 
-            var feedbackQueryable = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
-                .Include(a => a.Feedback)
-                .Include(a => a.MenteePlan)
-                .Include(a => a.User)
-                .Where(a => a.MenteePlan.MentorId == mentorId)
-                .Select(a => a.Feedback);
+            var feedbackQueryable = (await _unitOfWork.FeedbackRepository.GetAllAsyncAsQueryable())
+                .Include(a => a.MenteeApplication)
+                .ThenInclude(a => a.MenteePlan)
+                .Include(a => a.MenteeApplication)
+                .ThenInclude(a => a.User)
+                .Where(a => a.MenteeApplication.MenteePlan.MentorId == mentorId);
 
             var paginatedFeedback = PaginationHelper.BuildPaginatedResult<Feedback, FeedbackResponse>(_mapper, feedbackQueryable, request.PageSize, request.PageIndex);
 
@@ -69,6 +69,7 @@ namespace TorTee.BLL.Services
                 .Include(ma => ma.MenteePlan)
                 .ThenInclude(mp => mp.Mentor)
                 .Include(ma => ma.User)
+                .Include(ma => ma.Feedback)
                 .Where(ma => ma.UserId == menteeId && ma.Status == Core.Domains.Enums.ApplicationStatus.PAID);
 
             return new ServiceActionResult() { Data = menteeApplication.ProjectTo<MentorForFeedbackResponse>(_mapper.ConfigurationProvider) };

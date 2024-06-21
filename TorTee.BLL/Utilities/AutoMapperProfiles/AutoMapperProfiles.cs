@@ -164,12 +164,13 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
 
                 CreateMap<Feedback, FeedbackResponse>()
                     .ForMember(dest => dest.CreatedUserName, opt => opt.MapFrom(src => src.MenteeApplication.User!.FullName))
-                    .ForMember(dest => dest.CreatedUserName, opt => opt.MapFrom(src => src.MenteeApplication.User!.ProfilePic));
+                    .ForMember(dest => dest.CreatedUserProfilePic, opt => opt.MapFrom(src => src.MenteeApplication.User!.ProfilePic));
 
                 CreateMap<FeedbackRequest, Feedback>();
 
                 CreateMap<MenteeApplication, MentorForFeedbackResponse>()
                     .ForMember(dest => dest.MenteeApplicationId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.IsFeedbacked, opt => opt.MapFrom(src => src.Feedback != null))
                     .ForMember(dest => dest.UserResponse, opt => opt.MapFrom(src => src.MenteePlan.Mentor));
 
                 #endregion
