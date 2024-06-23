@@ -33,10 +33,10 @@ namespace TorTee.BLL.Services
                 mentorQuery = mentorQuery.Where(m => m.FullName.Contains(queryParameters.Search));
             }
 
-            if (queryParameters?.Filter?.Count > 0)
-            {
-                mentorQuery = mentorQuery.ApplyFilters(queryParameters.Filter);
-            }
+            //if (queryParameters?.Filter?.Count > 0)
+            //{
+            //    mentorQuery = mentorQuery.ApplyFilters(queryParameters.Filter);
+            //}
 
             if (!string.IsNullOrEmpty(queryParameters?.OrderBy) && (!queryParameters.OrderBy?.Equals("AverageRating") ?? false))
             {

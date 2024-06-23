@@ -11,7 +11,6 @@ using TorTee.BLL.Utilities;
 using TorTee.Common.Helpers;
 using TorTee.Core.Domains.Constants;
 using TorTee.Core.Domains.Entities;
-using TorTee.Core.Dtos;
 using TorTee.Core.Extensions;
 using TorTee.DAL;
 
@@ -70,11 +69,10 @@ namespace TorTee.BLL.Services
         {
             var userQueryable = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable());
 
-            userQueryable = string.IsNullOrEmpty(queryParameters.Search)
+            userQueryable = !string.IsNullOrEmpty(queryParameters.Search)
                 ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.Email!.Contains(queryParameters.Search))
                 : userQueryable;
 
-            userQueryable = queryParameters.Filter != null ? userQueryable.ApplyFilters(queryParameters.Filter) : userQueryable;
             userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
                 ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
                 : userQueryable.OrderByDescending(u => u.CreatedDate);
@@ -90,11 +88,11 @@ namespace TorTee.BLL.Services
         {
             var userQueryable = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable());
 
-            userQueryable = string.IsNullOrEmpty(queryParameters.Search)
+            userQueryable = !string.IsNullOrEmpty(queryParameters.Search)
                 ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.Email!.Contains(queryParameters.Search))
                 : userQueryable;
 
-            userQueryable = queryParameters.Filter != null ? userQueryable.ApplyFilters(queryParameters.Filter) : userQueryable;
+            
             userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
                 ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
                 : userQueryable.OrderByDescending(u => u.CreatedDate);
@@ -113,11 +111,11 @@ namespace TorTee.BLL.Services
         {
             var userQueryable = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable());
 
-            userQueryable = string.IsNullOrEmpty(queryParameters.Search)
+            userQueryable = !string.IsNullOrEmpty(queryParameters.Search)
                 ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.UserName!.Contains(queryParameters.Search))
                 : userQueryable;
 
-            userQueryable = queryParameters.Filter != null ? userQueryable.ApplyFilters(queryParameters.Filter) : userQueryable;
+           
             userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
                 ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
                 : userQueryable.OrderByDescending(u => u.CreatedDate);
