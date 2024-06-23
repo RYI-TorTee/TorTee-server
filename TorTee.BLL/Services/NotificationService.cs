@@ -23,9 +23,15 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public Task<ServiceActionResult> CountUnreadNotification(Guid userId)
+        public async Task<ServiceActionResult> CountUnreadNotification(Guid userId)
         {
-            throw new NotImplementedException();
+            var currentUser = await _unitOfWork.UserRepository.FindAsync(userId) ?? throw new UserNotFoundException("Invalid user");
+           
+           var totalUnread = (await _unitOfWork.NotificationRepository.GetAllAsyncAsQueryable())
+                .Where(n => n.ReceiverId == userId && n.Status == Core.Domains.Enums.MessageStatus.UNSEEN)
+                .Count();
+
+            return new ServiceActionResult(true) { Data = totalUnread };
         }
 
         public async Task<ServiceActionResult> CreateNotification(NotificationRequest request)

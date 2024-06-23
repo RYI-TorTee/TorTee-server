@@ -26,5 +26,13 @@ namespace TorTee.API.Controllers
             async () => await _notificationService.GetAllPaging(_userClaims.UserId, request).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
+
+        [HttpGet("unread-notification")]
+        public async Task<IActionResult> GetCountUnreadNoti()
+        {
+            return await ExecuteServiceLogic(
+            async () => await _notificationService.CountUnreadNotification(_userClaims.UserId).ConfigureAwait(false)
+           ).ConfigureAwait(false);
+        }
     }
 }
