@@ -34,5 +34,13 @@ namespace TorTee.API.Controllers
             async () => await _notificationService.CountUnreadNotification(_userClaims.UserId).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
+
+        [HttpPut("read-notification")]
+        public async Task<IActionResult> ReadNoti()
+        {
+            return await ExecuteServiceLogic(
+            async () => await _notificationService.ReadNotification(_userClaims.UserId).ConfigureAwait(false)
+           ).ConfigureAwait(false);
+        }
     }
 }
