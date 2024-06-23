@@ -1,4 +1,4 @@
-﻿namespace TorTee.BLL.Models.Responses
+﻿namespace TorTee.BLL.Models.Responses.Transactions
 {
     public class TransactionResponse
     {

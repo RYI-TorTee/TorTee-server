@@ -6,7 +6,7 @@ namespace TorTee.Core.Domains.Entities
     public class Notification : EntityBase<Guid>
     {
         public string Content { get; set; } = null!;
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         public MessageStatus Status { get; set; } = MessageStatus.UNSEEN;
 
         public Guid SenderId { get; set; }

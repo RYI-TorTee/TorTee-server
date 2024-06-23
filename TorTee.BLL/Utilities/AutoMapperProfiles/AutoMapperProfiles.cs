@@ -5,9 +5,9 @@ using TorTee.BLL.Models.Requests.Feedbacks;
 using TorTee.BLL.Models.Requests.MenteeApplications;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Models.Requests.Messages;
+using TorTee.BLL.Models.Requests.Notifications;
 using TorTee.BLL.Models.Requests.Submissions;
 using TorTee.BLL.Models.Requests.Users;
-using TorTee.BLL.Models.Responses;
 using TorTee.BLL.Models.Responses.Answers;
 using TorTee.BLL.Models.Responses.ApplicationQuestions;
 using TorTee.BLL.Models.Responses.Assignments;
@@ -19,8 +19,10 @@ using TorTee.BLL.Models.Responses.Mentees;
 using TorTee.BLL.Models.Responses.MentorApplications;
 using TorTee.BLL.Models.Responses.Mentors;
 using TorTee.BLL.Models.Responses.Messages;
+using TorTee.BLL.Models.Responses.Notifications;
 using TorTee.BLL.Models.Responses.Roles;
 using TorTee.BLL.Models.Responses.Skills;
+using TorTee.BLL.Models.Responses.Transactions;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
@@ -172,6 +174,13 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                     .ForMember(dest => dest.MenteeApplicationId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.IsFeedbacked, opt => opt.MapFrom(src => src.Feedback != null))
                     .ForMember(dest => dest.UserResponse, opt => opt.MapFrom(src => src.MenteePlan.Mentor));
+
+                #endregion
+
+                #region notification
+
+                CreateMap<NotificationRequest, Notification>();
+                CreateMap<Notification, NotificationResponse>();
 
                 #endregion
             }

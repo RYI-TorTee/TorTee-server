@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
-using TorTee.BLL.Models.Responses;
+using TorTee.BLL.Models.Responses.Transactions;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.BLL.Services.IServices;
 using TorTee.Common.Helpers;
