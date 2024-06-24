@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MenteeApplications;
 using TorTee.BLL.Models.Responses.MenteeApplications;
@@ -27,10 +28,14 @@ namespace TorTee.BLL.Services
             var menteePlan = (await _unitOfWork.MentorPlanRepository.GetAllAsyncAsQueryable())
                 .Where(m => m.Id == request.MenteePlanId)
                 .Include(m => m.MenteeApplications)
-                .FirstOrDefault();
+                .FirstOrDefault() ?? throw new NullReferenceException("Invalid mentee plan");
 
-            if (menteePlan == null)
-                return new ServiceActionResult(false) { Detail = "Invalid metorship plan" };
+            var isInMentorPlan = menteePlan.MenteeApplications?.Any(ma => ma.UserId == currentUserId
+            && ma.EndDate > DateTime.Now
+            && ma.Status == Core.Domains.Enums.ApplicationStatus.PAID) ?? false;
+
+            if(isInMentorPlan)
+                return new ServiceActionResult(false) { Detail = "You are already in mentorship plan" };
 
             var isRemainingSlot = menteePlan.TotalSlot >= menteePlan.MenteeApplications?.Where(m => m.Status == ApplicationStatus.ACCEPTED).Count();
             if (!isRemainingSlot)
