@@ -113,7 +113,7 @@ namespace TorTee.BLL.Services
         {
             var application = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Where(a=>a.Id==request.Id)
-                .Include(a=>a.UserId)
+                .Include(a=>a.User)
                 .Include(a=>a.MenteePlan)
                 .ThenInclude(a=>a.Mentor)
                 .FirstOrDefault() ?? throw new NullReferenceException("Invalid application");
