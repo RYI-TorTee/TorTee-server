@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Services.IServices;
 
@@ -20,7 +21,7 @@ namespace TorTee.BLL.Services
         {
             if (User == null)
             {
-                throw new ArgumentNullException("User did not logined");
+                throw new UserNotFoundException("User did not logined");
             }
 
             return new UserClaims

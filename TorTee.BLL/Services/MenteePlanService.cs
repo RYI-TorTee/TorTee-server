@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Responses.MenteePlans;
 using TorTee.BLL.Services.IServices;
@@ -18,13 +19,25 @@ namespace TorTee.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<ServiceActionResult> GetPlan(Guid mentorId)
+        public async Task<ServiceActionResult> GetPlan(Guid mentorId, Guid? userId = null)
         {
+            var mentor = await _unitOfWork.UserRepository.FindAsync(mentorId) ?? throw new UserNotFoundException("Mentor not found");
+
             var plan = (await _unitOfWork.MentorPlanRepository.GetAllAsyncAsQueryable())
-                .Include(mp=>mp.MenteeApplications)
+                .Include(mp => mp.MenteeApplications)
                 .Where(mp => mp.MentorId == mentorId).FirstOrDefault() ?? throw new NullReferenceException();
 
-            return new ServiceActionResult() { Data = _mapper.Map<MenteePlanResponse>(plan)};
+            bool isInMentorPlan = false;
+            if (userId.HasValue)
+            {
+                isInMentorPlan = plan.MenteeApplications?.Any(ma => ma.UserId == userId 
+                && ma.EndDate > DateTime.Now 
+                && ma.Status == Core.Domains.Enums.ApplicationStatus.PAID) ?? false;
+            }
+            var planResponse = _mapper.Map<MenteePlanResponse>(plan);
+            planResponse.IsInMentorship = isInMentorPlan;            
+
+            return new ServiceActionResult() { Data =  planResponse};
         }
     }
 }
