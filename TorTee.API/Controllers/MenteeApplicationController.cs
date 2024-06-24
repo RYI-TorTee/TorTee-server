@@ -30,7 +30,7 @@ namespace TorTee.API.Controllers
         {
             var userId = _userClaims.UserId;
             return await ExecuteServiceLogic(
-            async () => await _menteeApplicationService.CreateMenteeApplication(request, userId).ConfigureAwait(false)
+            async () =>  await _menteeApplicationService.CreateMenteeApplication(request, userId).ConfigureAwait(false)
            ).ConfigureAwait(false);
         }
         /// <summary>

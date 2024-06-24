@@ -1,12 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Reflection;
+using TorTee.API.SignalR;
 using TorTee.BLL.Constants;
 using TorTee.BLL.Helpers;
 using TorTee.BLL.Models;
+using TorTee.BLL.Models.Requests.Notifications;
 using TorTee.BLL.Models.Requests.VnPays;
+using TorTee.BLL.Models.Responses.Notifications;
 using TorTee.BLL.Models.Responses.VnPays;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Entities;
 using TorTee.Core.Settings;
 using TorTee.DAL;
 
@@ -16,11 +24,18 @@ namespace TorTee.BLL.Services
     {
         private readonly VNPaySettings _vnPaySettings;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public VnPayService(IOptions<VNPaySettings> vnPaySettings, IUnitOfWork unitOfWork)
+        public VnPayService(IOptions<VNPaySettings> vnPaySettings, 
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IHubContext<NotificationHub> hubContext)
         {
             _vnPaySettings = vnPaySettings.Value;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _hubContext = hubContext;
         }
 
         public async Task<ServiceActionResult> CreatePaymentUrl(HttpContext context, VnPayRequest vnPayRequest)
@@ -81,7 +96,12 @@ namespace TorTee.BLL.Services
             {
                 Double.TryParse(response.vnp_Amount, out double result);
                 var applicationId = new Guid(response.vnp_OrderInfo ?? throw new Exception("Invalid application"));
-                var application = await _unitOfWork.MenteeApplicationRepository.FindAsync(applicationId) ?? throw new Exception("Invalid application");
+                var application = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Where(a => a.Id == applicationId)
+                .Include(a => a.UserId)
+                .Include(a => a.MenteePlan)
+                .ThenInclude(a => a.Mentor)
+                .FirstOrDefault() ?? throw new Exception("Invalid application");
 
                 if (application.Status == Core.Domains.Enums.ApplicationStatus.PAID)
                 {
@@ -107,7 +127,25 @@ namespace TorTee.BLL.Services
                     application.StartDate = DateTime.Now;
                     application.EndDate = DateTime.Now.AddMonths(1);
 
+                    //Send notification to mentor                    
+                    var newNoti = new NotificationRequest()
+                    {
+                        Content = $"Mentee {application.User.FullName} has pay for application. Start work with {application.User.FullName} ASAP.",
+                        SenderId = application.UserId,
+                        ReceiverId = application.MenteePlan.MentorId,
+                    };
+                    var noti = _mapper.Map<Notification>(newNoti);
+                    await _unitOfWork.NotificationRepository.AddAsync(noti);
                     await _unitOfWork.CommitAsync();
+                    
+                    var notiToReturn = _mapper.Map<NotificationResponse>(noti);
+                    notiToReturn.SenderAvatar = application.User.ProfilePic;
+
+                    if (NotificationHub.TryGetConnectionId(noti.ReceiverId.ToString(), out var connectionId))
+                    {
+                        await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", notiToReturn);
+                    }
+
                     return new ServiceActionResult(true)
                     {
                         Data = response

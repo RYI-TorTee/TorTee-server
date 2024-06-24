@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
+using TorTee.API.SignalR;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MenteeApplications;
+using TorTee.BLL.Models.Requests.Notifications;
 using TorTee.BLL.Models.Responses.MenteeApplications;
+using TorTee.BLL.Models.Responses.Notifications;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Domains.Enums;
 using TorTee.DAL;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TorTee.BLL.Services
 {
@@ -17,14 +18,17 @@ namespace TorTee.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public MenteeApplicationService(IUnitOfWork unitOfWork, IMapper mapper)
+        public MenteeApplicationService(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<NotificationHub> hubContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
         public async Task<ServiceActionResult> CreateMenteeApplication(CreateMenteeApplicationRequest request, Guid currentUserId)
         {
+            var currentMentee = await _unitOfWork.UserRepository.FindAsync(currentUserId);
             var menteePlan = (await _unitOfWork.MentorPlanRepository.GetAllAsyncAsQueryable())
                 .Where(m => m.Id == request.MenteePlanId)
                 .Include(m => m.MenteeApplications)
@@ -45,9 +49,27 @@ namespace TorTee.BLL.Services
             applicationEntity.UserId = currentUserId;
             applicationEntity.Price = menteePlan.Price;
 
-            await _unitOfWork.MenteeApplicationRepository.AddAsync(applicationEntity);
+            await _unitOfWork.MenteeApplicationRepository.AddAsync(applicationEntity);           
+
+            //Send notification to mentor
+            var newNoti = new NotificationRequest(){
+                Content = $"You have a new application from {currentMentee.FullName}",
+                SenderId = currentUserId,
+                ReceiverId = menteePlan.MentorId,
+            };
+            var noti = _mapper.Map<Notification>(newNoti);
+            await _unitOfWork.NotificationRepository.AddAsync(noti);
             await _unitOfWork.CommitAsync();
-            return new ServiceActionResult(true);
+
+            var notiToReturn = _mapper.Map<NotificationResponse>(noti);
+            notiToReturn.SenderAvatar = currentMentee.ProfilePic;
+
+            if (NotificationHub.TryGetConnectionId(newNoti.ReceiverId.ToString(), out var connectionId))
+            {
+                await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", notiToReturn);
+            }           
+
+            return new ServiceActionResult(true) { Data = newNoti};
         }
 
         public async Task<ServiceActionResult> GetAllMenteeApplicationsReceived(Guid mentorId)
@@ -89,7 +111,13 @@ namespace TorTee.BLL.Services
 
         public async Task<ServiceActionResult> UpdateMenteeApplicationStatus(UpdateMenteeApplicationRequest request)
         {
-            var application = await _unitOfWork.MenteeApplicationRepository.FindAsync(request.Id);
+            var application = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Where(a=>a.Id==request.Id)
+                .Include(a=>a.UserId)
+                .Include(a=>a.MenteePlan)
+                .ThenInclude(a=>a.Mentor)
+                .FirstOrDefault() ?? throw new NullReferenceException("Invalid application");
+
             if (application.Status != ApplicationStatus.PENDING || application.Status.ToString().Equals(request.Status, StringComparison.OrdinalIgnoreCase))
             {
                 return new ServiceActionResult(false, $"Application already {application.Status.ToString()}");
@@ -103,7 +131,24 @@ namespace TorTee.BLL.Services
 
             application.Status = status;
 
+            //TODO: Send notification to user
+            var newNoti = new NotificationRequest()
+            {
+                Content = $"Application to {application.MenteePlan.Mentor.FullName} is {application.Status.ToString()}",
+                SenderId = application.MenteePlan.MentorId,
+                ReceiverId = application.UserId,
+            };
+            var noti = _mapper.Map<Notification>(newNoti);
+            await _unitOfWork.NotificationRepository.AddAsync(noti);
             await _unitOfWork.CommitAsync();
+
+            var notiToReturn = _mapper.Map<NotificationResponse>(noti);
+            notiToReturn.SenderAvatar = application.MenteePlan.Mentor.ProfilePic;
+
+            if (NotificationHub.TryGetConnectionId(noti.ReceiverId.ToString(), out var connectionId))
+            {
+                await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", notiToReturn);
+            }
 
             return new ServiceActionResult(true);
         }

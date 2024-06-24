@@ -35,8 +35,8 @@ namespace TorTee.BLL.Services
                 && ma.Status == Core.Domains.Enums.ApplicationStatus.PAID) ?? false;
             }
             var planResponse = _mapper.Map<MenteePlanResponse>(plan);
-            planResponse.IsInMentorship = isInMentorPlan;            
-
+            planResponse.IsInMentorship = isInMentorPlan;
+           
             return new ServiceActionResult() { Data =  planResponse};
         }
     }
