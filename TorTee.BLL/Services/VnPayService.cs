@@ -96,12 +96,7 @@ namespace TorTee.BLL.Services
             {
                 Double.TryParse(response.vnp_Amount, out double result);
                 var applicationId = new Guid(response.vnp_OrderInfo ?? throw new Exception("Invalid application"));
-                var application = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
-                .Where(a => a.Id == applicationId)
-                .Include(a => a.UserId)
-                .Include(a => a.MenteePlan)
-                .ThenInclude(a => a.Mentor)
-                .FirstOrDefault() ?? throw new Exception("Invalid application");
+                var application = await _unitOfWork.MenteeApplicationRepository.FindAsync(applicationId) ?? throw new Exception("Invalid application");
 
                 if (application.Status == Core.Domains.Enums.ApplicationStatus.PAID)
                 {
@@ -127,12 +122,15 @@ namespace TorTee.BLL.Services
                     application.StartDate = DateTime.Now;
                     application.EndDate = DateTime.Now.AddMonths(1);
 
-                    //Send notification to mentor                    
+                    //Send notification to mentor
+                    var sender = await _unitOfWork.UserRepository.FindAsync(application.UserId);
+                    var menteePlan = await _unitOfWork.MentorPlanRepository.FindAsync(application.MenteePlanId);
+                    var receiver = await _unitOfWork.UserRepository.FindAsync(menteePlan.MentorId);
                     var newNoti = new NotificationRequest()
                     {
-                        Content = $"Mentee {application.User.FullName} has pay for application. Start work with {application.User.FullName} ASAP.",
+                        Content = $"Mentee {sender.FullName} has pay for application. Start work with {sender.FullName} ASAP.",
                         SenderId = application.UserId,
-                        ReceiverId = application.MenteePlan.MentorId,
+                        ReceiverId = receiver.Id,
                     };
                     var noti = _mapper.Map<Notification>(newNoti);
                     await _unitOfWork.NotificationRepository.AddAsync(noti);
