@@ -139,8 +139,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region mentee plan 
 
                 CreateMap<MenteePlan, MenteePlanResponse>()
-                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.TotalSlot - (src.MenteeApplications ?? new List<MenteeApplication>()).Where(m => m.Status == ApplicationStatus.ACCEPTED).Count() <= 0 ? "Full Slot" : "Available"))
-                    .ForMember(dest => dest.RemainSlot, opt => opt.MapFrom(src => src.TotalSlot - (src.MenteeApplications ?? new List<MenteeApplication>()).Where(m => m.Status == ApplicationStatus.ACCEPTED).Count()));
+                    .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.TotalSlot - (src.MenteeApplications ?? new List<MenteeApplication>()).Where(m => m.Status == ApplicationStatus.PAID).Count() <= 0 ? "Full Slot" : "Available"))
+                    .ForMember(dest => dest.RemainSlot, opt => opt.MapFrom(src => src.TotalSlot - (src.MenteeApplications ?? new List<MenteeApplication>()).Where(m => m.Status == ApplicationStatus.PAID).Count()));
 
                 #endregion
 
