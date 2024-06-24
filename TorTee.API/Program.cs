@@ -43,6 +43,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<MessageHub>("/chathub");
+app.MapHub<NotificationHub>("/notificationhub");
 
 app.Run();
 
