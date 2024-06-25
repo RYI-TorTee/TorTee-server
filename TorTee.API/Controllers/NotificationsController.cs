@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
@@ -20,6 +21,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetMyNotifications([FromQuery] PagingRequest request)
         {
             return await ExecuteServiceLogic(
@@ -28,6 +30,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("unread-notification")]
+        [Authorize]
         public async Task<IActionResult> GetCountUnreadNoti()
         {
             return await ExecuteServiceLogic(
@@ -36,6 +39,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPut("read-notification")]
+        [Authorize]
         public async Task<IActionResult> ReadNoti()
         {
             return await ExecuteServiceLogic(

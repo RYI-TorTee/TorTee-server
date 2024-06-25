@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
@@ -21,6 +22,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost("send-message")]
+        [Authorize]
         public async Task<IActionResult> SendMessage(CreateMessageRequest messageRequest)
         {           
             return await ExecuteServiceLogic(
@@ -29,6 +31,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("my-chats")]
+        [Authorize]
         public async Task<IActionResult> GetMyChatBoxs()
         {
             return await ExecuteServiceLogic(
@@ -37,6 +40,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("messages")]
+        [Authorize]
         public async Task<IActionResult> GetMessagesFromChatBox([FromQuery]ChatBoxParams chatBoxParams)
         {
             return await ExecuteServiceLogic(
@@ -45,6 +49,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("search-chat")]
+        [Authorize]
         public async Task<IActionResult> SearchMessages([FromQuery] string search)
         {            
             return await ExecuteServiceLogic(

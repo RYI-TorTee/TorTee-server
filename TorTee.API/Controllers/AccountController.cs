@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Users;
@@ -19,6 +20,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("my-profile")]
+        [Authorize]
         public async Task<IActionResult> GetMyProfile()
         {
             return await ExecuteServiceLogic(
@@ -35,6 +37,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateProfile(UserRequest request)
         {
             return await ExecuteServiceLogic(
@@ -43,6 +46,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPut("change-password")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(UpdatePasswordRequest request)
         {
             return await ExecuteServiceLogic(

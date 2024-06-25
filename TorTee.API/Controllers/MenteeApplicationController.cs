@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.MenteeApplications;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Constants;
 
 namespace TorTee.API.Controllers
 {
@@ -26,6 +28,7 @@ namespace TorTee.API.Controllers
         /// </summary>
         /// <returns></returns>
          [HttpPost("mentee/apply")]
+        [Authorize(Roles = UserRoleConstants.MENTEE)]
         public async Task<IActionResult> ApplyToMentor(CreateMenteeApplicationRequest request)
         {
             var userId = _userClaims.UserId;
@@ -38,6 +41,7 @@ namespace TorTee.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("mentor/applications")]
+        [Authorize(Roles = UserRoleConstants.MENTOR)]
         public async Task<IActionResult> AllApplicationReceived()
         {
             var userId = _userClaims.UserId;
@@ -50,6 +54,7 @@ namespace TorTee.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut("mentor/update-application")]
+        [Authorize(Roles = UserRoleConstants.MENTOR)]
         public async Task<IActionResult> UpdateApplicationReceived(UpdateMenteeApplicationRequest request)
         {
             return await ExecuteServiceLogic(
@@ -61,6 +66,7 @@ namespace TorTee.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("mentee/applications")]
+        [Authorize(Roles = UserRoleConstants.MENTEE)]
         public async Task<IActionResult> AllApplicationSent()
         {
             var userId = _userClaims.UserId;
@@ -73,6 +79,7 @@ namespace TorTee.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("application/{id}")]
+        [Authorize]
         public async Task<IActionResult> ApplicationDetail(Guid id)
         {           
             return await ExecuteServiceLogic(

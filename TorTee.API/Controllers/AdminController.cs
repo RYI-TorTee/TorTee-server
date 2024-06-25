@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Users;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Constants;
 
 namespace TorTee.API.Controllers
 {
+    [Authorize(Roles = UserRoleConstants.ADMIN)]
     public class AdminController : BaseApiController
     {
         private readonly IAccountService _accountService;
@@ -18,7 +21,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<IActionResult> GetUsers([FromQuery]QueryParametersRequest request)
+        public async Task<IActionResult> GetUsers([FromQuery] QueryParametersRequest request)
         {
             return await ExecuteServiceLogic(
                                async () => await _accountService.GetAll(request).ConfigureAwait(false)
@@ -34,7 +37,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("staffs")]
-        public async Task<IActionResult> GetStaffs([FromQuery]QueryParametersRequest request)
+        public async Task<IActionResult> GetStaffs([FromQuery] QueryParametersRequest request)
         {
             return await ExecuteServiceLogic(
                                async () => await _accountService.GetAllStaffAccount(request).ConfigureAwait(false)
@@ -49,7 +52,7 @@ namespace TorTee.API.Controllers
                                           ).ConfigureAwait(false);
         }
 
-        [HttpGet("transaction")]
+        [HttpGet("transactions")]
         public async Task<IActionResult> GetTransaction([FromQuery] QueryParametersRequest request)
         {
             return await ExecuteServiceLogic(

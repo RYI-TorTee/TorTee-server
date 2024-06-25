@@ -21,7 +21,7 @@
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTime.Now.AddMinutes(60),
+                Expires = DateTime.Now.AddDays(1),
                 Secure = true,
                 IsEssential = true,
                 SameSite = SameSiteMode.None 

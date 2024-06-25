@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Feedbacks;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Constants;
 
 namespace TorTee.API.Controllers
 {
@@ -21,6 +23,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("send-feedback")]
+        [Authorize(Roles = UserRoleConstants.MENTEE)]
         public async Task<IActionResult> GetAllMentorForFeedback()
         {
             return await ExecuteServiceLogic(
@@ -29,6 +32,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost("send-feedback")]
+        [Authorize(Roles = UserRoleConstants.MENTEE)]
         public async Task<IActionResult> CreateFeedback(FeedbackRequest request)
         {
             return await ExecuteServiceLogic(

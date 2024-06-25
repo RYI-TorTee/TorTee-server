@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Assignments;
@@ -7,6 +8,7 @@ using TorTee.BLL.Services.IServices;
 
 namespace TorTee.API.Controllers
 {
+    [Authorize]
     public class WorkspaceController : BaseApiController
     {
         private readonly IWorkspaceService _workspaceService;

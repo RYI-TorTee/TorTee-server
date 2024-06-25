@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Services.IServices;
 using TorTee.Common.Dtos;
@@ -40,6 +41,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost("logout")]
+        [Authorize]
         public IActionResult Logout()
         {
             // Remove the JWT token cookie
