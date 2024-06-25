@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.MentorApplications;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Constants;
 
 namespace TorTee.API.Controllers
 {
@@ -24,6 +26,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoleConstants.STAFF)]
         public async Task<IActionResult> GetAllApplications([FromQuery] MentorApplicationRequest request)
         {
             return await ExecuteServiceLogic(
@@ -32,6 +35,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = UserRoleConstants.STAFF)]
         public async Task<IActionResult> GetApplication(Guid id)
         {
             return await ExecuteServiceLogic(
@@ -40,6 +44,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRoleConstants.STAFF)]
         public async Task<IActionResult> ReviewedApplication(Guid id, string status)
         {
             return await ExecuteServiceLogic(

@@ -162,7 +162,16 @@ namespace TorTee.BLL.Services
                 return new UserToLoginDTO() { Email = application.Email, Password = "Your currently password in my system" };
             }
 
-            var userEntity = new User { Email = application.Email, UserName = application.Email, FullName = application.FullName, PhoneNumber = application.PhoneNumber };
+            var userEntity = new User
+            {
+                Email = application.Email,
+                UserName = application.Email,
+                FullName = application.FullName,
+                PhoneNumber = application.PhoneNumber,
+                JobTitle = application.JobTitle,
+                Bio = application.Bio,
+                Company = application.Company,
+            };
             var password = AccountCreationHelper.GenerateRandomPassword();
 
             var result = await _userManager.CreateAsync(userEntity, password);
@@ -190,7 +199,7 @@ namespace TorTee.BLL.Services
             return new UserToLoginDTO() { Email = application.Email, Password = password };
         }
 
-       
+
 
     }
 }

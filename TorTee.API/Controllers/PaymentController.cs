@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models.Requests.VnPays;
 using TorTee.BLL.Models.Responses.VnPays;
@@ -15,6 +16,7 @@ namespace TorTee.API.Controllers
         }
 
         [HttpPost("create-payment-url")]
+        [Authorize]
         public async Task<IActionResult> CreatePaymentUrl(VnPayRequest request)
         {
             var context = HttpContext;

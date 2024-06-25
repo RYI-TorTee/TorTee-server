@@ -180,7 +180,8 @@ namespace TorTee.BLL.Utilities.AutoMapperProfiles
                 #region notification
 
                 CreateMap<NotificationRequest, Notification>();
-                CreateMap<Notification, NotificationResponse>();
+                CreateMap<Notification, NotificationResponse>()
+                    .ForMember(dest => dest.SenderAvatar, opt => opt.MapFrom(src => src.Sender.ProfilePic ?? ""));
 
                 #endregion
             }

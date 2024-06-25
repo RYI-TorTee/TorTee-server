@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
@@ -55,6 +56,7 @@ namespace TorTee.BLL.Services
             var currentUser = await _unitOfWork.UserRepository.FindAsync(userId) ?? throw new UserNotFoundException("Invalid user");
             var notifications = (await _unitOfWork.NotificationRepository.GetAllAsyncAsQueryable())
                 .Where(n => n.ReceiverId == userId)
+                .Include(n=>n.Sender)
                 .OrderByDescending(n => n.CreatedDate);
 
             return new ServiceActionResult(true)

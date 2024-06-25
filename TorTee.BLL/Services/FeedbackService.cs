@@ -25,6 +25,7 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> AddFeedback(FeedbackRequest request, Guid menteeId)
         {
             var menteeApplication = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Where(ma => ma.Id == request.MenteeApplicationId)
                 .Include(ma => ma.Feedback).FirstOrDefault()
                 ?? throw new ArgumentNullException("Mentorship not found");
 

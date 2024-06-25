@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Skills;
@@ -27,6 +28,7 @@ namespace TorTee.API.Controllers
            ).ConfigureAwait(false);
         }
         [HttpPut("update-my-skill")]
+        [Authorize]
         public async Task<IActionResult> PutSkillsOfAUser([FromBody] UserSkillsRequest request)
         {
             return await ExecuteServiceLogic(
