@@ -72,7 +72,7 @@ namespace TorTee.BLL.Services
             };
         }
 
-        public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
+  /*      public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
         {
             var chatBoxes = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
                 .Include(m => m.Sender)
@@ -97,7 +97,47 @@ namespace TorTee.BLL.Services
                 }).ToList();
 
             return new ServiceActionResult() { Data = chatBoxes };
+        }*/
+        public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
+        {
+            var chatBoxes = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
+                .Include(m => m.Sender)
+                .Include(m => m.Receiver)
+                .Where(m => m.SenderId == currentUserId || m.ReceiverId == currentUserId)
+                .GroupBy(m => m.SenderId == currentUserId ? m.ReceiverId : m.SenderId)
+                .Select(g => new
+                {
+                    CurrentUserId = currentUserId,
+                    ChatPartnerId = g.Key,
+                    ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
+                    ChatPartnerPhoto = g.First().SenderId == currentUserId ? g.First().Receiver.ProfilePic : g.First().Sender.ProfilePic,
+                    LatestMessage = g.OrderByDescending(m => m.SentTime).FirstOrDefault()
+                })
+                .ToList() // Execute the query and bring data into memory
+                .Select(chat => new ChatBoxResponse
+                {
+                    CurrentUserId = chat.CurrentUserId,
+                    ChatPartnerId = chat.ChatPartnerId,
+                    ChatPartnerName = chat.ChatPartnerName,
+                    ChatPartnerPhoto = chat.ChatPartnerPhoto,
+                    Messages = new List<MessageResponse>
+                    {
+                new MessageResponse
+                {
+                    Content = chat.LatestMessage.Content,
+                    SenderPhotoUrl = chat.LatestMessage.Sender.ProfilePic ?? "",
+                    SenderName = chat.LatestMessage.Sender.FullName,
+                    SentTime = chat.LatestMessage.SentTime,
+                    IsSentByCurrentUser = chat.LatestMessage.SenderId == currentUserId
+                }
+                    }
+                })
+                .OrderByDescending(chatBox => chatBox.Messages.First().SentTime) // Sort chat boxes by the latest message's SentTime
+                .ToList();
+
+            return new ServiceActionResult() { Data = chatBoxes };
         }
+
 
         public async Task<ServiceActionResult> SearchChat(string search)
         {
