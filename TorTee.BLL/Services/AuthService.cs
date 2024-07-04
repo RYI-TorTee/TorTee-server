@@ -72,7 +72,7 @@ namespace TorTee.BLL.Services
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebUtility.UrlEncode(token);
 
-            var callbackUrl = $"http://localhost:3000/reset-password/?userId={user.Id}&token={encodedToken}";
+            var callbackUrl = $"http://localhost:3000/reset-password/?email={user.Email}&token={encodedToken}";
             await _emailService.SendEmailAsync(request.Email, "Reset Password",
                 EmailHelper.GetForgotPasswordEmailBody(callbackUrl, user.FullName), true);
 

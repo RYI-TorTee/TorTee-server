@@ -6,6 +6,7 @@ using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Messages;
 using TorTee.BLL.Models.Responses.Messages;
 using TorTee.BLL.Services.IServices;
+using TorTee.Core.Domains.Constants;
 using TorTee.Core.Domains.Entities;
 using TorTee.DAL;
 
@@ -21,7 +22,7 @@ namespace TorTee.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-           
+
         public async Task<ServiceActionResult> SendMessage(CreateMessageRequest request, Guid userId)
         {
             var currentUser = userId;
@@ -32,14 +33,14 @@ namespace TorTee.BLL.Services
             var messageEntity = _mapper.Map<Message>(request);
             messageEntity.Sender = sender;
             messageEntity.Receiver = receiver;
-            messageEntity.SentTime = DateTime.Now;            
+            messageEntity.SentTime = DateTime.Now;
 
             await _unitOfWork.MessageRepository.AddAsync(messageEntity);
             await _unitOfWork.CommitAsync();
 
             var returnMessage = _mapper.Map<MessageResponse>(messageEntity);
 
-            return new ServiceActionResult() { Data = returnMessage};
+            return new ServiceActionResult() { Data = returnMessage };
         }
 
 
@@ -101,9 +102,12 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> SearchChat(string search)
         {
             var users = (await _unitOfWork.UserRepository.GetAllAsyncAsQueryable())
-                .Where(u => u.FullName.ToLower().Contains(search.ToLower()));
+                .Include(u => u.UserRoles!)
+                .ThenInclude(r => r.Role)
+                .Where(u => u.FullName.ToLower().Contains(search.ToLower()) &&
+                (!u.UserRoles!.Any(r => r.Role.Name!.Equals(UserRoleConstants.ADMIN)) || (!u.UserRoles!.Any(r => r.Role.Name!.Equals(UserRoleConstants.STAFF)))));
 
-            return new ServiceActionResult() { Data = _mapper.ProjectTo<ChatBoxResponse>(users)};
+            return new ServiceActionResult() { Data = _mapper.ProjectTo<ChatBoxResponse>(users) };
         }
 
     }
