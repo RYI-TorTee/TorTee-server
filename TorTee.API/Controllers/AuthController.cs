@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Services.IServices;
 using TorTee.Common.Dtos;
-using TorTee.Core.Domains.Entities;
 using TorTee.Core.Dtos;
 
 namespace TorTee.API.Controllers
@@ -59,6 +57,15 @@ namespace TorTee.API.Controllers
             return await ExecuteServiceLogic(
                async () => await _authService.ForgotPassword(request).ConfigureAwait(false)
            ).ConfigureAwait(false);
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            return await ExecuteServiceLogic(
+              async () => await _authService.ResetPassword(request).ConfigureAwait(false)
+          ).ConfigureAwait(false);
         }
     }
 }

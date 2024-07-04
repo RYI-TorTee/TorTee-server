@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using TorTee.BLL.Exceptions;
@@ -69,8 +71,8 @@ namespace TorTee.BLL.Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebUtility.UrlEncode(token);
-           
-            var callbackUrl = $"http://localhost:3000/Auth/ResetPassword/?userId={user.Id}&token={encodedToken}";
+
+            var callbackUrl = $"http://localhost:3000/reset-password/?userId={user.Id}&token={encodedToken}";
             await _emailService.SendEmailAsync(request.Email, "Reset Password",
                 EmailHelper.GetForgotPasswordEmailBody(callbackUrl, user.FullName), true);
 
@@ -123,6 +125,20 @@ namespace TorTee.BLL.Services
             await _emailService.SendEmailConfirmationAsync(userEntity, token);
 
             return new ServiceActionResult(true);
+        }
+
+        public async Task<ServiceActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email)
+            ?? throw new UserNotFoundException($"Invalid user with email {request.Email}");
+
+            var result = await _userManager.ResetPasswordAsync(user, request.ResetCode, request.NewPassword);
+            if (!result.Succeeded)
+            {
+                var error = result.Errors.First();
+                return new ServiceActionResult(false, error.Description);
+            }
+            return new ServiceActionResult();
         }
     }
 }

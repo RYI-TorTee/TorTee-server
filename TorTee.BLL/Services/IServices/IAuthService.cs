@@ -11,5 +11,6 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> RegisterAsync(UserToRegisterDTO userToRegisterDTO);
         Task<ServiceActionResult> ConfirmEmail(string userId, string token);
         Task<ServiceActionResult> ForgotPassword(ForgotPasswordRequest request);
+        Task<ServiceActionResult> ResetPassword(ResetPasswordRequest request);
     }
 }
