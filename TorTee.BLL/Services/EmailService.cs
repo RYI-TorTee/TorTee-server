@@ -2,13 +2,9 @@
 using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
-
 using Microsoft.AspNetCore.Mvc.Routing;
 using TorTee.BLL.Services.IServices;
 using TorTee.Core.Domains.Entities;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using TorTee.BLL.Helpers;
 
 namespace TorTee.BLL.Services

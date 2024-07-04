@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using TorTee.API.Controllers.Base;
 using TorTee.BLL.Services.IServices;
 using TorTee.Common.Dtos;
+using TorTee.Core.Domains.Entities;
 using TorTee.Core.Dtos;
 
 namespace TorTee.API.Controllers
@@ -47,6 +50,15 @@ namespace TorTee.API.Controllers
             // Remove the JWT token cookie
             HttpContext.Response.Cookies.Delete("token");
             return Ok();
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            return await ExecuteServiceLogic(
+               async () => await _authService.ForgotPassword(request).ConfigureAwait(false)
+           ).ConfigureAwait(false);
         }
     }
 }

@@ -1,6 +1,12 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System;
+using System.Net;
 using TorTee.BLL.Exceptions;
+using TorTee.BLL.Helpers;
 using TorTee.BLL.Models;
 using TorTee.BLL.Services.IServices;
 using TorTee.Common.Dtos;
@@ -52,6 +58,23 @@ namespace TorTee.BLL.Services
                 return new ServiceActionResult(false) { Detail = result.Errors.First().Description };
 
             return new ServiceActionResult(true, "Email comfirmed");
+        }
+
+        public async Task<ServiceActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+                return new ServiceActionResult(false) { Detail = "Your email not found in our system" };
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebUtility.UrlEncode(token);
+           
+            var callbackUrl = $"http://localhost:3000/Auth/ResetPassword/?userId={user.Id}&token={encodedToken}";
+            await _emailService.SendEmailAsync(request.Email, "Reset Password",
+                EmailHelper.GetForgotPasswordEmailBody(callbackUrl, user.FullName), true);
+
+            return new ServiceActionResult(true, "Email forgot password sent");
         }
 
         public async Task<ServiceActionResult> LoginAsync(UserToLoginDTO userToLoginDTO)

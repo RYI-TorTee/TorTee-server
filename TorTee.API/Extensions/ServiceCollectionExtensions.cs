@@ -82,21 +82,7 @@ namespace TorTee.API.Extensions
             return services;
         }
 
-        public static IServiceCollection AddGgAuthentication(this IServiceCollection services, IConfiguration configuration)
-        {
-            var googleSettings = configuration.GetSection(nameof(GoogleSettings)).Get<GoogleSettings>() ?? throw new MissingGoogleSettingsException();
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            }).AddCookie()
-                .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-                {
-                    options.ClientId = googleSettings.ClientId;
-                    options.ClientSecret = googleSettings.ClientSecret;
-                });
-            return services;
-        }
+     
 
         public static IServiceCollection AddCookieConfiguration(this IServiceCollection services)
         {

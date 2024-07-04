@@ -109,6 +109,21 @@
 
                         If you encounter any issues or need assistance, feel free to reach out to our support team at {platformEmail}.";
         }
+
+        public static string GetForgotPasswordEmailBody(string link, string userName)
+        {
+            return $@"Dear {userName},
+
+                            We received a request to reset your password for your account. If you did not initiate this request, please ignore this email.
+
+                            To reset your password, click on the link below:
+
+                            <a href='{link}'>Reset Password</a><br>
+
+                            If you encounter any issues, feel free to contact our support team.
+
+                            Best regards,";
+        }
     }
 
 }
