@@ -36,7 +36,7 @@ namespace TorTee.API.Controllers
            ).ConfigureAwait(false);
         }
 
-        [HttpPatch]
+        [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateProfile(UserRequest request)
         {
@@ -54,7 +54,7 @@ namespace TorTee.API.Controllers
            ).ConfigureAwait(false);
         }
 
-        [HttpPatch("update-avatar")]
+        [HttpPut("update-avatar")]
         [Authorize]
         public async Task<IActionResult> UpdateAvatar(IFormFile request)
         {
