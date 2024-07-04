@@ -38,7 +38,7 @@ namespace TorTee.API.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateProfile(UserRequest request)
+        public async Task<IActionResult> UpdateProfile([FromForm] UserRequest request)
         {
             return await ExecuteServiceLogic(
             async () => await _accountService.UpdateDetails(request, _userClaims.UserId).ConfigureAwait(false)
@@ -56,7 +56,7 @@ namespace TorTee.API.Controllers
 
         [HttpPut("update-avatar")]
         [Authorize]
-        public async Task<IActionResult> UpdateAvatar(IFormFile request)
+        public async Task<IActionResult> UpdateAvatar([FromBody] IFormFile request)
         {
             return await ExecuteServiceLogic(
             async () => await _accountService.UpdateAvatar(request, _userClaims.UserId).ConfigureAwait(false)
