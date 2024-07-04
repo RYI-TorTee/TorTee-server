@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TorTee.BLL.Exceptions;
@@ -24,8 +26,8 @@ namespace TorTee.BLL.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, 
-            IFileStorageService fileStorageService, 
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper,
+            IFileStorageService fileStorageService,
             UserManager<User> userManager,
             RoleManager<Role> roleManager)
         {
@@ -62,7 +64,19 @@ namespace TorTee.BLL.Services
             userEntity.EmailConfirmed = true;
             await _userManager.UpdateAsync(userEntity);
 
-            return new ServiceActionResult(true) { Data = new { UserName = userEntity.UserName, Password = password, CreatedDate = userEntity.CreatedDate} };
+            return new ServiceActionResult(true) { Data = new { UserName = userEntity.UserName, Password = password, CreatedDate = userEntity.CreatedDate } };
+        }
+
+        public async Task<ServiceActionResult> UpdateAvatar(IFormFile newAvatar, Guid userId)
+        {
+            var user = await _unitOfWork.UserRepository.FindAsync(userId);
+            ArgumentNullException.ThrowIfNull(nameof(user));
+
+            var imageUrl = await _fileStorageService.UploadFileBlobAsync(newAvatar);
+            user.ProfilePic = imageUrl;
+
+            await _unitOfWork.CommitAsync();
+            return new ServiceActionResult();
         }
 
         public async Task<ServiceActionResult> GetAll(QueryParametersRequest queryParameters)
@@ -92,7 +106,7 @@ namespace TorTee.BLL.Services
                 ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.Email!.Contains(queryParameters.Search))
                 : userQueryable;
 
-            
+
             userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
                 ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
                 : userQueryable.OrderByDescending(u => u.CreatedDate);
@@ -115,7 +129,7 @@ namespace TorTee.BLL.Services
                 ? userQueryable.Where(u => u.FullName.Contains(queryParameters.Search) || u.UserName!.Contains(queryParameters.Search))
                 : userQueryable;
 
-           
+
             userQueryable = !string.IsNullOrEmpty(queryParameters.OrderBy)
                 ? userQueryable.OrderByDynamic(queryParameters.OrderBy, queryParameters.IsDesc)
                 : userQueryable.OrderByDescending(u => u.CreatedDate);
@@ -123,9 +137,9 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult()
             {
                 Data = PaginationHelper.BuildPaginatedResult<User, UserResponse>
-                (_mapper, 
+                (_mapper,
                 userQueryable.Include(u => u.UserRoles)!.ThenInclude(r => r.Role)
-                .Where(u=>u.UserRoles.Any(r=>r.Role.Name.Equals(UserRoleConstants.STAFF))), 
+                .Where(u => u.UserRoles.Any(r => r.Role.Name.Equals(UserRoleConstants.STAFF))),
                 queryParameters.PageSize, queryParameters.PageIndex)
             };
         }
@@ -146,11 +160,6 @@ namespace TorTee.BLL.Services
 
             _mapper.Map(request, user);
 
-            if (request.ProfilePic != null)
-            {
-                var imageUrl = await _fileStorageService.UploadFileBlobAsync(request.ProfilePic);
-                user.ProfilePic = imageUrl;
-            }
             await _unitOfWork.CommitAsync();
             return new ServiceActionResult();
         }

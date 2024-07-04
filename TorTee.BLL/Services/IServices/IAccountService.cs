@@ -1,4 +1,5 @@
-﻿using TorTee.BLL.Models;
+﻿using Microsoft.AspNetCore.Http;
+using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Users;
 
@@ -9,6 +10,7 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> GetDetails(Guid id);
 
         Task<ServiceActionResult> UpdateDetails(UserRequest request, Guid userId);
+        Task<ServiceActionResult> UpdateAvatar(IFormFile newAvatar, Guid userId);
         Task<ServiceActionResult> UpdatePassword(UpdatePasswordRequest request, Guid userId);
         Task<ServiceActionResult> GetAll(QueryParametersRequest queryParameters);
         Task<ServiceActionResult> AddStaffAccount(CreateStaffAccountRequest request);

@@ -8,7 +8,7 @@ namespace TorTee.BLL.Models.Requests.Users
         [MaxLength(100)]
         [MinLength(10)]
         public string FullName { get; set; } = null!;
-        public IFormFile? ProfilePic { get; set; }
+        
         [Phone]
         public string? PhoneNumber { get; set; }
         public string? Bio { get; set; }
