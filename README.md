@@ -54,5 +54,5 @@ The TorTee Mentorship Platform is a comprehensive solution designed to connect m
 This project is a testament to the power of modern web technologies in creating platforms that can significantly impact the mentorship landscape. By providing a comprehensive suite of features, the TorTee Mentorship Platform stands as a pivotal tool for those seeking to learn, grow, and connect in their professional and personal development journeys.
 
 ## Visit us on:
-* [Tiktok](https://github.com/supernhilty)
-* [Facebook](https://www.tiktok.com/@t.t.mentoring)
+* [Tiktok](https://www.tiktok.com/@t.t.mentoring)
+* [Facebook](https://www.facebook.com/totementoring)
