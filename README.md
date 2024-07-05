@@ -4,12 +4,11 @@ The TorTee Mentorship Platform is a comprehensive solution designed to connect m
 
 ## Development Team
 
-- **Backend Developer**: Responsible for API development, database management, and server-side logic.
- [Le Thi Yen Nhi](https://github.com/supernhilty)
-- **Frontend Developer**: Focuses on the user interface, user experience, and client-side functionality.
- [Truong Thuy Truc](https://github.com/Truc5302)
-- **Deployment**: Responsible for deployment process
- [Nguyen Dang Khoa](https://github.com/dangkhoaaaa)
+- **Backend Developer**: [Le Thi Yen Nhi](https://github.com/supernhilty): Responsible for API development, database management, and server-side logic.
+ 
+- **Frontend Developer**: [Truong Thuy Truc](https://github.com/Truc5302): Focuses on the user interface, user experience, and client-side functionality.
+ 
+- **Deployment**: [Nguyen Dang Khoa](https://github.com/dangkhoaaaa): Responsible for deployment process 
 
 ## Technology Stack
 
@@ -54,6 +53,6 @@ The TorTee Mentorship Platform is a comprehensive solution designed to connect m
 
 This project is a testament to the power of modern web technologies in creating platforms that can significantly impact the mentorship landscape. By providing a comprehensive suite of features, the TorTee Mentorship Platform stands as a pivotal tool for those seeking to learn, grow, and connect in their professional and personal development journeys.
 
-##Visit us on:
+## Visit us on:
 * [Tiktok](https://github.com/supernhilty)
 * [Facebook](https://www.tiktok.com/@t.t.mentoring)
