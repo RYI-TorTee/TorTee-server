@@ -5,11 +5,11 @@ The TorTee Mentorship Platform is a comprehensive solution designed to connect m
 ## Development Team
 
 - **Backend Developer**: Responsible for API development, database management, and server-side logic.
-* [Le Thi Yen Nhi](https://github.com/supernhilty)
+ [Le Thi Yen Nhi](https://github.com/supernhilty)
 - **Frontend Developer**: Focuses on the user interface, user experience, and client-side functionality.
-* [Truong Thuy Truc](https://github.com/Truc5302)
+ [Truong Thuy Truc](https://github.com/Truc5302)
 - **Deployment**: Responsible for deployment process
-* [Nguyen Dang Khoa](https://github.com/dangkhoaaaa)
+ [Nguyen Dang Khoa](https://github.com/dangkhoaaaa)
 
 ## Technology Stack
 
