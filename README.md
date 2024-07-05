@@ -1,6 +1,6 @@
 # TorTee Mentorship Platform
 
-The TorTee Mentorship Platform is a comprehensive solution designed to connect mentors and mentees, facilitating a seamless booking process, secure payments, and an interactive workspace for both parties. Developed by a team of two, one focusing on the backend (BE) and the other on the frontend (FE), this project leverages modern technology stacks to deliver a robust and user-friendly experience.
+The TorTee Mentorship Platform is a comprehensive solution designed to connect mentors and mentees, facilitating a seamless booking process, secure payments, and an interactive workspace for both parties. Developed by a team of two, one focusing on the [backend (BE)](https://github.com/RYI-TorTee/TorTee-server) and the other on the [frontend (FE)](https://github.com/RYI-TorTee/TorTee-client), this project leverages modern technology stacks to deliver a robust and user-friendly experience.
 
 ## Development Team
 
