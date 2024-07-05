@@ -49,7 +49,7 @@ The TorTee Mentorship Platform is a comprehensive solution designed to connect m
 - **Authentication**: Secure authentication mechanisms for user accounts.
 - **Mentor Profile Updates**: Allows mentors to keep their profiles up-to-date.
 - **Recommended Mentors**: Algorithm-driven recommendations for mentees looking for mentors.
-- **Mentor Browse*: Enhances the mentor discovery process.
+- **Mentor Browse**: Enhances the mentor discovery process.
 
 This project is a testament to the power of modern web technologies in creating platforms that can significantly impact the mentorship landscape. By providing a comprehensive suite of features, the TorTee Mentorship Platform stands as a pivotal tool for those seeking to learn, grow, and connect in their professional and personal development journeys.
 
