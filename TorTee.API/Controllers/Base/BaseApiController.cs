@@ -9,7 +9,6 @@ namespace TorTee.API.Controllers.Base
     [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
-
         private IActionResult BuildSuccessResult(ServiceActionResult result)
         {
             var successResult = new ApiResponse(true)

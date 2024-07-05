@@ -76,7 +76,7 @@ namespace TorTee.BLL.Services
             user.ProfilePic = imageUrl;
 
             await _unitOfWork.CommitAsync();
-            return new ServiceActionResult();
+            return new ServiceActionResult() { Data = imageUrl};
         }
 
         public async Task<ServiceActionResult> GetAll(QueryParametersRequest queryParameters)

@@ -56,7 +56,7 @@ namespace TorTee.API.Controllers
 
         [HttpPut("update-avatar")]
         [Authorize]
-        public async Task<IActionResult> UpdateAvatar([FromBody] IFormFile request)
+        public async Task<IActionResult> UpdateAvatar([FromForm] IFormFile request)
         {
             return await ExecuteServiceLogic(
             async () => await _accountService.UpdateAvatar(request, _userClaims.UserId).ConfigureAwait(false)
