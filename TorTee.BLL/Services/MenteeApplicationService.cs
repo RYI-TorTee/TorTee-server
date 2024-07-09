@@ -41,7 +41,8 @@ namespace TorTee.BLL.Services
             if(isInMentorPlan)
                 return new ServiceActionResult(false) { Detail = "You are already in mentorship plan" };
 
-            var isRemainingSlot = menteePlan.TotalSlot >= menteePlan.MenteeApplications?.Where(m => m.Status == ApplicationStatus.ACCEPTED).Count();
+            var isRemainingSlot = menteePlan.TotalSlot >= menteePlan.MenteeApplications?.Where(ma => ma.EndDate > DateTime.Now
+            && ma.Status == Core.Domains.Enums.ApplicationStatus.PAID).Count();
             if (!isRemainingSlot)
                 return new ServiceActionResult(false) { Detail = "This mentor is full slot for mentoring" };
 
