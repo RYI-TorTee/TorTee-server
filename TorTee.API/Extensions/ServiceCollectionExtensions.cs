@@ -58,15 +58,12 @@ namespace TorTee.API.Extensions
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["token"];
-                        //var accessToken = context.Request.Query["access_token"];
+                        var accessToken = context.Request.Cookies["token"] ?? context.Request.Query["access_token"];
 
-                        //var path = context.HttpContext.Request.Path;
-                        //if (!string.IsNullOrEmpty(accessToken) &&
-                        //    path.StartsWithSegments("/hubs"))
-                        //{
-                        //    context.Token = accessToken;
-                        //}                       
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            context.Token = accessToken;
+                        }
 
                         return Task.CompletedTask;
                     }
