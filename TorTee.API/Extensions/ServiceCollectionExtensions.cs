@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Net.payOS;
 using System.Text;
 using TorTee.Core.Domains.Entities;
 using TorTee.Core.Exceptions;
@@ -120,6 +121,14 @@ namespace TorTee.API.Extensions
         public static IServiceCollection AddVNPaySettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<VNPaySettings>(configuration.GetSection(nameof(VNPaySettings)));
+            return services;
+        }
+        public static IServiceCollection AddPayOSSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var payOSSettings = configuration.GetSection(nameof(PayOSSettings)).Get<PayOSSettings>() ?? throw new NullReferenceException("Missing payOS settings");
+            services.Configure<PayOSSettings>(configuration.GetSection(nameof(PayOSSettings)));
+            PayOS payOS = new PayOS(payOSSettings.ClientId, payOSSettings.ApiKey, payOSSettings.ChecksumKey);
+            services.AddSingleton(payOS);
             return services;
         }
 

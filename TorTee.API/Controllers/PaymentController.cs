@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Net.payOS.Types;
 using TorTee.API.Controllers.Base;
+using TorTee.BLL.Models.Requests.PayOs;
 using TorTee.BLL.Models.Requests.VnPays;
 using TorTee.BLL.Models.Responses.VnPays;
 using TorTee.BLL.Services.IServices;
 
 namespace TorTee.API.Controllers
 {
-    public class PaymentController : BaseApiController
+    public class PaymentController(IVnPayService _vnPayService, IPayOSService _payOSService) : BaseApiController
     {
-        private readonly IVnPayService _vnPayService;
-        public PaymentController(IVnPayService vnPayService)
-        {
-            _vnPayService = vnPayService;
-        }
 
         [HttpPost("create-payment-url")]
         [Authorize]
@@ -41,5 +39,20 @@ namespace TorTee.API.Controllers
            ).ConfigureAwait(false);
         }
 
+        [HttpPost("create-payment-url-payOs")]
+        [Authorize]
+        public async Task<IActionResult> CreatePaymentUrlPayOs(PayOsRequest request)
+        {
+            return await ExecuteServiceLogic(
+               async () => await _payOSService.CreatePaymentLink(request).ConfigureAwait(false)
+           ).ConfigureAwait(false);
+        }
+        [HttpPost("webhook")]
+        public async Task<IActionResult> Webhook([FromBody] WebhookType webhookBody)
+        {
+            return await ExecuteServiceLogic(
+              async () => await _payOSService.Webhook(webhookBody).ConfigureAwait(false)
+          ).ConfigureAwait(false);
+        }
     }
 }
