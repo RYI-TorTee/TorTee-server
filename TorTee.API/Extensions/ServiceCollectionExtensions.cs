@@ -128,6 +128,8 @@ namespace TorTee.API.Extensions
             var payOSSettings = configuration.GetSection(nameof(PayOSSettings)).Get<PayOSSettings>() ?? throw new NullReferenceException("Missing payOS settings");
             services.Configure<PayOSSettings>(configuration.GetSection(nameof(PayOSSettings)));
             PayOS payOS = new PayOS(payOSSettings.ClientId, payOSSettings.ApiKey, payOSSettings.ChecksumKey);
+            var result = payOS.confirmWebhook(payOSSettings.WebhookUrl);
+            // Handle the result if needed
             services.AddSingleton(payOS);
             return services;
         }
