@@ -72,32 +72,32 @@ namespace TorTee.BLL.Services
             };
         }
 
-  /*      public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
-        {
-            var chatBoxes = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Where(m => m.SenderId == currentUserId || m.ReceiverId == currentUserId)
-                .GroupBy(m => m.SenderId == currentUserId ? m.ReceiverId : m.SenderId)
-                .Select(g => new ChatBoxResponse
-                {
-                    CurrentUserId = currentUserId,
-                    ChatPartnerId = g.Key,
-                    ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
-                    ChatPartnerPhoto = g.First().SenderId == currentUserId ? g.First().Receiver.ProfilePic : g.First().Sender.ProfilePic,
-                    Messages = g.OrderByDescending(m => m.SentTime)
-                .Take(1).Select(m => new MessageResponse
-                {
-                    Content = m.Content,
-                    SenderPhotoUrl = m.Sender.ProfilePic ?? "",
-                    SenderName = m.Sender.FullName,
-                    SentTime = m.SentTime,
-                    IsSentByCurrentUser = m.SenderId == currentUserId
-                }).OrderByDescending(m => m.SentTime).ToList()
-                }).ToList();
+        /*      public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
+              {
+                  var chatBoxes = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
+                      .Include(m => m.Sender)
+                      .Include(m => m.Receiver)
+                      .Where(m => m.SenderId == currentUserId || m.ReceiverId == currentUserId)
+                      .GroupBy(m => m.SenderId == currentUserId ? m.ReceiverId : m.SenderId)
+                      .Select(g => new ChatBoxResponse
+                      {
+                          CurrentUserId = currentUserId,
+                          ChatPartnerId = g.Key,
+                          ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
+                          ChatPartnerPhoto = g.First().SenderId == currentUserId ? g.First().Receiver.ProfilePic : g.First().Sender.ProfilePic,
+                          Messages = g.OrderByDescending(m => m.SentTime)
+                      .Take(1).Select(m => new MessageResponse
+                      {
+                          Content = m.Content,
+                          SenderPhotoUrl = m.Sender.ProfilePic ?? "",
+                          SenderName = m.Sender.FullName,
+                          SentTime = m.SentTime,
+                          IsSentByCurrentUser = m.SenderId == currentUserId
+                      }).OrderByDescending(m => m.SentTime).ToList()
+                      }).ToList();
 
-            return new ServiceActionResult() { Data = chatBoxes };
-        }*/
+                  return new ServiceActionResult() { Data = chatBoxes };
+              }*/
         public async Task<ServiceActionResult> GetMyChatBoxs(Guid currentUserId)
         {
             var chatBoxes = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
@@ -111,7 +111,8 @@ namespace TorTee.BLL.Services
                     ChatPartnerId = g.Key,
                     ChatPartnerName = g.First().SenderId == currentUserId ? g.First().Receiver.FullName : g.First().Sender.FullName,
                     ChatPartnerPhoto = g.First().SenderId == currentUserId ? g.First().Receiver.ProfilePic : g.First().Sender.ProfilePic,
-                    LatestMessage = g.OrderByDescending(m => m.SentTime).FirstOrDefault()
+                    LatestMessage = g.OrderByDescending(m => m.SentTime).FirstOrDefault(),
+                    UnreadCount = g.Count(m => m.ReceiverId == currentUserId && m.DateRead == null)
                 })
                 .ToList() // Execute the query and bring data into memory
                 .Select(chat => new ChatBoxResponse
@@ -122,15 +123,17 @@ namespace TorTee.BLL.Services
                     ChatPartnerPhoto = chat.ChatPartnerPhoto,
                     Messages = new List<MessageResponse>
                     {
-                new MessageResponse
-                {
-                    Content = chat.LatestMessage.Content,
-                    SenderPhotoUrl = chat.LatestMessage.Sender.ProfilePic ?? "",
-                    SenderName = chat.LatestMessage.Sender.FullName,
-                    SentTime = chat.LatestMessage.SentTime,
-                    IsSentByCurrentUser = chat.LatestMessage.SenderId == currentUserId
-                }
-                    }
+                        new MessageResponse
+                        {
+                            Content = chat.LatestMessage.Content,
+                            SenderPhotoUrl = chat.LatestMessage.Sender.ProfilePic ?? "",
+                            SenderName = chat.LatestMessage.Sender.FullName,
+                            SentTime = chat.LatestMessage.SentTime,
+                            IsSentByCurrentUser = chat.LatestMessage.SenderId == currentUserId
+                        }
+                    },
+                    UnreadCount = chat.UnreadCount
+
                 })
                 .OrderByDescending(chatBox => chatBox.Messages.First().SentTime) // Sort chat boxes by the latest message's SentTime
                 .ToList();
@@ -150,5 +153,17 @@ namespace TorTee.BLL.Services
             return new ServiceActionResult() { Data = _mapper.ProjectTo<ChatBoxResponse>(users) };
         }
 
+        public async Task<ServiceActionResult> UpdateUnreadMessage(Guid userId, Guid chatPartnerId)
+        {
+            var unreadMessages = (await _unitOfWork.MessageRepository.GetAllAsyncAsQueryable())
+                .Where(m => m.SenderId == chatPartnerId && m.ReceiverId == userId && m.DateRead == null);
+
+            foreach (var message in unreadMessages)
+            {
+                message.DateRead = DateTime.Now;
+            }
+            await _unitOfWork.CommitAsync();
+            return new ServiceActionResult();
+        }
     }
 }

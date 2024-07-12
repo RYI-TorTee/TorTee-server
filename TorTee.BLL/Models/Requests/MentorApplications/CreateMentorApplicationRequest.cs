@@ -28,6 +28,7 @@ namespace TorTee.BLL.Models.Requests.MentorApplications
         public int DurationOfMeeting { get; set; }
         [Range(1, 100, ErrorMessage = "The accepted number is in 1 to 100")]
         public int TotalSlot { get; set; }
+        [Range(5000, 999999999, ErrorMessage = "The accepted number is larger than 5000")]
         public double Price { get; set; }
     }
 

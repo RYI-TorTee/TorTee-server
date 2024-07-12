@@ -56,5 +56,14 @@ namespace TorTee.API.Controllers
            async () => await _messageService.SearchChat(search).ConfigureAwait(false)
           ).ConfigureAwait(false);
         }
+
+        [HttpPut("read-messages")]
+        [Authorize]
+        public async Task<IActionResult> ReadMessages(Guid chatPartnerId)
+        {
+            return await ExecuteServiceLogic(
+           async () => await _messageService.UpdateUnreadMessage(_userClaims.UserId, chatPartnerId).ConfigureAwait(false)
+          ).ConfigureAwait(false);
+        }
     }
 }

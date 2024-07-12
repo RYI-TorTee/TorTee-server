@@ -7,5 +7,7 @@
         public string ChatPartnerName { get; set; }
         public string ChatPartnerPhoto { get; set; }
         public List<MessageResponse> Messages { get; set; }
+
+        public int UnreadCount { get; set; }
     }
 }

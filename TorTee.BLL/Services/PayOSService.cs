@@ -25,6 +25,8 @@ namespace TorTee.BLL.Services
         private readonly PayOSSettings _payOsSettings = payOsSettings.Value;
         public async Task<ServiceActionResult> CreatePaymentLink(PayOsRequest request)
         {
+            //improve later: check if user is already in relationship with mentee
+
             var orderCode = BitConverter.ToUInt32(request.OrderCode.ToByteArray(), 0);
             //convert orderCode to Guid again
             //Guid orderCode = new Guid(BitConverter.GetBytes(orderCode));

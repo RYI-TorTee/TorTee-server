@@ -10,5 +10,6 @@ namespace TorTee.BLL.Services.IServices
         Task<ServiceActionResult> GetMessagesOfAChat(ChatBoxParams messageParams, Guid userId);
         Task<ServiceActionResult> GetMyChatBoxs(Guid userId);
         Task<ServiceActionResult> SearchChat(string search);
+        Task<ServiceActionResult> UpdateUnreadMessage(Guid userId, Guid chatPartnerId);
     }
 }
