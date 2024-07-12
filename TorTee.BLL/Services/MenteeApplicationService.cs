@@ -80,6 +80,7 @@ namespace TorTee.BLL.Services
                 .ThenInclude(p => p.Mentor)
                 .Where(a => a.MenteePlan.MentorId == mentorId)
                 .Include(a => a.User)
+                .OrderByDescending(a => a.AppliedDate)
                 .ToListAsync(); ;
 
             return new ServiceActionResult(true) { Data = _mapper.Map<List<MenteeApplication>, List<MenteeApplicationResponse>>(applications) };
@@ -92,6 +93,7 @@ namespace TorTee.BLL.Services
                  .Where(a => a.UserId == menteeId)
                 .Include(a => a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
+                .OrderByDescending(a=>a.AppliedDate)
                 .ToListAsync();
 
             return new ServiceActionResult(true) { Data = _mapper.Map<List<MenteeApplication>, List<MenteeApplicationResponse>>(applications) };
