@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Net.payOS;
 using Net.payOS.Types;
@@ -26,8 +27,16 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> CreatePaymentLink(PayOsRequest request)
         {
             //TODO: check if user is already in relationship with mentee
+            var mentor = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Include(a => a.MenteePlan)
+                .ThenInclude(p => p.Mentor)
+                .Select(a => a.MenteePlan.Mentor)
+                .FirstOrDefault() ?? throw new ArgumentNullException("The mentor account you apply currently invalid");
+
             var isInRelationship = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
-                .Any(a => a.UserId == _user.UserId && a.EndDate > DateTime.Now);
+                .Include(a => a.MenteePlan)
+                .Any(a => a.UserId == _user.UserId && a.MenteePlan.MentorId == mentor.Id && a.EndDate > DateTime.Now);
+
             if (isInRelationship)
                 return new ServiceActionResult(false) { Detail = "You and this mentor currently in mentorship" };
 
