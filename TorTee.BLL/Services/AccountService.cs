@@ -7,6 +7,7 @@ using TorTee.BLL.Exceptions;
 using TorTee.BLL.Models;
 using TorTee.BLL.Models.Requests.Commons;
 using TorTee.BLL.Models.Requests.Users;
+using TorTee.BLL.Models.Responses.Roles;
 using TorTee.BLL.Models.Responses.Users;
 using TorTee.BLL.Services.IServices;
 using TorTee.BLL.Utilities;
@@ -152,7 +153,10 @@ namespace TorTee.BLL.Services
                 .Include(u => u.UserSkills)!.ThenInclude(uk => uk.Skill).FirstOrDefault()
                 ?? throw new NullReferenceException("User are not found");
 
-            return new ServiceActionResult() { Data = _mapper.Map<UserResponse>(entity) };
+            var returnUser = _mapper.Map<UserResponse>(entity);
+            returnUser.UserRoles = entity.UserRoles.Select(ur => ur.Role).Select(r => new RoleResponse { Name = r.Name }).ToList();
+
+            return new ServiceActionResult() { Data =  returnUser};
         }
 
         public async Task<ServiceActionResult> UpdateDetails(UserRequest request, Guid userId)
