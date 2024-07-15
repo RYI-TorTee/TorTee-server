@@ -27,30 +27,31 @@ namespace TorTee.BLL.Services
         public async Task<ServiceActionResult> CreatePaymentLink(PayOsRequest request)
         {
             //TODO: check if user is already in relationship with mentee
-            var mentor = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+            var application = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
+                .Where(a => a.Id == request.OrderCode)
                 .Include(a => a.MenteePlan)
                 .ThenInclude(p => p.Mentor)
-                .Select(a => a.MenteePlan.Mentor)
-                .FirstOrDefault() ?? throw new ArgumentNullException("The mentor account you apply currently invalid");
+                .FirstOrDefault() ?? throw new ArgumentNullException("The application is currently invalid");
 
             var isInRelationship = (await _unitOfWork.MenteeApplicationRepository.GetAllAsyncAsQueryable())
                 .Include(a => a.MenteePlan)
-                .Any(a => a.UserId == _user.UserId && a.MenteePlan.MentorId == mentor.Id && a.EndDate > DateTime.Now);
+                .Any(a => a.UserId == _user.UserId && a.MenteePlan.MentorId == application.MenteePlan.MentorId && a.EndDate > DateTime.Now);
 
             if (isInRelationship)
                 return new ServiceActionResult(false) { Detail = "You and this mentor currently in mentorship" };
 
             int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
-            var applicationId = BitConverter.ToUInt32(request.OrderCode.ToByteArray(), 0);
-
-            var result = await _payOS.confirmWebhook(_payOsSettings.WebhookUrl);
 
             ItemData item = new ItemData("Mentee Application", 1, request.Amount);
             List<ItemData> items = new List<ItemData>();
             items.Add(item);
-            PaymentData paymentData = new PaymentData(orderCode, request.Amount, applicationId.ToString(), items, _payOsSettings.CancelUrl, _payOsSettings.ReturnUrl);
+            PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _payOsSettings.CancelUrl, _payOsSettings.ReturnUrl);
 
             CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
+            await _payOS.confirmWebhook(_payOsSettings.WebhookUrl);
+
+            application.OrderCode = orderCode;
+            await _unitOfWork.CommitAsync();
 
             return new ServiceActionResult { Data = createPayment };
         }
@@ -61,9 +62,7 @@ namespace TorTee.BLL.Services
 
             if (webhookData != null && webhookData.code == "00")
             {
-                //convert orderCode to Guid again 
-                var applicationId = new Guid(BitConverter.GetBytes(int.Parse(webhookData.description)) ?? throw new Exception("Invalid application"));
-                var application = await _unitOfWork.MenteeApplicationRepository.FindAsync(applicationId) ?? throw new Exception("Invalid application");
+                var application = await _unitOfWork.MenteeApplicationRepository.GetAsync(a => a.OrderCode == webhookData.orderCode) ?? throw new Exception("Invalid application");
 
                 if (application.Status == Core.Domains.Enums.ApplicationStatus.PAID)
                 {
@@ -77,7 +76,7 @@ namespace TorTee.BLL.Services
                 {
                     Id = new Guid(),
                     Total = webhookData.amount,
-                    MenteeApplicationId = applicationId
+                    MenteeApplicationId = application.Id
                 };
                 application.Status = Core.Domains.Enums.ApplicationStatus.PAID;
 
